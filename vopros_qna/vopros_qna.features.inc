@@ -6,13 +6,13 @@
 function vopros_qna_node_info() {
   $items = array(
     'vopros_answer' => array(
-      'name' => t('Answer'),
+      'name' => t('Svar'),
       'module' => 'features',
-      'description' => t('Answer to a Vopros question, usually posted by a staff member.'),
+      'description' => t('Svar to a Vopros spørgsmål, som regel skrevet af en medarbejder.'),
       'has_title' => '1',
-      'title_label' => t('Title'),
+      'title_label' => t('Titel'),
       'has_body' => '1',
-      'body_label' => t('Answer'),
+      'body_label' => t('Svar'),
       'min_word_count' => '0',
       'help' => '',
     ),
