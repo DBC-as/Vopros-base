@@ -19,7 +19,7 @@ function vopros_qna_views_default_views() {
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('fields', array(
     'title' => array(
-      'label' => '',
+      'label' => 'Titel',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
@@ -51,8 +51,8 @@ function vopros_qna_views_default_views() {
       ),
       'relationship' => 'none',
     ),
-    'teaser' => array(
-      'label' => '',
+    'field_question_answer_usage_value' => array(
+      'label' => 'Anvendelse',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
@@ -69,18 +69,54 @@ function vopros_qna_views_default_views() {
         'word_boundary' => 1,
         'ellipsis' => 1,
         'html' => 0,
-        'strip_tags' => 1,
+        'strip_tags' => 0,
       ),
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'teaser',
-      'table' => 'node_revisions',
-      'field' => 'teaser',
-      'override' => array(
-        'button' => 'Override',
+      'link_to_node' => 0,
+      'label_type' => 'custom',
+      'format' => 'default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
       ),
+      'exclude' => 0,
+      'id' => 'field_question_answer_usage_value',
+      'table' => 'node_data_field_question_answer_usage',
+      'field' => 'field_question_answer_usage_value',
+      'relationship' => 'none',
+    ),
+    'name' => array(
+      'label' => 'Emne',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_taxonomy' => 1,
+      'exclude' => 0,
+      'id' => 'name',
+      'table' => 'term_data',
+      'field' => 'name',
       'relationship' => 'none',
     ),
   ));
@@ -147,7 +183,7 @@ function vopros_qna_views_default_views() {
   $handler->override_option('empty_format', '1');
   $handler->override_option('items_per_page', 20);
   $handler->override_option('use_pager', '1');
-  $handler->override_option('style_plugin', 'list');
+  $handler->override_option('style_plugin', 'table');
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->override_option('path', 'questions');
   $handler->override_option('menu', array(
