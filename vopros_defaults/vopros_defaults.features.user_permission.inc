@@ -11,6 +11,8 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'create vopros_answer content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
@@ -19,6 +21,10 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'create vopros_question content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'anonymous user',
+      '2' => 'authenticated user',
+      '3' => 'medarbejder',
+      '4' => 'redaktør',
     ),
   );
 
@@ -27,6 +33,7 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'delete any vopros_answer content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'redaktør',
     ),
   );
 
@@ -35,6 +42,7 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'delete any vopros_question content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'redaktør',
     ),
   );
 
@@ -43,6 +51,8 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'delete own vopros_answer content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
@@ -51,6 +61,7 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'delete own vopros_question content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'redaktør',
     ),
   );
 
@@ -59,6 +70,7 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'edit any vopros_answer content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'redaktør',
     ),
   );
 
@@ -67,6 +79,8 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'edit any vopros_question content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
@@ -75,6 +89,8 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'edit own vopros_answer content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
@@ -83,6 +99,8 @@ function vopros_defaults_user_default_permissions() {
     'name' => 'edit own vopros_question content',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
