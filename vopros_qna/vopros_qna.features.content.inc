@@ -11,9 +11,10 @@ function vopros_qna_content_default_fields() {
     'field_name' => 'field_answer_links',
     'type_name' => 'vopros_answer',
     'display_settings' => array(
+      'weight' => 0,
+      'parent' => '',
       'label' => array(
         'format' => 'above',
-        'exclude' => 0,
       ),
       'teaser' => array(
         'format' => 'default',
@@ -81,16 +82,17 @@ function vopros_qna_content_default_fields() {
     'field_name' => 'field_answer_question_ref',
     'type_name' => 'vopros_answer',
     'display_settings' => array(
+      'weight' => '-3',
+      'parent' => '',
       'label' => array(
-        'format' => 'above',
-        'exclude' => 0,
+        'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'default',
+        'format' => 'hidden',
         'exclude' => 0,
       ),
       'full' => array(
-        'format' => 'default',
+        'format' => 'hidden',
         'exclude' => 0,
       ),
       '4' => array(
@@ -145,9 +147,10 @@ function vopros_qna_content_default_fields() {
     'field_name' => 'field_answer_ting_ref',
     'type_name' => 'vopros_answer',
     'display_settings' => array(
+      'weight' => '-1',
+      'parent' => '',
       'label' => array(
         'format' => 'above',
-        'exclude' => 0,
       ),
       'teaser' => array(
         'format' => 'default',
@@ -181,7 +184,7 @@ function vopros_qna_content_default_fields() {
     'module' => 'ting_reference',
     'active' => '1',
     'widget' => array(
-      'label' => 'Ting references',
+      'label' => 'Materialer',
       'weight' => '-1',
       'description' => 'Choose one or more Ting objects to reference.',
       'type' => 'ting_reference_default',
@@ -802,6 +805,7 @@ completed|Afsluttet',
   t('E-mail-addresse');
   t('Kategori');
   t('Links');
+  t('Materialer');
   t('Navn');
   t('Postnummer');
   t('Question');
@@ -810,7 +814,6 @@ completed|Afsluttet',
   t('Svarets anvendelse');
   t('Telefonnummer');
   t('Tidsfrist');
-  t('Ting references');
 
   return $fields;
 }
