@@ -56,12 +56,12 @@ function vopros_qna_strongarm() {
   $strongarm->value = array(
     'title' => '32',
     'body_field' => '35',
-    'revision_information' => '40',
-    'author' => '39',
-    'options' => '41',
+    'revision_information' => '41',
+    'author' => '40',
+    'options' => '42',
     'menu' => '34',
-    'path' => '42',
-    'path_redirect' => '43',
+    'path' => '43',
+    'path_redirect' => '44',
   );
 
   $export['content_extra_weights_vopros_question'] = $strongarm;

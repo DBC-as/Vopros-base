@@ -66,6 +66,16 @@ function vopros_qna_user_default_permissions() {
     ),
   );
 
+  // Exported permission: edit field_question_deadline
+  $permissions['edit field_question_deadline'] = array(
+    'name' => 'edit field_question_deadline',
+    'roles' => array(
+      '0' => 'administrator',
+      '1' => 'anonymous user',
+      '2' => 'authenticated user',
+    ),
+  );
+
   // Exported permission: edit field_question_inquirer_mail
   $permissions['edit field_question_inquirer_mail'] = array(
     'name' => 'edit field_question_inquirer_mail',
@@ -177,6 +187,18 @@ function vopros_qna_user_default_permissions() {
   // Exported permission: view field_question_category
   $permissions['view field_question_category'] = array(
     'name' => 'view field_question_category',
+    'roles' => array(
+      '0' => 'administrator',
+      '1' => 'anonymous user',
+      '2' => 'authenticated user',
+      '3' => 'medarbejder',
+      '4' => 'redaktør',
+    ),
+  );
+
+  // Exported permission: view field_question_deadline
+  $permissions['view field_question_deadline'] = array(
+    'name' => 'view field_question_deadline',
     'roles' => array(
       '0' => 'administrator',
       '1' => 'anonymous user',

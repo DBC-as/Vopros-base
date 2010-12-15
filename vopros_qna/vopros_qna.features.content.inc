@@ -244,7 +244,7 @@ function vopros_qna_content_default_fields() {
       ),
       'default_value_php' => NULL,
       'label' => 'Allerede søgt',
-      'weight' => '38',
+      'weight' => '39',
       'description' => 'Skriv hvor du allerede har søgt, så vi bedre og hurtigere kan hjælpe dig.',
       'type' => 'text_textarea',
       'module' => 'text',
@@ -308,7 +308,7 @@ university|Opgave til universitetsuddannelse eller forskning',
       ),
       'default_value_php' => NULL,
       'label' => 'Svarets anvendelse',
-      'weight' => '37',
+      'weight' => '38',
       'description' => 'Vælg hvad svaret skal bruges til.',
       'type' => 'optionwidgets_select',
       'module' => 'optionwidgets',
@@ -374,6 +374,69 @@ university|Opgave til universitetsuddannelse eller forskning',
       'description' => 'Vælg hvilken kategori spørgsmålet tilhører.',
       'type' => 'content_taxonomy_select',
       'module' => 'content_taxonomy_options',
+    ),
+  );
+
+  // Exported field: field_question_deadline
+  $fields['vopros_question-field_question_deadline'] = array(
+    'field_name' => 'field_question_deadline',
+    'type_name' => 'vopros_question',
+    'display_settings' => array(
+      'label' => array(
+        'format' => 'above',
+        'exclude' => 0,
+      ),
+      'teaser' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'text',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'text',
+    'active' => '1',
+    'text_processing' => '0',
+    'max_length' => '',
+    'allowed_values' => '2h|2 timer
+8h|8 timer
+24h|24 timer
+2d|2 dage
+1w|1 uge',
+    'allowed_values_php' => '',
+    'widget' => array(
+      'default_value' => array(
+        '0' => array(
+          'value' => '',
+        ),
+      ),
+      'default_value_php' => NULL,
+      'label' => 'Tidsfrist',
+      'weight' => '37',
+      'description' => '',
+      'type' => 'optionwidgets_select',
+      'module' => 'optionwidgets',
     ),
   );
 
@@ -684,6 +747,7 @@ university|Opgave til universitetsuddannelse eller forskning',
   t('Spørgetjeneste');
   t('Svarets anvendelse');
   t('Telefonnummer');
+  t('Tidsfrist');
   t('Ting references');
 
   return $fields;
