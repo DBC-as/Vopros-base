@@ -124,6 +124,16 @@ function vopros_qna_user_default_permissions() {
     ),
   );
 
+  // Exported permission: edit field_question_status
+  $permissions['edit field_question_status'] = array(
+    'name' => 'edit field_question_status',
+    'roles' => array(
+      '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
+    ),
+  );
+
   // Exported permission: view field_answer_links
   $permissions['view field_answer_links'] = array(
     'name' => 'view field_answer_links',
@@ -255,6 +265,18 @@ function vopros_qna_user_default_permissions() {
       '0' => 'administrator',
       '1' => 'medarbejder',
       '2' => 'redaktør',
+    ),
+  );
+
+  // Exported permission: view field_question_status
+  $permissions['view field_question_status'] = array(
+    'name' => 'view field_question_status',
+    'roles' => array(
+      '0' => 'administrator',
+      '1' => 'anonymous user',
+      '2' => 'authenticated user',
+      '3' => 'medarbejder',
+      '4' => 'redaktør',
     ),
   );
 

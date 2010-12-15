@@ -46,7 +46,7 @@ function vopros_qna_fieldgroup_default_groups() {
         'label' => 'above',
       ),
     ),
-    'weight' => '36',
+    'weight' => '37',
     'fields' => array(
       '0' => 'field_question_inquirer_name',
       '1' => 'field_question_inquirer_mail',
