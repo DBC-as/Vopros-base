@@ -10,15 +10,14 @@ function vopros_qna_taxonomy_default_vocabularies() {
       'description' => '',
       'help' => '',
       'relations' => '1',
-      'hierarchy' => '1',
+      'hierarchy' => '0',
       'multiple' => '0',
-      'required' => '1',
+      'required' => '0',
       'tags' => '0',
       'module' => 'features_question_category',
       'weight' => '-10',
-      'nodes' => array(
-        'vopros_question' => 'vopros_question',
-      ),
+      'type' => NULL,
+      'nodes' => array(),
     ),
   );
 }

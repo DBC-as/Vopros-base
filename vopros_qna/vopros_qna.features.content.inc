@@ -315,6 +315,68 @@ university|Opgave til universitetsuddannelse eller forskning',
     ),
   );
 
+  // Exported field: field_question_category
+  $fields['vopros_question-field_question_category'] = array(
+    'field_name' => 'field_question_category',
+    'type_name' => 'vopros_question',
+    'display_settings' => array(
+      'label' => array(
+        'format' => 'above',
+        'exclude' => 0,
+      ),
+      'teaser' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'content_taxonomy',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'content_taxonomy',
+    'active' => '1',
+    'save_term_node' => 1,
+    'vid' => '1',
+    'parent' => '0',
+    'parent_php_code' => '',
+    'depth' => '',
+    'widget' => array(
+      'group_parent' => '0',
+      'show_depth' => 1,
+      'default_value' => array(
+        '0' => array(
+          'value' => '',
+        ),
+      ),
+      'default_value_php' => NULL,
+      'label' => 'Kategori',
+      'weight' => '33',
+      'description' => 'Vælg hvilken kategori spørgsmålet tilhører.',
+      'type' => 'content_taxonomy_select',
+      'module' => 'content_taxonomy_options',
+    ),
+  );
+
   // Exported field: field_question_inquirer_mail
   $fields['vopros_question-field_question_inquirer_mail'] = array(
     'field_name' => 'field_question_inquirer_mail',
@@ -614,6 +676,7 @@ university|Opgave til universitetsuddannelse eller forskning',
   // Included for use with string extractors like potx.
   t('Allerede søgt');
   t('E-mail-addresse');
+  t('Kategori');
   t('Links');
   t('Navn');
   t('Postnummer');

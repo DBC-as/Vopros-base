@@ -59,8 +59,7 @@ function vopros_qna_strongarm() {
     'revision_information' => '40',
     'author' => '39',
     'options' => '41',
-    'menu' => '33',
-    'taxonomy' => '34',
+    'menu' => '34',
     'path' => '42',
     'path_redirect' => '43',
   );
