@@ -1,6 +1,23 @@
 <?php
 
 /**
+ * Implementation of hook_nodeapi().
+ */
+function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  // An answer node should not be viewable by itself. Instead, redirect 
+  // to the answer on the question page.
+  if (
+    $op == 'view' && $node->type == 'vopros_answer' &&
+    $a4 && // Node being viewed on a page by itself.
+    isset($node->field_answer_question_ref[0]['nid']) &&
+    $node->field_answer_question_ref[0]['nid'] > 0
+  ) {
+    $question_nid = (integer) $node->field_answer_question_ref[0]['nid'];
+    drupal_goto('node/' . $question_nid, NULL, 'node-' .  $node->nid, 301);
+  }
+}
+
+/**
  * Implementation of hook_form_FORM_ID_alter().
  */
 function vopros_qna_form_vopros_question_node_form_alter(&$form, &$form_state) {
