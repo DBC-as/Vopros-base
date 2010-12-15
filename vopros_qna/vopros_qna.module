@@ -18,12 +18,55 @@ function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
 }
 
 /**
+ * Implementation of hook_link().
+ */
+function vopros_qna_link($type, $object, $teaser = FALSE) {
+  $links = array();
+
+  if ($type == 'node' && $object->type == 'vopros_question') {
+    $links['vopros_answer_question'] = array(
+      'title' => 'Besvar dette spørgsmål',
+      'href' => 'node/add/vopros-answer',
+      'query' => array('question' => $object->nid),
+    );
+  }
+
+  return $links;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function vopros_qna_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'vopros_answer_node_form') {
+    if (isset($_REQUEST['question']) && $_REQUEST['question'] > 0) {
+      // If question is specified in the query parameters, set the 
+      // default value for the selection widget to that question, and 
+      // hide it with #access. #disabled does seem to work for CCK 
+      // widgets like these.
+      // This cannot be done with hook_form_FORM_ID_alter, since the CCK 
+      // fields have not been added yet when that hook is run.
+      $form['field_answer_question_ref'][0]['#default_value']['nid'] = (integer) $_REQUEST['question'];
+      $form['field_answer_question_ref']['#access'] = FALSE;
+    }
+    
+    // Get rid of the teaser splitting functionality.
+    unset($form['body_field']['teaser_js']);
+    unset($form['body_field']['teaser_include']);
+  }
+}
+
+/**
  * Implementation of hook_form_FORM_ID_alter().
  */
 function vopros_qna_form_vopros_question_node_form_alter(&$form, &$form_state) {
   // Only allow title editing for users that can change question status 
   // (ie. editors).
   $form['title']['#access'] = user_access('edit field_question_status');
+
+  // Get rid of the teaser splitting functionality.
+  unset($form['body_field']['teaser_js']);
+  unset($form['body_field']['teaser_include']);
 }
 
 include_once('vopros_qna.features.inc');
