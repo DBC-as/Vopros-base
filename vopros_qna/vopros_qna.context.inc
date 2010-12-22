@@ -89,6 +89,8 @@ function vopros_qna_context_default_contexts() {
     'views' => array(
       'values' => array(
         'vopros_questions:page_1' => 'vopros_questions:page_1',
+        'vopros_questions:page_2' => 'vopros_questions:page_2',
+        'vopros_questions:page_3' => 'vopros_questions:page_3',
       ),
     ),
   );

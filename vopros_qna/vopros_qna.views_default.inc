@@ -131,7 +131,7 @@ function vopros_qna_views_default_views() {
   $handler->override_option('row_options', array(
     'relationship' => 'none',
     'build_mode' => 'full',
-    'links' => 0,
+    'links' => 1,
     'comments' => 0,
   ));
   $handler = $view->new_display('block', 'Block (answers for node)', 'block_1');
@@ -407,23 +407,6 @@ function vopros_qna_views_default_views() {
     ),
   ));
   $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
     'type' => array(
       'operator' => 'in',
       'value' => array(
@@ -443,25 +426,176 @@ function vopros_qna_views_default_views() {
       ),
       'relationship' => 'none',
     ),
+    'field_question_status_value' => array(
+      'operator' => '=',
+      'value' => 'new',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'case' => 1,
+      'id' => 'field_question_status_value',
+      'table' => 'node_data_field_question_status',
+      'field' => 'field_question_status_value',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
+    ),
   ));
   $handler->override_option('access', array(
     'type' => 'perm',
-    'perm' => 'access content',
+    'perm' => 'edit any vopros_question content',
   ));
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
-  $handler->override_option('title', 'Newest questions');
+  $handler->override_option('title', 'Nye spørgsmål');
   $handler->override_option('empty', 'No questions found.');
   $handler->override_option('empty_format', '1');
   $handler->override_option('items_per_page', 20);
   $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'table');
-  $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler = $view->new_display('page', 'Page (answered)', 'page_1');
+  $handler->override_option('filters', array(
+    'type' => array(
+      'operator' => 'in',
+      'value' => array(
+        'vopros_question' => 'vopros_question',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'type',
+      'table' => 'node',
+      'field' => 'type',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'field_question_status_value' => array(
+      'operator' => '=',
+      'value' => 'completed',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'case' => 1,
+      'id' => 'field_question_status_value',
+      'table' => 'node_data_field_question_status',
+      'field' => 'field_question_status_value',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+    ),
+    'status_extra' => array(
+      'operator' => '=',
+      'value' => '',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'status_extra',
+      'table' => 'node',
+      'field' => 'status_extra',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('access', array(
+    'type' => 'perm',
+    'perm' => 'access content',
+  ));
+  $handler->override_option('title', 'Besvarede spørgsmål');
   $handler->override_option('path', 'questions');
   $handler->override_option('menu', array(
+    'type' => 'default tab',
+    'title' => 'Besvarede spørgsmål',
+    'description' => '',
+    'weight' => '-10',
+    'name' => 'navigation',
+  ));
+  $handler->override_option('tab_options', array(
     'type' => 'none',
     'title' => '',
+    'description' => '',
+    'weight' => 0,
+    'name' => 'navigation',
+  ));
+  $handler = $view->new_display('page', 'Page (new)', 'page_2');
+  $handler->override_option('path', 'questions/new');
+  $handler->override_option('menu', array(
+    'type' => 'tab',
+    'title' => 'Nye spørgsmål',
+    'description' => '',
+    'weight' => '0',
+    'name' => 'navigation',
+  ));
+  $handler->override_option('tab_options', array(
+    'type' => 'none',
+    'title' => '',
+    'description' => '',
+    'weight' => 0,
+    'name' => 'navigation',
+  ));
+  $handler = $view->new_display('page', 'Page (in progress)', 'page_3');
+  $handler->override_option('filters', array(
+    'type' => array(
+      'operator' => 'in',
+      'value' => array(
+        'vopros_question' => 'vopros_question',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'type',
+      'table' => 'node',
+      'field' => 'type',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'field_question_status_value' => array(
+      'operator' => '=',
+      'value' => 'in progress',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'case' => 1,
+      'id' => 'field_question_status_value',
+      'table' => 'node_data_field_question_status',
+      'field' => 'field_question_status_value',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
+    ),
+  ));
+  $handler->override_option('title', 'Spørgsmål i behandling');
+  $handler->override_option('path', 'questions/in_progress');
+  $handler->override_option('menu', array(
+    'type' => 'tab',
+    'title' => 'Spørgsmål under behandling',
     'description' => '',
     'weight' => '0',
     'name' => 'navigation',

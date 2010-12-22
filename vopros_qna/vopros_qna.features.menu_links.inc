@@ -22,14 +22,14 @@ function vopros_qna_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
   );
   // Exported menu link: menu-vopros:questions
   $menu_links['menu-vopros:questions'] = array(
     'menu_name' => 'menu-vopros',
     'link_path' => 'questions',
     'router_path' => 'questions',
-    'link_title' => 'Se spørgsmål',
+    'link_title' => 'Besvarede spørgsmål',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -40,11 +40,49 @@ function vopros_qna_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
+  );
+  // Exported menu link: menu-vopros:questions/in_progress
+  $menu_links['menu-vopros:questions/in_progress'] = array(
+    'menu_name' => 'menu-vopros',
+    'link_path' => 'questions/in_progress',
+    'router_path' => 'questions/in_progress',
+    'link_title' => 'Spørgsmål under behandling',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-48',
+  );
+  // Exported menu link: menu-vopros:questions/new
+  $menu_links['menu-vopros:questions/new'] = array(
+    'menu_name' => 'menu-vopros',
+    'link_path' => 'questions/new',
+    'router_path' => 'questions/new',
+    'link_title' => 'Nye spørgsmål',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-50',
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('Se spørgsmål');
+  t('Besvarede spørgsmål');
+  t('Nye spørgsmål');
+  t('Spørgsmål under behandling');
   t('Stil spørgsmål');
 
 
