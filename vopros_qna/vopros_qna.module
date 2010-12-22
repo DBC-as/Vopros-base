@@ -31,6 +31,12 @@ function vopros_qna_link($type, $object, $teaser = FALSE) {
       'href' => 'node/add/vopros-answer',
       'query' => array('question' => $object->nid),
     );
+
+    $links['vopros_edit_question'] = array(
+      'title' => 'Redigér spørgsmålet',
+      'href' => 'node/' . $object->nid . '/edit',
+      'query' => drupal_get_destination,
+    );
   }
   // Provide a link to edit the question when viewing the answer (since 
   // the normal links are not available, since the answer it not being 
