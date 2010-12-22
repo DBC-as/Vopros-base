@@ -23,12 +23,23 @@ function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
 function vopros_qna_link($type, $object, $teaser = FALSE) {
   $links = array();
 
+  // Provide a link to answer the question for user with access.
   if ($type == 'node' && $object->type == 'vopros_question' &&
       user_access('create vopros_answer content')) {
     $links['vopros_answer_question'] = array(
       'title' => 'Besvar dette spørgsmål',
       'href' => 'node/add/vopros-answer',
       'query' => array('question' => $object->nid),
+    );
+  }
+  // Provide a link to edit the question when viewing the answer (since 
+  // the normal links are not available, since the answer it not being 
+  // viewed on a page by itself.
+  elseif ($type == 'node' && $object->type == 'vopros_answer' &&
+      node_access('update', $node)) {
+    $links['vopros_edit_question'] = array(
+      'title' => 'Redigér dette svar',
+      'href' => 'node/' . $object->nid . '/edit',
     );
   }
 
@@ -49,6 +60,25 @@ function vopros_qna_form_alter(&$form, &$form_state, $form_id) {
       // fields have not been added yet when that hook is run.
       $form['field_answer_question_ref'][0]['#default_value']['nid'] = (integer) $_REQUEST['question'];
       $form['field_answer_question_ref']['#access'] = FALSE;
+
+      // Also, show a short summary of the question that we are answering.
+      $question_node = node_load($_REQUEST['question']);
+
+      $form['question'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Spørgsmålet du besvarer',
+        '#weight' => -99,
+      );
+
+      $form['question']['body'] = array(
+        '#value' => check_markup($question_node->body, $question_node->format, FALSE),
+      );
+
+      $form['question']['edit'] = array(
+        '#value' => l('Redigér spørgsmålet', 'node/' . $question_node->nid . '/edit', array(
+          'query' => drupal_get_destination(),
+        )),
+      );
     }
     
     // Get rid of the teaser splitting functionality.
