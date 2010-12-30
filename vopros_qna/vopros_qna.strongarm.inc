@@ -83,14 +83,18 @@ function vopros_qna_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_vopros_answer';
-  $strongarm->value = array();
+  $strongarm->value = array(
+    0 => 'status',
+  );
 
   $export['node_options_vopros_answer'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_vopros_question';
-  $strongarm->value = array();
+  $strongarm->value = array(
+    0 => 'status',
+  );
 
   $export['node_options_vopros_question'] = $strongarm;
   $strongarm = new stdClass;
