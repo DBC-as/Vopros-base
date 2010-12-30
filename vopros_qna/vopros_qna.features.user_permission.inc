@@ -21,6 +21,8 @@ function vopros_qna_user_default_permissions() {
     'name' => 'edit field_answer_question_ref',
     'roles' => array(
       '0' => 'administrator',
+      '1' => 'medarbejder',
+      '2' => 'redaktør',
     ),
   );
 
