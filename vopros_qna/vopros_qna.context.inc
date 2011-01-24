@@ -97,11 +97,17 @@ function vopros_qna_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'search-0' => array(
+          'module' => 'search',
+          'delta' => 0,
+          'region' => 'right',
+          'weight' => 0,
+        ),
         'menu-menu-vopros' => array(
           'module' => 'menu',
           'delta' => 'menu-vopros',
           'region' => 'right',
-          'weight' => 0,
+          'weight' => 1,
         ),
       ),
       'layout' => 'sidebar',
@@ -142,11 +148,17 @@ function vopros_qna_context_default_contexts() {
           'region' => 'content',
           'weight' => 0,
         ),
+        'search-0' => array(
+          'module' => 'search',
+          'delta' => 0,
+          'region' => 'right',
+          'weight' => 0,
+        ),
         'menu-menu-vopros' => array(
           'module' => 'menu',
           'delta' => 'menu-vopros',
           'region' => 'right',
-          'weight' => 0,
+          'weight' => 1,
         ),
       ),
       'layout' => 'sidebar',
