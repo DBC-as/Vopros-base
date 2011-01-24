@@ -5,6 +5,18 @@
  */
 function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
+    case 'insert':
+    case 'update':
+      // When an answer is saved, mark its question for reindexing.
+      if (
+        $node->type == 'vopros_answer' &&
+        isset($node->field_answer_question_ref[0]['nid']) &&
+        $node->field_answer_question_ref[0]['nid'] > 0
+      ) {
+        db_query("UPDATE {search_dataset} SET reindex = UNIX_TIMESTAMP() WHERE type = 'node' AND sid = %d",
+          array(':nid' => $node->field_answer_question_ref[0]['nid']));
+      }
+      break;
     case 'update index':
       if ($node->type == 'vopros_question') {
         // CCK fields as the question reference on answer nodes have 
