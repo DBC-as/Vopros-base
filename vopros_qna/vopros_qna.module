@@ -4,16 +4,26 @@
  * Implementation of hook_nodeapi().
  */
 function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  // An answer node should not be viewable by itself. Instead, redirect 
-  // to the answer on the question page.
-  if (
-    $op == 'view' && $node->type == 'vopros_answer' &&
-    $a4 && // Node being viewed on a page by itself.
-    isset($node->field_answer_question_ref[0]['nid']) &&
-    $node->field_answer_question_ref[0]['nid'] > 0
-  ) {
-    $question_nid = (integer) $node->field_answer_question_ref[0]['nid'];
-    drupal_goto('node/' . $question_nid, NULL, 'node-' .  $node->nid, 301);
+  switch ($op) {
+    case 'view':
+      if ($node->type == 'vopros_answer') {
+        // Prevent the answers from being indexed by setting title and 
+        // body to an empty string.
+        if ($node->build_mode == NODE_BUILD_SEARCH_INDEX) {
+          $node->title = '';
+          $node->content = array();
+        }
+        // An answer node should not be viewable by itself. Instead, redirect 
+        // to the answer on the question page.
+        elseif ($a4 && // Node being viewed on a page by itself.
+          isset($node->field_answer_question_ref[0]['nid']) &&
+          $node->field_answer_question_ref[0]['nid'] > 0
+        ) {
+          $question_nid = (integer) $node->field_answer_question_ref[0]['nid'];
+          drupal_goto('node/' . $question_nid, NULL, 'node-' .  $node->nid, 301);
+        }
+      }
+    break;
   }
 }
 
