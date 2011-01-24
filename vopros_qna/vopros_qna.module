@@ -5,11 +5,58 @@
  */
 function vopros_qna_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
+    case 'update index':
+      if ($node->type == 'vopros_question') {
+        // CCK fields as the question reference on answer nodes have 
+        // dynamic database schemas, so we rely on CCKs function to tell 
+        // us which table and row to look in.
+        static $database_info;
+        if (!$database_info) {
+          $field_data = content_fields('field_answer_question_ref', 'vopros_answer');
+          $database_info = content_database_info($field_data);
+        }
+
+        // Get all the answers related to the question.
+        $query = db_query("
+          SELECT nid FROM " . $database_info['table'] . "
+          WHERE " . $database_info['columns']['nid']['column'] . " = %d
+        ", array(':nid' => $node->nid));
+
+        $answer_markup = array();
+
+        // Render each answer like _node_index_node() does.
+        while ($nid = db_result($query)) {
+          $answer = node_load($nid);
+
+          // Set a flag to prevent the code below from preventing 
+          // indexing of the answer.
+          $answer->vopros_qna_build = TRUE;
+
+          // Build the node body.
+          $answer->build_mode = NODE_BUILD_SEARCH_INDEX;
+          $answer = node_build_content($answer, FALSE, FALSE);
+          $answer->body = drupal_render($answer->content);
+
+          $text = '<h1>' . check_plain($answer->title) . '</h1>' . $answer->body;
+
+          // Fetch extra data normally not visible
+          $extra = node_invoke_nodeapi($answer, 'update index');
+          foreach ($extra as $t) {
+            $text .= $t;
+          }
+
+          $answer_markup[$nid] = $text;
+        }
+
+        // The return value is added to the index.
+        return implode($answer_markup);
+      }
+      break;
     case 'view':
       if ($node->type == 'vopros_answer') {
         // Prevent the answers from being indexed by setting title and 
         // body to an empty string.
-        if ($node->build_mode == NODE_BUILD_SEARCH_INDEX) {
+        if ($node->build_mode == NODE_BUILD_SEARCH_INDEX && !isset($node->vopros_qna_build)) {
           $node->title = '';
           $node->content = array();
         }
