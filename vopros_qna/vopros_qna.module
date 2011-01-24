@@ -111,8 +111,8 @@ function vopros_qna_link($type, $object, $teaser = FALSE) {
   // the normal links are not available, since the answer it not being 
   // viewed on a page by itself.
   elseif ($type == 'node' && $object->type == 'vopros_answer' &&
-      node_access('update', $node)) {
-    $links['vopros_edit_question'] = array(
+      node_access('update', $object)) {
+    $links['vopros_edit_answer'] = array(
       'title' => 'Redigér dette svar',
       'href' => 'node/' . $object->nid . '/edit',
     );
