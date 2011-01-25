@@ -85,6 +85,7 @@ function vopros_qna_strongarm() {
   $strongarm->name = 'node_options_vopros_answer';
   $strongarm->value = array(
     0 => 'status',
+    1 => 'revision',
   );
 
   $export['node_options_vopros_answer'] = $strongarm;
@@ -94,6 +95,7 @@ function vopros_qna_strongarm() {
   $strongarm->name = 'node_options_vopros_question';
   $strongarm->value = array(
     0 => 'status',
+    1 => 'revision',
   );
 
   $export['node_options_vopros_question'] = $strongarm;
@@ -128,7 +130,7 @@ function vopros_qna_strongarm() {
       'weight' => '20',
       'has_required' => FALSE,
       'title' => 'Revision information',
-      'collapsed' => 1,
+      'collapsed' => 0,
       'hidden' => 0,
     ),
     'path' => array(
@@ -144,7 +146,7 @@ function vopros_qna_strongarm() {
       'weight' => '25',
       'has_required' => FALSE,
       'title' => 'Publishing options',
-      'collapsed' => 0,
+      'collapsed' => 1,
       'hidden' => 0,
     ),
     'author' => array(
@@ -217,7 +219,7 @@ function vopros_qna_strongarm() {
       'weight' => '6',
       'has_required' => FALSE,
       'title' => 'Revision information',
-      'collapsed' => 1,
+      'collapsed' => 0,
       'hidden' => 0,
     ),
     'path' => array(
@@ -233,7 +235,7 @@ function vopros_qna_strongarm() {
       'weight' => '7',
       'has_required' => FALSE,
       'title' => 'Publishing options',
-      'collapsed' => 0,
+      'collapsed' => 1,
       'hidden' => 0,
     ),
     'author' => array(
