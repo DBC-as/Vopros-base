@@ -135,25 +135,51 @@ function vopros_qna_form_alter(&$form, &$form_state, $form_id) {
       // fields have not been added yet when that hook is run.
       $form['field_answer_question_ref'][0]['#default_value']['nid'] = (integer) $_REQUEST['question'];
       $form['field_answer_question_ref']['#access'] = FALSE;
+    }
 
-      // Also, show a short summary of the question that we are answering.
-      $question_node = node_load($_REQUEST['question']);
+    // Get the nid form the question we're answering.
+    $question = node_load($form['field_answer_question_ref'][0]['#default_value']['nid']);
+
+    // Allow editing of the question title and status, and preview the 
+    // question copy itself.
+    if ($question) {
 
       $form['question'] = array(
         '#type' => 'fieldset',
         '#title' => 'Spørgsmålet du besvarer',
+        '#tree' => TRUE,
         '#weight' => -99,
       );
 
+      $form['question']['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Title'),
+        '#default_value' => $question->title,
+      );
+
       $form['question']['body'] = array(
-        '#value' => check_markup($question_node->body, $question_node->format, FALSE),
+        '#value' => check_markup($question->body, $question->format, FALSE),
+      );
+
+      // Change status to in progress if new, otherwise use the 
+      // current one.
+      $status = (!isset($question->field_question_status[0]['value']) || $question->field_question_status[0]['value'] == 'new') ? 'in progress' : $question->field_question_status[0]['value'];
+      $status_field = content_fields('field_question_status', $question->type);
+
+      $form['question']['status'] = array(
+        '#type' => 'select',
+        '#title' => 'Status',
+        '#options' => content_allowed_values($status_field),
+        '#default_value' => $status,
       );
 
       $form['question']['edit'] = array(
-        '#value' => l('Redigér spørgsmålet', 'node/' . $question_node->nid . '/edit', array(
+        '#value' => l('Redigér spørgsmålet', 'node/' . $question->nid . '/edit', array(
           'query' => drupal_get_destination(),
         )),
       );
+
+      $form['#submit'][] = 'vopros_qna_answer_edit_submit';
     }
     
     // Get rid of the teaser splitting functionality.
@@ -173,6 +199,34 @@ function vopros_qna_form_vopros_question_node_form_alter(&$form, &$form_state) {
   // Get rid of the teaser splitting functionality.
   unset($form['body_field']['teaser_js']);
   unset($form['body_field']['teaser_include']);
+}
+
+/**
+ * Submit handler for answer editing form.
+ */
+function vopros_qna_answer_edit_submit(&$form, &$form_state) {
+  $question = node_load($form_state['values']['field_answer_question_ref'][0]['nid']);
+
+  // If title or status was changed, update the question.
+  if (
+    $form_state['values']['question']['title'] != $question->title || 
+    $form_state['values']['question']['status'] != $question->field_question_status[0]['value']
+  ) {
+    $question->title = $form_state['values']['question']['title'];
+    $question->field_question_status[0]['value'] = $form_state['values']['question']['status'];
+    
+    // Make sure this is marked as a new revision with a log message 
+    // denoting that this happened through answer editing. 
+    $question->revision = TRUE;
+    $question->log = t('Updated while editing answer “@answer_title”.', array(
+      '@answer_title' => $form_state['values']['title'],
+    ));
+
+    // Save the node and let the user know it was done.
+    node_save($question);
+    drupal_set_message(t('Question “%name” has been updated.', array('%name' => $question->title)));
+
+  }
 }
 
 include_once('vopros_qna.features.inc');
