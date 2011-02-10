@@ -153,7 +153,7 @@ function vopros_qna_rules_defaults() {
       'vopros_qna_2' => array(
         '#type' => 'rule',
         '#set' => 'event_node_insert',
-        '#label' => 'Redirect user when asking a question',
+        '#label' => 'Send e-mail notification when question is answered',
         '#active' => 1,
         '#weight' => '0',
         '#categories' => array(
@@ -164,7 +164,7 @@ function vopros_qna_rules_defaults() {
           '0' => array(
             '#weight' => 0,
             '#info' => array(
-              'label' => 'Created content is Spørgsmål',
+              'label' => 'Created content is Svar',
               'arguments' => array(
                 'node' => array(
                   'type' => 'node',
@@ -176,7 +176,7 @@ function vopros_qna_rules_defaults() {
             '#name' => 'rules_condition_content_is_type',
             '#settings' => array(
               'type' => array(
-                'vopros_question' => 'vopros_question',
+                'vopros_answer' => 'vopros_answer',
               ),
               '#argument map' => array(
                 'node' => 'node',
@@ -185,16 +185,15 @@ function vopros_qna_rules_defaults() {
             '#type' => 'condition',
           ),
           '1' => array(
+            '#type' => 'condition',
             '#settings' => array(
               '#argument map' => array(
                 'node' => 'node',
               ),
             ),
-            '#type' => 'condition',
             '#name' => 'rules_condition_content_is_published',
             '#info' => array(
               'label' => 'Created content is published',
-              'label callback' => FALSE,
               'arguments' => array(
                 'node' => array(
                   'type' => 'node',
@@ -204,48 +203,108 @@ function vopros_qna_rules_defaults() {
               'module' => 'Node',
             ),
             '#weight' => 0,
-            '#negate' => 1,
           ),
         ),
         '#actions' => array(
-          '1' => array(
+          '0' => array(
+            '#weight' => -10,
+            '#info' => array(
+              'label' => 'Load the referenced answer',
+              'label callback' => FALSE,
+              'arguments' => array(
+                'node' => array(
+                  'type' => 'node',
+                  'label' => 'Content containing the node reference field',
+                ),
+              ),
+              'new variables' => array(
+                'referenced_answer' => array(
+                  'label' => 'referenced answer',
+                  'label callback' => FALSE,
+                  'type' => 'node',
+                ),
+              ),
+              'module' => 'CCK',
+            ),
+            '#name' => 'nodereference_rules_action_load',
+            '#settings' => array(
+              'field' => 'field_answer_question_ref',
+              '#argument map' => array(
+                'node' => 'node',
+                'referenced_node' => 'referenced_answer',
+              ),
+            ),
+            '#type' => 'action',
+          ),
+          '2' => array(
             '#type' => 'action',
             '#settings' => array(
-              'message' => 'Tak for dit spørgsmål. Du vil modtage en e-mail når det bliver besvaret.',
+              'message' => 'Din besvarelse af [referenced_answer:title] er registreret og vi har sendt en e-mail til [referenced_answer:field_question_inquirer_name-formatted] for at lade ham/hende vide at spørgsmålet er besvaret.',
               'error' => 0,
+              '#eval input' => array(
+                'token_rules_input_evaluator' => array(
+                  'message' => array(
+                    '0' => 'referenced_answer',
+                  ),
+                ),
+              ),
             ),
             '#name' => 'rules_action_drupal_message',
             '#info' => array(
-              'label' => 'Confirm the question to be received.',
-              'label callback' => FALSE,
+              'label' => 'Show a configurable message on the site',
               'module' => 'System',
               'eval input' => array(
                 '0' => 'message',
               ),
             ),
-            '#weight' => -7,
+            '#weight' => 5,
           ),
-          '0' => array(
-            '#weight' => 0,
+          '1' => array(
+            '#type' => 'action',
+            '#settings' => array(
+              'to' => '[referenced_answer:field_question_inquirer_mail-raw]',
+              'from' => '',
+              'subject' => '“[referenced_answer:title]” er blevet besvaret',
+              'message' => 'Hej [referenced_answer:field_question_inquirer_name-formatted],
+
+Dit spørgsmål “[referenced_answer:title]” er blevet besvaret af [author:user]
+
+Klik ind på [node:node-url] for at se dit svar.
+
+--
+Med venlig hilsen,
+[referenced_answer:field_question_service-formatted]
+
+Dette er en automatisk påmindelse, og kan ikke besvares.',
+              '#eval input' => array(
+                'token_rules_input_evaluator' => array(
+                  'subject' => array(
+                    '0' => 'referenced_answer',
+                  ),
+                  'message' => array(
+                    '0' => 'referenced_answer',
+                    '1' => 'node',
+                    '2' => 'author',
+                  ),
+                  'to' => array(
+                    '0' => 'referenced_answer',
+                  ),
+                ),
+              ),
+            ),
+            '#name' => 'rules_action_mail',
             '#info' => array(
-              'label' => 'Redirect to front page',
+              'label' => 'Send an e-mail to the user who asked the question',
               'label callback' => FALSE,
               'module' => 'System',
               'eval input' => array(
-                '0' => 'path',
-                '1' => 'query',
-                '2' => 'fragment',
+                '0' => 'subject',
+                '1' => 'message',
+                '2' => 'from',
+                '3' => 'to',
               ),
             ),
-            '#name' => 'rules_action_drupal_goto',
-            '#settings' => array(
-              'path' => '<front>',
-              'query' => '',
-              'fragment' => '',
-              'force' => 1,
-              'immediate' => 0,
-            ),
-            '#type' => 'action',
+            '#weight' => 10,
           ),
         ),
         '#version' => 6003,
