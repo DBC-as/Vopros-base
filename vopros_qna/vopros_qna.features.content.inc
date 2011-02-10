@@ -153,11 +153,11 @@ function vopros_qna_content_default_fields() {
         'format' => 'above',
       ),
       'teaser' => array(
-        'format' => 'default',
+        'format' => 'plain',
         'exclude' => 0,
       ),
       'full' => array(
-        'format' => 'default',
+        'format' => 'plain',
         'exclude' => 0,
       ),
       '4' => array(
