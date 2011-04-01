@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_question_schema() {
+  $schema = array();
+
+  $schema['vopros_question'] = array(
+    'description' => 'The base table for orders.',
+    'fields' => array(
+      'question_id' => array(
+        'description' => 'The primary identifier for an order.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'question_title' => array(
+        'description' => 'The order number displayed to the customer.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'question_text' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_id' => array(
+        'description' => 'The current {vopros_question_revision}.revision_id version identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'The status name of this order.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the order was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('question_id'),
+    'unique keys' => array(
+      'revision_id' => array('revision_id'),
+    ),
+    'foreign keys' => array(
+      'current_revision' => array(
+        'table' => 'vopros_question_revision',
+        'columns'=> array('revision_id' => 'revision_id'),
+      ),
+    ),
+  );
+
+  $schema['vopros_question_revision'] = array(
+    'description' => 'Saves information about each saved revision of a {vopros_question}.',
+    'fields' => array(
+      'revision_id' => array(
+        'description' => 'The primary identifier for this revision.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_uid' => array(
+        'description' => 'The {users}.uid that created this revision.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The {vopros_question}.order_id of the order this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_title' => array(
+        'description' => 'The order number displayed to the customer.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'question_text' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'status' => array(
+        'description' => 'The status name of this revision.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'log' => array(
+        'description' => 'The log entry explaining the changes in this version.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_timestamp' => array(
+        'description' => 'The Unix timestamp when this revision was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'foreign keys' => array(
+      'order' => array(
+        'table' => 'vopros_question',
+        'columns'=> array('order_id' => 'order_id'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

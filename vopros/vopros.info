@@ -1,0 +1,9 @@
+name = "Vopros"
+description = "General module to tie all vopros together with admin interface"
+package = Vopros
+core = 7.x
+
+dependencies[] = entity
+
+
+files[] = includes/vopros.controller.inc

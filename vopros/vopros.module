@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function vopros_menu() {
+  // Top level "Vopros" container.
+  return array(
+    'admin/vopros' => array(
+      'title' => 'Vopros',
+      'description' => 'Administer vopros.',
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'file path' => drupal_get_path('module', 'system'),
+      'file' => 'system.admin.inc',
+      'weight' => -7,
+    ),
+
+    'admin/vopros/config' => array(
+      'title' => 'Configuration',
+      'description' => 'Configure settings and business rules for vopros.',
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'type' => MENU_NORMAL_ITEM,
+      'weight' => 10,
+      'file path' => drupal_get_path('module', 'system'),
+      'file' => 'system.admin.inc',
+    ),
+  );
+
+  return $items;
+}

@@ -1,0 +1,188 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_question_entity_info() {
+  $return = array(
+    'vopros_question' => array(
+      'label' => t('Question', array(), array('context' => 'a vopros question')),
+      'controller class' => 'VoprosQuestionEntityController',
+      'base table' => 'vopros_question',
+      'revision table' => 'vopros_question_revision',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'question_id',
+        'revision' => 'revision_id',
+        'label' => 'question_title',
+      ),
+      'bundles' => array(
+        'vopros_question' => array(
+          'label' => t('Question', array(), array('context' => 'a vopros question')),
+          'admin' => array(
+            'path' => 'admin/vopros/config/question',
+
+            'access arguments' => array('administer questions'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_question_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+        'public' => array(
+          'label' => t('Public'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_question_access',
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_question_menu() {
+  return array(
+    'admin/vopros/config/question' => array(
+      'title' => 'Question settings',
+      'description' => 'Configure general question settings, fields, and displays.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_settings_form'),
+      'access arguments' => array('administer questions'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/config/question/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+    ),
+  );
+}
+ 
+/**
+ * Implements hook_permission().
+ */
+function vopros_question_permission() {
+  $permissions = array(
+    'administer questions' => array(
+      'title' => t('Administer questions'),
+      'restrict access' => TRUE,
+    ),
+    'access questions' => array(
+      'title' => t('Access lists of questions, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create questions' => array(
+      'title' => t('Create questions'),
+      'restrict access' => TRUE,
+    ),
+    'edit any question' => array(
+      'title' => t('Edit any question'),
+      'restrict access' => TRUE,
+    ),
+    'edit own questions' => array(
+      'title' => t('Edit own questions'),
+      'restrict access' => TRUE,
+    ),
+    'view own questions' => array(
+      'title' => t('View own questions'),
+    ),
+  );
+
+  return $permissions;
+}
+
+/**************************
+*                         *
+*     ENTITY CALLBACKS    *
+*                         *
+/*************************/
+
+function vopros_question_new($values = array()) {
+  $default_values = array(
+    'status' => 'new',
+    'question_title' => t('New question'),
+    'question_text' => '',
+  );
+  $values += $default_values;
+  return entity_create('vopros_question', $default_values);
+}
+
+
+/**
+ * Loads an question by ID.
+ */
+function vopros_question_load($question_id) {
+  $questions = vopros_question_load_multiple(array($question_id), array());
+  return $questions ? reset($questions) : FALSE;
+}
+
+/**
+ * Loads multiple questions by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $question_ids
+ *   An array of question IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_question} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal question loading cache.
+ *
+ * @return
+ *   An array of question objects indexed by question_id.
+ */
+function vopros_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_question', $question_ids, $conditions, $reset);
+}
+
+/**
+ * Generate an array for rendering the given question.
+ *
+ * @param $question
+ *   A fully loaded question object.
+ * @param $view_mode
+ *   The view mode for displaying the question, 'administrator' or 'customer'.
+ *
+ * @return
+ *   An array as expected by drupal_render().
+ *
+function vopros_question_build_content($question, $view_mode = 'administrator') {
+  // Populate $question->content with a render() array.
+  // Remove previously built content, if it exists.
+  $question->content = array();
+
+  // Build fields content.
+  field_attach_prepare_view('vopros_question', array($question->question_id => $question), $view_mode);
+  entity_prepare_view('vopros_question', array($question->question_id => $question));
+  $question->content += field_attach_view('vopros_question', $question, $view_mode);
+
+  // Allow modules to make their own additions to the question content.
+  module_invoke_all('vopros_question_view', $question, $view_mode);
+
+  // Remove the content array from the question to avoid duplicate rendering.
+  $build = $question->content;
+  unset($question->content);
+
+  $build += array(
+    '#theme' => 'vopros_question',
+    '#question' => $question,
+    '#view_mode' => $view_mode,
+  );
+
+  // Allow modules to modify the final build array.
+  drupal_alter('vopros_question_view', $build);
+
+  return $build;
+}*/
