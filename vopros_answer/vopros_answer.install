@@ -29,7 +29,13 @@ function vopros_answer_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'answerContent' => array(
+      'author' => array(
+        'description' => 'The status of the answer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'answer_content' => array(
         'description' => 'The actual answer that has been asked.',
         'type' => 'text',
         'not null' => TRUE,
@@ -106,7 +112,20 @@ function vopros_answer_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'answer_text' => array(
+      'uid' => array(
+        'description' => 'The uid of the user answering the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'author' => array(
+        'description' => 'The status of the answer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'answer_content' => array(
         'description' => 'The actual answer that has been asked.',
         'type' => 'text',
         'not null' => TRUE,

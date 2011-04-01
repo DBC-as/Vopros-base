@@ -22,116 +22,114 @@ function vopros_question_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'questionTitle' => array(
+      'question_title' => array(
         'description' => 'The question title, the label of the entity.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ),
-      'questionContent' => array(
+      'question_content' => array(
         'description' => 'The actual question that has been asked.',
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
       ),
-      'questionStatus' => array(
+      'question_status' => array(
         'description' => 'The status name of this question.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
       ),
-      'subjectCategory' => array(
+      'subject_category' => array(
         'description' => 'The subject of the question.',
         'type' => 'varchar',
         'length' => '255',
-        'not null' => TRUE,
       ),
-      'questionDeadline' => array(
+      'question_deadline' => array(
         'description' => 'The time limit for when the question should be answered by if any.',
         'type' => 'int',
         'unsigned' => TRUE,
       ),
-      'questionUsage' => array(
+      'question_usage' => array(
         'description' => 'How the question should be used.',
         'type' => 'varchar',
         'length' => '255',
       ),
-      'questionNote' => array(
+      'question_note' => array(
         'description' => 'A note about the question, like search queries etc.',
         'type' => 'text',
-        'not null' => TRUE,
         'size' => 'big',
       ),
       // Info about the origin of the question
-      'qandaService' => array(
+      'qanda_service' => array(
         'description' => 'The service that brought us the question.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
         'default' => '',
       ),
-      'agencyId' => array(
+      'agency_id' => array(
         'description' => 'The agency/portal that sent the question.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
         'default' => '',
       ),
-      'referencedBy' => array(
+      'referenced_by' => array(
         'description' => 'Referenced from.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userName' => array(
+      'user_name' => array(
         'description' => 'The name of the person that asked the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userEmail' => array(
+      'user_email' => array(
         'description' => 'The email address for the person that asked the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userPostalCode' => array(
+      'user_postal_code' => array(
         'description' => 'The postal code of the person who sent in the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userMobilePhone' => array(
+      'user_mobile_phone' => array(
         'description' => 'The mobile phone number for the person that asked the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userAge' => array(
+      'user_age' => array(
         'description' => 'The age of the person that asked the question.',
         'type' => 'int',
         'unsigned' => TRUE,
       ),
-      'userGender' => array(
+      'user_gender' => array(
         'description' => 'The gender of the person asking the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userFieldOfStudy' => array(
+      'user_field_of_study' => array(
         'description' => 'The field of study of the person asking the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userLibrary' => array(
+      'user_library' => array(
         'description' => 'The library of the person asking the question.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
       ),
-      'userAnswerPreference' => array(
-        'description' => 'The gender of the person asking the question.',
+      'user_answer_preference' => array(
+        'description' => 'The way the user wants to recieve the answer.',
         'type' => 'varchar',
         'length' => '255',
         'default' => '',
@@ -189,17 +187,111 @@ function vopros_question_schema() {
         'length' => 255,
         'not null' => TRUE,
       ),
-      'question_text' => array(
+      'question_content' => array(
         'description' => 'The actual question that has been asked.',
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
       ),
-      'status' => array(
-        'description' => 'The status name of this revision.',
+      'question_status' => array(
+        'description' => 'The status name of this question.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
+      ),
+      'subject_category' => array(
+        'description' => 'The subject of the question.',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'question_deadline' => array(
+        'description' => 'The time limit for when the question should be answered by if any.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'question_usage' => array(
+        'description' => 'How the question should be used.',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'question_note' => array(
+        'description' => 'A note about the question, like search queries etc.',
+        'type' => 'text',
+        'size' => 'big',
+      ),
+      // Info about the origin of the question
+      'qanda_service' => array(
+        'description' => 'The service that brought us the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'agency_id' => array(
+        'description' => 'The agency/portal that sent the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'referenced_by' => array(
+        'description' => 'Referenced from.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_name' => array(
+        'description' => 'The name of the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_email' => array(
+        'description' => 'The email address for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_ostal_code' => array(
+        'description' => 'The postal code of the person who sent in the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_mobile_phone' => array(
+        'description' => 'The mobile phone number for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_age' => array(
+        'description' => 'The age of the person that asked the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'user_gender' => array(
+        'description' => 'The gender of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_field_of_study' => array(
+        'description' => 'The field of study of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_library' => array(
+        'description' => 'The library of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_answer_preference' => array(
+        'description' => 'The way the user wants to recieve the answer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
       ),
       'log' => array(
         'description' => 'The log entry explaining the changes in this version.',

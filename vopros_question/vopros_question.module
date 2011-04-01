@@ -18,7 +18,7 @@ function vopros_question_entity_info() {
       'entity keys' => array(
         'id' => 'question_id',
         'revision' => 'revision_id',
-        'label' => 'questionTitle',
+        'label' => 'question_title',
       ),
       'bundles' => array(
         'vopros_question' => array(
