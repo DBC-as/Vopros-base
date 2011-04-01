@@ -35,7 +35,7 @@ class VoprosAPIEntityController extends EntityAPIController {
 
       if (!empty($entity->{$this->idKey}) && empty($entity->is_new)) {
         // Save a new revision
-        if ($entity->revision) {
+        if (isset($entity->revision) && $entity->revision) {
           unset($entity->{$this->entityInfo['entity keys']['revision']});
           $this->saveRevision($this->entityInfo['revision table'], $entity);
         }

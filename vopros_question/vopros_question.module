@@ -42,6 +42,7 @@ function vopros_question_entity_info() {
         ),
       ),
       'access callback' => 'vopros_question_access',
+      'views controller class' => 'EntityDefaultViewsController',
     ),
   );
 
@@ -115,7 +116,7 @@ function vopros_question_new($values = array()) {
     'question_text' => '',
   );
   $values += $default_values;
-  return entity_create('vopros_question', $default_values);
+  return entity_create('vopros_question', $values);
 }
 
 

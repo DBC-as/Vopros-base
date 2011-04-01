@@ -34,3 +34,21 @@ function vopros_menu() {
 
   return $items;
 }
+
+/**
+ * Callback for getting entity properties
+ *
+ * @see commerce_line_item_entity_property_info()
+ */
+function voprot_get_properties($entity, array $options, $name) {
+  return $entity->{$name.'_id'};
+}
+
+/**
+ * Callback for setting line item properties.
+ *
+ * @see commerce_line_item_entity_property_info()
+ */
+function vopros_set_properties($entity, $name, $value) {
+  return $entity->{$name.'_id'} = $value;
+}

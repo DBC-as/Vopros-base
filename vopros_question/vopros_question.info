@@ -1,4 +1,4 @@
-name = Vopros questions
+name = Vopros Questions
 description = Defines the Question entity and associated features.
 package = Vopros
 core = 7.x

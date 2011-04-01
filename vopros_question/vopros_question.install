@@ -7,16 +7,16 @@ function vopros_question_schema() {
   $schema = array();
 
   $schema['vopros_question'] = array(
-    'description' => 'The base table for orders.',
+    'description' => 'The base table for questions.',
     'fields' => array(
       'question_id' => array(
-        'description' => 'The primary identifier for an order.',
+        'description' => 'The primary identifier for an question.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
       'question_title' => array(
-        'description' => 'The order number displayed to the customer.',
+        'description' => 'The question title, the label of the entity.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
@@ -35,19 +35,19 @@ function vopros_question_schema() {
         'default' => 0,
       ),
       'status' => array(
-        'description' => 'The status name of this order.',
+        'description' => 'The status name of this question.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the order was created.',
+        'description' => 'The Unix timestamp when the question was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
       'changed' => array(
-        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'description' => 'The Unix timestamp when the question was most recently saved.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
@@ -81,14 +81,14 @@ function vopros_question_schema() {
         'default' => 0,
       ),
       'question_id' => array(
-        'description' => 'The {vopros_question}.order_id of the order this revision belongs to.',
+        'description' => 'The {vopros_question}.question_id of the question this revision belongs to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
       ),
       'question_title' => array(
-        'description' => 'The order number displayed to the customer.',
+        'description' => 'The question title, the label of the entity.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
@@ -120,9 +120,9 @@ function vopros_question_schema() {
     ),
     'primary key' => array('revision_id'),
     'foreign keys' => array(
-      'order' => array(
+      'question' => array(
         'table' => 'vopros_question',
-        'columns'=> array('order_id' => 'order_id'),
+        'columns'=> array('question_id' => 'question_id'),
       ),
     ),
   );
