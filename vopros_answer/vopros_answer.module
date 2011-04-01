@@ -1,0 +1,237 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_answer_entity_info() {
+  $return = array(
+    'vopros_answer' => array(
+      'label' => t('Answer', array(), array('context' => 'a vopros answer')),
+      'controller class' => 'VoprosAnswerEntityController',
+      'base table' => 'vopros_answer',
+      'revision table' => 'vopros_answer_revision',
+      'fieldable' => TRUE,
+      'label callback' => 'vorpros_answer_entity_label_callback',
+      'entity keys' => array(
+        'id' => 'answer_id',
+        'revision' => 'revision_id',
+      ),
+      'bundles' => array(
+        'vopros_answer' => array(
+          'label' => t('Question', array(), array('context' => 'a vopros answer')),
+          'admin' => array(
+            'path' => 'admin/vopros/config/answer',
+
+            'access arguments' => array('administer answers'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_answer_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+        'public' => array(
+          'label' => t('Public'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_answer_access',
+      'views controller class' => 'EntityDefaultViewsController',
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function vopros_answer_entity_property_info() {
+  $info = array();
+
+  // Add meta-data about the basic commerce_line_item properties.
+  $properties = &$info['vopros_answer']['properties'];
+
+  $properties['question'] = array(
+    'label' => t('Question'),
+    'type' => 'vopros_question',
+    'description' => t('The unique ID of the question the answer belongs to.'),
+    'getter callback' => 'vopros_get_properties',
+    'setter callback' => 'vopros_set_properties',
+    'clear' => array('question_id'),
+    'schema field' => 'vopros_question',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function vopros_answer_entity_property_info_alter(&$info) {
+  // Need to clear the quesiton cache when the question_id is altered.
+  $info['vopros_answer']['properties']['question_id']['clear'] = array('question');
+}
+
+function vopros_answer_views_data_alter(&$data) {
+  $data['vopros_answer']['question_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_question',
+    'field' => 'question_id',
+    'label' => 'question',
+  );
+}
+
+/**
+ * Label callback for the vopros_answer entity
+ */
+function vorpros_answer_entity_label_callback($entity) {
+  return 'label';
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_answer_menu() {
+  return array(
+    'admin/vopros/config/answer' => array(
+      'title' => 'Answer settings',
+      'description' => 'Configure general answer settings, fields, and displays.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_answer_settings_form'),
+      'access arguments' => array('administer answers'),
+      'file' => 'includes/vopros_answer.admin.inc',
+    ),
+    'admin/vopros/config/answer/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+    ),
+  );
+}
+ 
+/**
+ * Implements hook_permission().
+ */
+function vopros_answer_permission() {
+  $permissions = array(
+    'administer answers' => array(
+      'title' => t('Administer answers'),
+      'restrict access' => TRUE,
+    ),
+    'access answers' => array(
+      'title' => t('Access lists of answers, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create answers' => array(
+      'title' => t('Create answers'),
+      'restrict access' => TRUE,
+    ),
+    'edit any answer' => array(
+      'title' => t('Edit any answer'),
+      'restrict access' => TRUE,
+    ),
+    'edit own answers' => array(
+      'title' => t('Edit own answers'),
+      'restrict access' => TRUE,
+    ),
+    'view own answers' => array(
+      'title' => t('View own answers'),
+    ),
+  );
+
+  return $permissions;
+}
+
+/**************************
+*                         *
+*     ENTITY CALLBACKS    *
+*                         *
+/*************************/
+
+function vopros_answer_new($values = array()) {
+  $default_values = array(
+    'status' => 'in progress',
+    'answer_text' => '',
+  );
+  $values += $default_values;
+  if (isset($values['question_id'])) {
+    $values['question'] = $values['question_id'];
+  }
+  return entity_create('vopros_answer', $values);
+}
+
+
+/**
+ * Loads an answer by ID.
+ */
+function vopros_answer_load($answer_id) {
+  $answers = vopros_answer_load_multiple(array($answer_id), array());
+  return $answers ? reset($answers) : FALSE;
+}
+
+/**
+ * Loads multiple answers by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $answer_ids
+ *   An array of answer IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_answer} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal answer loading cache.
+ *
+ * @return
+ *   An array of answer objects indexed by answer_id.
+ */
+function vopros_answer_load_multiple($answer_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_answer', $answer_ids, $conditions, $reset);
+}
+
+/**
+ * Generate an array for rendering the given answer.
+ *
+ * @param $answer
+ *   A fully loaded answer object.
+ * @param $view_mode
+ *   The view mode for displaying the answer, 'administrator' or 'customer'.
+ *
+ * @return
+ *   An array as expected by drupal_render().
+ *
+function vopros_answer_build_content($answer, $view_mode = 'administrator') {
+  // Populate $answer->content with a render() array.
+  // Remove previously built content, if it exists.
+  $answer->content = array();
+
+  // Build fields content.
+  field_attach_prepare_view('vopros_answer', array($answer->answer_id => $answer), $view_mode);
+  entity_prepare_view('vopros_answer', array($answer->answer_id => $answer));
+  $answer->content += field_attach_view('vopros_answer', $answer, $view_mode);
+
+  // Allow modules to make their own additions to the answer content.
+  module_invoke_all('vopros_answer_view', $answer, $view_mode);
+
+  // Remove the content array from the answer to avoid duplicate rendering.
+  $build = $answer->content;
+  unset($answer->content);
+
+  $build += array(
+    '#theme' => 'vopros_answer',
+    '#answer' => $answer,
+    '#view_mode' => $view_mode,
+  );
+
+  // Allow modules to modify the final build array.
+  drupal_alter('vopros_answer_view', $build);
+
+  return $build;
+}*/
