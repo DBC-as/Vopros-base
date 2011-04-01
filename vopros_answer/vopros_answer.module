@@ -86,6 +86,12 @@ function vopros_answer_views_data_alter(&$data) {
     'field' => 'question_id',
     'label' => 'question',
   );
+  $data['vopros_answer']['uid']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'users',
+    'field' => 'uid',
+    'label' => 'user',
+  );
 }
 
 /**
@@ -115,7 +121,7 @@ function vopros_answer_menu() {
     ),
   );
 }
- 
+
 /**
  * Implements hook_permission().
  */
