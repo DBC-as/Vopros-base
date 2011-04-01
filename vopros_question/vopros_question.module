@@ -25,7 +25,6 @@ function vopros_question_entity_info() {
           'label' => t('Question', array(), array('context' => 'a vopros question')),
           'admin' => array(
             'path' => 'admin/vopros/config/question',
-
             'access arguments' => array('administer questions'),
           ),
         ),
@@ -67,7 +66,39 @@ function vopros_question_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
     ),
+    'admin/vopros/config/question/add' => array(
+      'title' => 'Add a question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_question_form', vopros_question_new()),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('create'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'question/%vopros_question/edit' => array(
+      'title' => 'Edit',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_question_form', 1),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
   );
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function vopros_question_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  // Add action link 'admin/commerce/questions/add' on 'admin/commerce/questions'.
+  if ($root_path == 'admin/vopros/config/question') {
+    $item = menu_get_item('admin/vopros/config/question/add');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
 }
  
 /**
@@ -87,38 +118,73 @@ function vopros_question_permission() {
       'title' => t('Create questions'),
       'restrict access' => TRUE,
     ),
-    'edit any question' => array(
+    'edit question' => array(
       'title' => t('Edit any question'),
       'restrict access' => TRUE,
-    ),
-    'edit own questions' => array(
-      'title' => t('Edit own questions'),
-      'restrict access' => TRUE,
-    ),
-    'view own questions' => array(
-      'title' => t('View own questions'),
     ),
   );
 
   return $permissions;
 }
 
-/**************************
-*                         *
-*     ENTITY CALLBACKS    *
-*                         *
-/*************************/
+/**
+ * Checks question access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $question
+ *   Optionally an question to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_question_access($op, $question = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
 
+  // Grant access to any operation for any question for administrators.
+  if (user_access('administer questions', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access questions permission
+  // or to a user's own questions with the view own questions permission.
+  if ($op == 'view') {
+    if (user_access('access questions', $account)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create questions', $account)) {
+    return TRUE;
+  }
+
+  if (isset($question) && ($op == 'update' || $op == 'delete')) {
+    if (user_access('edit any question', $account)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+
+/**
+ * Create a new question object
+ */
 function vopros_question_new($values = array()) {
   $default_values = array(
-    'status' => 'new',
+    'question_status' => 'new',
     'question_title' => t('New question'),
-    'question_text' => '',
+    'question_content' => '',
   );
   $values += $default_values;
   return entity_create('vopros_question', $values);
 }
 
+function vopros_question_save($question) {
+  entity_save('vopros_question', $question);
+}
 
 /**
  * Loads an question by ID.
