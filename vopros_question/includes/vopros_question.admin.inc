@@ -16,7 +16,6 @@ function vopros_question_settings_form($form, &$form_state) {
  * Form to edit or create a question
  */
 function vopros_question_question_form($form, &$form_state, $question) {
-  dpm($question);
   // Add the field related form elements.
   $form_state['vopros_question'] = $question;
   field_attach_form('vopros_question', $question, $form, $form_state);
@@ -26,6 +25,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#title' => t('Title'),
     '#required' => TRUE,
     '#default_value' => isset($question->question_title) ? $question->question_title : '',
+    '#weight' => -12,
   );
 
   $form['question_content'] = array(
@@ -33,26 +33,21 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#title' => t('Question content'),
     '#required' => TRUE,
     '#default_value' => isset($question->question_content) ? $question->question_content : '',
+    '#weight' => -11,
   );
 
   $form['question_status'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
-    '#options' => array(),
+    '#options' => _vopros_question_status(),
     '#default_value' => isset($question->question_status) ? $question->question_status : '',
-  );
-
-  $form['subject_category'] = array(
-    '#type' => 'select',
-    '#title' => t('Subject'),
-    '#options' => array(),
-    '#default_value' => isset($question->subject_category) ? $question->subject_category : '',
+    '#weight' => -10,
   );
 
   $form['question_usage'] = array(
     '#type' => 'select',
     '#title' => t('Usage'),
-    '#options' => array(),
+    '#options' => _vopros_question_usage(),
     '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
   );
 
@@ -136,6 +131,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
   $form['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#weight' => 100,
   );
 
   return $form;
@@ -167,4 +163,74 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
 
   // Save the product.
   vopros_question_save($question);
+}
+
+/**
+ * Ajax form for changing the title with ajax.
+ */
+function vopros_question_title_form($form, &$form_state, $question) {
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#default_value' => $question->question_title,
+  );
+
+  $form['question'] = array(
+    '#type' => 'value',
+    '#value' => $question,
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#ajax' => array(
+      'callback' => 'vopros_question_title_form_save',
+    ),
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#ajax' => array(
+      'callback' => 'vopros_question_title_form_cancel',
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Handle the display of a question
+ */
+function vopros_question_page_view($question) {
+  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.js');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.css');
+  drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
+  return '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>' . vopros_embed_view('vopros_question_admin', 'default', array($question->question_id));
+}
+
+/**
+ * AJAX callback saving title
+ */
+function vopros_question_title_form_save(&$form, &$form_state) {
+  // Save the question.
+  $question = $form_state['values']['question'];
+  $question->question_title = $form_state['values']['title'];
+  vopros_question_save($question);
+  // Send back ajax commands.
+  $commands = array();
+  $commands[] = ajax_command_invoke('#vopros-question-title-form', 'appendTo', array('.title-form'));
+  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'show', array());
+  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'text', array($form_state['values']['title']));
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * AJAX callback cancel
+ */
+function vopros_question_title_form_cancel(&$form, &$form_state) {
+  $commands = array();
+  $commands[] = ajax_command_invoke('#edit-title', 'attr', array('value', $form['title']['#default_value']));
+  $commands[] = ajax_command_invoke('#vopros-question-title-form', 'appendTo', array('.title-form'));
+  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'show');
+  return array('#type' => 'ajax', '#commands' => $commands);
 }

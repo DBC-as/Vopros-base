@@ -15,6 +15,7 @@ function vopros_question_entity_info() {
       'base table' => 'vopros_question',
       'revision table' => 'vopros_question_revision',
       'fieldable' => TRUE,
+      'uri callback' => 'vopros_question_uri',
       'entity keys' => array(
         'id' => 'question_id',
         'revision' => 'revision_id',
@@ -49,6 +50,29 @@ function vopros_question_entity_info() {
 }
 
 /**
+ * Entity uri callback.
+ */
+function vopros_question_uri($question) {
+  return array(
+    'path' => 'admin/vopros/question/' . $question->question_id,
+  );
+}
+
+function vopros_question_enable() {
+  // Create the question vopros_question_subject_category vocabolary
+  if (!taxonomy_vocabulary_machine_name_load('vopros_question_subject_category')) {
+    $vocabulary = (object) array(
+      'name' => t('Subject category'),
+      'machine_name' => 'vopros_question_subject_category',
+      'module' => 'vopros_question',
+    );
+    taxonomy_vocabulary_save($vocabulary);
+  }
+  vopros_question_configure_question();
+}
+
+
+/**
  * Implementation of hook_menu().
  */
 function vopros_question_menu() {
@@ -74,13 +98,29 @@ function vopros_question_menu() {
       'access arguments' => array('create'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
-    'question/%vopros_question/edit' => array(
+    'admin/vopros/question/%vopros_question' => array(
+      'title callback' => 'vopros_question_title',
+      'title arguments' => array(3),
+       'page callback' => 'vopros_question_page_view',
+       'page arguments' => array(3),
+       'access callback' => 'vopros_question_access',
+       'access arguments' => array('view'),
+       'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/question/%vopros_question/view' => array(
+      'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => -10,
+    ),
+    'admin/vopros/question/%vopros_question/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_question_question_form', 1),
+      'page arguments' => array('vopros_question_question_form', 3),
       'access callback' => 'vopros_question_access',
       'access arguments' => array('edit'),
       'file' => 'includes/vopros_question.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
   );
 }
@@ -100,7 +140,7 @@ function vopros_question_menu_local_tasks_alter(&$data, $router_item, $root_path
     }
   }
 }
- 
+
 /**
  * Implements hook_permission().
  */
@@ -133,12 +173,10 @@ function vopros_question_permission() {
  * @param $op
  *   The operation being performed. One of 'view', 'update', 'create' or
  *   'delete'.
- * @param $question
- *   Optionally an question to check access for.
  * @param $account
  *   The user to check for. Leave it to NULL to check for the current user.
  */
-function vopros_question_access($op, $question = NULL, $account = NULL) {
+function vopros_question_access($op, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
@@ -159,15 +197,19 @@ function vopros_question_access($op, $question = NULL, $account = NULL) {
     return TRUE;
   }
 
-  if (isset($question) && ($op == 'update' || $op == 'delete')) {
-    if (user_access('edit any question', $account)) {
-      return TRUE;
-    }
+  if (($op == 'update' || $op == 'delete') && user_access('edit any question', $account)) {
+    return TRUE;
   }
 
   return FALSE;
 }
 
+/**
+ * Title callback for questions
+ */
+function vopros_question_title($question) {
+  return isset($question->question_title) && !empty($question->question_title) ? $question->question_title : t('New question');
+}
 
 /**
  * Create a new question object
@@ -215,41 +257,93 @@ function vopros_question_load_multiple($question_ids = array(), $conditions = ar
 }
 
 /**
- * Generate an array for rendering the given question.
- *
- * @param $question
- *   A fully loaded question object.
- * @param $view_mode
- *   The view mode for displaying the question, 'administrator' or 'customer'.
- *
- * @return
- *   An array as expected by drupal_render().
- *
-function vopros_question_build_content($question, $view_mode = 'administrator') {
-  // Populate $question->content with a render() array.
-  // Remove previously built content, if it exists.
-  $question->content = array();
-
-  // Build fields content.
-  field_attach_prepare_view('vopros_question', array($question->question_id => $question), $view_mode);
-  entity_prepare_view('vopros_question', array($question->question_id => $question));
-  $question->content += field_attach_view('vopros_question', $question, $view_mode);
-
-  // Allow modules to make their own additions to the question content.
-  module_invoke_all('vopros_question_view', $question, $view_mode);
-
-  // Remove the content array from the question to avoid duplicate rendering.
-  $build = $question->content;
-  unset($question->content);
-
-  $build += array(
-    '#theme' => 'vopros_question',
-    '#question' => $question,
-    '#view_mode' => $view_mode,
+ * Implements hook_views_api().
+ */
+function vopros_question_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_question') . '/includes',
   );
+}
 
-  // Allow modules to modify the final build array.
-  drupal_alter('vopros_question_view', $build);
 
-  return $build;
-}*/
+/**
+ * Ensures the line item field is present on the default order bundle.
+ */
+function vopros_question_configure_question() {
+  $type = 'vopros_question';
+  $bundle = 'vopros_question';
+
+  // Create a taxonomy term reference field
+  $field_name = 'subject_category';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => 1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'locked' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          'vocabolary' => 'vopros_question_subject_category',
+        ),
+      ),
+      'field_name' => $field_name,
+      'type' => 'taxonomy_term_reference',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Subject'),
+      'widget' => array(
+        'type' => 'options_select',
+      ),
+      'settings' => array(),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'taxonomy_term_reference_link',
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
+  
+}
+
+/**
+ * Utility function to get the question usage options
+ */
+function _vopros_question_usage() {
+  return array(
+    'interest' => t('Interest or hobby'),
+    'business' => t('Business'),
+    'groundschool' => t('Assignment for groundschool'),
+    'highschool' => t('Assignment for highschool'),
+    'college' => t('Assignment for college education'),
+    'university' => t('Assignment for university education or research'),
+  );
+}
+
+/**
+ * Utility function to get the question usage options
+ */
+function _vopros_question_status() {
+  return array(
+    'new' => t('New'),
+    'in_progress' => t('In progress'),
+    'locked' => t('Locked'),
+    'answered' => t('Answered'),
+  );
+}
+

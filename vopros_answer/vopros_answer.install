@@ -29,7 +29,7 @@ function vopros_answer_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'author' => array(
+      'author_name' => array(
         'description' => 'The status of the answer.',
         'type' => 'varchar',
         'length' => '255',
@@ -119,7 +119,7 @@ function vopros_answer_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'author' => array(
+      'author_name' => array(
         'description' => 'The status of the answer.',
         'type' => 'varchar',
         'length' => '255',

@@ -52,3 +52,32 @@ function voprot_get_properties($entity, array $options, $name) {
 function vopros_set_properties($entity, $name, $value) {
   return $entity->{$name.'_id'} = $value;
 }
+
+/**
+ * Renders a View for display in some other element.
+ *
+ * @param $view_key
+ *   The ID of the View to embed.
+ * @param $display_id
+ *   The ID of the display of the View that will actually be rendered.
+ * @param $arguments
+ *   An array of arguments to pass to the View.
+ *
+ * @return
+ *   The rendered output of the chosen View display.
+ */
+function vopros_embed_view($view_id, $display_id = 'default', $arguments = array()) {
+  // Load the cart line item View.
+  $view = views_get_view($view_id);
+  $view->set_display($display_id);
+
+  // Set the specific line items for this order.
+  $view->set_arguments($arguments);
+
+  // Prepare and execute the View query.
+  $view->pre_execute();
+  $view->execute();
+
+  // Return the rendered View.
+  return $view->render();
+}

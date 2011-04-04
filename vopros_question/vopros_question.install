@@ -40,15 +40,9 @@ function vopros_question_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-      'subject_category' => array(
-        'description' => 'The subject of the question.',
-        'type' => 'varchar',
-        'length' => '255',
-      ),
       'question_deadline' => array(
-        'description' => 'The time limit for when the question should be answered by if any.',
+        'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
         'type' => 'int',
-        'unsigned' => TRUE,
       ),
       'question_usage' => array(
         'description' => 'How the question should be used.',
@@ -199,13 +193,8 @@ function vopros_question_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-      'subject_category' => array(
-        'description' => 'The subject of the question.',
-        'type' => 'varchar',
-        'length' => '255',
-      ),
       'question_deadline' => array(
-        'description' => 'The time limit for when the question should be answered by if any.',
+        'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
         'type' => 'int',
         'unsigned' => TRUE,
       ),
