@@ -205,7 +205,15 @@ function vopros_question_page_view($question) {
   drupal_add_js(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.js');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
-  return '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>' . vopros_embed_view('vopros_question_admin', 'default', array($question->question_id));
+  $build = array();
+  $build[] = array(
+    '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
+  );
+  $build[] = array(
+    '#markup' => vopros_embed_view('vopros_question_admin', 'default', array($question->question_id))
+  );
+  drupal_alter('vopros_question_view', $build, $question);
+  return $build;
 }
 
 /**

@@ -79,6 +79,9 @@ function vopros_answer_entity_property_info_alter(&$info) {
   $info['vopros_answer']['properties']['question_id']['clear'] = array('question');
 }
 
+/**
+ * Implements hook_views_data_alter()
+ */
 function vopros_answer_views_data_alter(&$data) {
   $data['vopros_answer']['question_id']['relationship'] = array(
     'handler' => 'views_handler_relationship',
@@ -118,6 +121,26 @@ function vopros_answer_menu() {
       'title' => 'Settings',
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
+    ),
+    'admin/vopros/question/%vopros_question/new-answer' => array(
+      'title' => 'Answer question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_answer_form', 3, vopros_answer_new()),
+      'access callback' => 'vopros_answer_question_access',
+      'access arguments' => array(3),
+      'file' => 'includes/vopros_answer.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/answer/%vopros_answer/edit' => array(
+      'title' => 'Edit answer',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_answer_form', '', 3),
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array('edit', 3),
+      'file' => 'includes/vopros_answer.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
   );
 }
@@ -172,7 +195,18 @@ function vopros_answer_new($values = array()) {
   }
   return entity_create('vopros_answer', $values);
 }
-
+/**
+ * Save a question
+ *
+ * @param $answer
+ *    The answer object
+ * @param $revision
+ *    Bolean indicator, if a new revision should be created.
+ */
+function vopros_answer_save($answer, $revision = 1) {
+  $answer->revision = $revision;
+  entity_save('vopros_answer', $answer);
+}
 
 /**
  * Loads an answer by ID.
@@ -203,41 +237,162 @@ function vopros_answer_load_multiple($answer_ids = array(), $conditions = array(
 }
 
 /**
- * Generate an array for rendering the given answer.
- *
- * @param $answer
- *   A fully loaded answer object.
- * @param $view_mode
- *   The view mode for displaying the answer, 'administrator' or 'customer'.
- *
- * @return
- *   An array as expected by drupal_render().
- *
-function vopros_answer_build_content($answer, $view_mode = 'administrator') {
-  // Populate $answer->content with a render() array.
-  // Remove previously built content, if it exists.
-  $answer->content = array();
+ * Implements hook_vopros_question_view_alter().
+ */
+function vopros_answer_vopros_question_view_alter(&$build, $question) {
+  if ($question->question_status == 'new') {
+    $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
+  }
+  elseif ($question->question_status == 'locked') {
+    global $user;
+    if ($question->uid == $user->uid || user_access('administer answers')) {
+      $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+      if ($answers) {
+        $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
+        $build[] = array('#markup' => $output);
+      }
+      else {
+        $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
+      }
+    }
+  }
+  elseif ($question->question_status == 'in progress') {
+    $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+    if ($answers) {
+      $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
+    }
+    $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
+  }
+}
 
-  // Build fields content.
-  field_attach_prepare_view('vopros_answer', array($answer->answer_id => $answer), $view_mode);
-  entity_prepare_view('vopros_answer', array($answer->answer_id => $answer));
-  $answer->content += field_attach_view('vopros_answer', $answer, $view_mode);
-
-  // Allow modules to make their own additions to the answer content.
-  module_invoke_all('vopros_answer_view', $answer, $view_mode);
-
-  // Remove the content array from the answer to avoid duplicate rendering.
-  $build = $answer->content;
-  unset($answer->content);
-
-  $build += array(
-    '#theme' => 'vopros_answer',
-    '#answer' => $answer,
-    '#view_mode' => $view_mode,
+/**
+ * Form to answer questions
+ */
+function vopros_answer_question_view_form($form, &$form_state, $question) {
+  $form['question'] = array(
+    '#type' => 'value',
+    '#value' => $question
   );
 
-  // Allow modules to modify the final build array.
-  drupal_alter('vopros_answer_view', $build);
+  $form['answer_question'] = array(
+    '#type' => 'submit',
+    '#value' => t('Answer question'),
+  );
 
-  return $build;
-}*/
+  return $form;
+}
+
+/**
+ * Submit handler for function vopros_answer_question_view_form().
+ */
+function vopros_answer_question_view_form_validate($form, &$form_state) {
+  $question = vopros_question_load($form_state['values']['question']->question_id, TRUE);
+  if ($question->question_status != 'new' && $question->question_status != 'in progress') {
+    form_set_error('', t("You can't answer the question, the question is already being answered"));
+  }
+  $form_state['values']['question'] = $question;
+}
+
+function vopros_answer_question_view_form_submit($form, &$form_state) {
+  $question = $form_state['values']['question'];
+  $question->question_status = 'locked';
+  $question->uid = $GLOBALS['user']->uid;
+  vopros_question_save($question);
+  $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+  // If there is only a single answer, the user should edit that, else a new is created.
+  if (count($answers) == 1) {
+    $answer = array_shift($answers);
+    $answer->uid = $GLOBALS['user']->uid;
+    $answer->author_name = $GLOBALS['user']->name;
+    vopros_answer_save($answer);
+    $form_state['redirect'] = 'admin/vopros/answer/' . $answer->answer_id . '/edit';
+  }
+  else {
+    $form_state['redirect'] = 'admin/vopros/question/' . $question->question_id . '/new-answer';
+  }
+}
+
+/**
+ * Checks order access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $answer
+ *   Optionally an anwer to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_answer_access($op, $answer = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any order for administrators.
+  if (user_access('administer answers', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access orders permission
+  // or to a user's own orders with the view own orders permission.
+  if ($op == 'view') {
+    if (user_access('access answers', $account)) {
+      return TRUE;
+    }
+    elseif (user_access('view own answers', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create answers', $account)) {
+    return TRUE;
+  }
+
+  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+    if (user_access('edit any answer', $account)) {
+      return TRUE;
+    }
+
+    // Others either don't have any access or must match the order uid.
+    if ($account->uid && user_access('edit own answers', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Function to determine if a user should be able to create an answer for a question
+ */
+function vopros_answer_question_access($question, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+  if ($question->question_status == 'locked' && ($question->uid == $account->uid || user_access('administer answers', $account))) {
+    $query = new EntityFieldQuery();
+    $query
+      ->entityCondition('entity_type', 'vopros_answer', '=')
+      ->propertyCondition('question_id', $question->question_id, '=')
+      ->count();
+    if ($query->execute() > 0) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+  if ($question->question_status != 'new') {
+    return FALSE;
+  }
+  return vopros_answer_access('create');
+}
+
+function vopros_answer_theme() {
+  return array(
+    'vopros_answer_answer_content' => array(
+      'render element' => 'answer',
+      'file' => 'includes/vopros_answer.theme.inc',
+    ),
+    'vopros_answer_answers_pl_content' => array(
+      'variables' => array('answers' => NULL, 'edit' => NULL),
+      'file' => 'includes/vopros_answer.theme.inc',
+    )
+  );
+}
