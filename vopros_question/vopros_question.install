@@ -22,6 +22,11 @@ function vopros_question_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'uid' => array(
+        'description' => 'The owner of the question, who is allowed to answer the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
       'question_title' => array(
         'description' => 'The question title, the label of the entity.',
         'type' => 'varchar',
@@ -174,6 +179,11 @@ function vopros_question_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The owner of the question, who is allowed to answer the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
       ),
       'question_title' => array(
         'description' => 'The question title, the label of the entity.',

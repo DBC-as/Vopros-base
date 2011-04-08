@@ -224,15 +224,24 @@ function vopros_question_new($values = array()) {
   return entity_create('vopros_question', $values);
 }
 
-function vopros_question_save($question) {
+/**
+ * Save a question
+ *
+ * @param $question
+ *    The question object
+ * @param $revision
+ *    Bolean indicator, if a new revision should be created.
+ */
+function vopros_question_save($question, $revision = 1) {
+  $question->revision = $revision;
   entity_save('vopros_question', $question);
 }
 
 /**
  * Loads an question by ID.
  */
-function vopros_question_load($question_id) {
-  $questions = vopros_question_load_multiple(array($question_id), array());
+function vopros_question_load($question_id, $reset = FALSE) {
+  $questions = vopros_question_load_multiple(array($question_id), array(), $reset);
   return $questions ? reset($questions) : FALSE;
 }
 
@@ -318,7 +327,6 @@ function vopros_question_configure_question() {
     );
     field_create_instance($instance);
   }
-  
 }
 
 /**
@@ -326,12 +334,13 @@ function vopros_question_configure_question() {
  */
 function _vopros_question_usage() {
   return array(
-    'interest' => t('Interest or hobby'),
     'business' => t('Business'),
-    'groundschool' => t('Assignment for groundschool'),
-    'highschool' => t('Assignment for highschool'),
-    'college' => t('Assignment for college education'),
-    'university' => t('Assignment for university education or research'),
+    'other' => t('Other'),
+    'personal' => t('Personal'),
+    'school1' => t('Assignment for groundschool'),
+    'school2' => t('Assignment for highschool'),
+    'school3' => t('Assignment for college education'),
+    'school4' => t('Assignment for university education or research'),
   );
 }
 

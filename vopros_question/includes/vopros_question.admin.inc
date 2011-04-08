@@ -100,8 +100,8 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'select',
     '#title' => t('Gender'),
     '#options' => array(
-      'male' => t('Male'),
-      'female' => t('Female'),
+      'm' => t('Male'),
+      'f' => t('Female'),
     ),
     '#default_value' => isset($question->user_gender) ? $question->user_gender : '',
   );
@@ -215,7 +215,7 @@ function vopros_question_title_form_save(&$form, &$form_state) {
   // Save the question.
   $question = $form_state['values']['question'];
   $question->question_title = $form_state['values']['title'];
-  vopros_question_save($question);
+  vopros_question_save($question, 0);
   // Send back ajax commands.
   $commands = array();
   $commands[] = ajax_command_invoke('#vopros-question-title-form', 'appendTo', array('.title-form'));
