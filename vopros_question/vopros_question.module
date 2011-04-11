@@ -122,6 +122,11 @@ function vopros_question_menu() {
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
+    'admin/vopros/question/create_post' => array(
+      'page callback' => 'vopros_question_post_url',
+      'access arguments' => array('access content'),
+      'file' => 'includes/vopros_question.pages.inc',
+    ),
   );
 }
 
@@ -219,6 +224,7 @@ function vopros_question_new($values = array()) {
     'question_status' => 'new',
     'question_title' => t('New question'),
     'question_content' => '',
+    'question_deadline' => -1,
   );
   $values += $default_values;
   return entity_create('vopros_question', $values);
@@ -243,6 +249,13 @@ function vopros_question_save($question, $revision = 1) {
 function vopros_question_load($question_id, $reset = FALSE) {
   $questions = vopros_question_load_multiple(array($question_id), array(), $reset);
   return $questions ? reset($questions) : FALSE;
+}
+
+/**
+ * Validates the data for the question.
+ */
+function vopros_question_validate_data($question) {
+  return entity_get_controller('vopros_question')->validateData($question);
 }
 
 /**

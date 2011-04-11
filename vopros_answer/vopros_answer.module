@@ -129,8 +129,6 @@ function vopros_answer_menu() {
       'access callback' => 'vopros_answer_question_access',
       'access arguments' => array(3),
       'file' => 'includes/vopros_answer.admin.inc',
-      'type' => MENU_LOCAL_TASK,
-      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
     'admin/vopros/answer/%vopros_answer/edit' => array(
       'title' => 'Edit answer',
