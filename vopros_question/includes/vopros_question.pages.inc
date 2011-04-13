@@ -12,7 +12,6 @@
  */
 function vopros_question_post_url() {
   $question = vopros_question_new();
-  dpm($question);
   $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
   $post_data = array();
   // Reformat all the post data to not use CamelCase.
@@ -33,6 +32,11 @@ function vopros_question_post_url() {
     exit();
   }
   drupal_add_http_header('Status', '400');
+  $errors = array();
+  foreach ($validation['errors'] as $value) {
+    $errors[] = $value[0];
+  }
+  watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields', array('%fields' => implode(', ', $errors)), WATCHDOG_ERROR);
   print t('Question not created');
   exit();
 }

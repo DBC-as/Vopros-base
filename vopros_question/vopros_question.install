@@ -60,7 +60,7 @@ function vopros_question_schema() {
         'size' => 'big',
       ),
       // Info about the origin of the question
-      'qanda_service' => array(
+      'qanda_service_name' => array(
         'description' => 'The service that brought us the question.',
         'type' => 'varchar',
         'length' => '255',
@@ -219,7 +219,7 @@ function vopros_question_schema() {
         'size' => 'big',
       ),
       // Info about the origin of the question
-      'qanda_service' => array(
+      'qanda_service_name' => array(
         'description' => 'The service that brought us the question.',
         'type' => 'varchar',
         'length' => '255',
