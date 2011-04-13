@@ -122,12 +122,15 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
  * Submit handler to save and submit the answer
  */
 function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
+  $v = $form_state['values'];
   $question = $form_state['values']['question'];
   $question->question_status = 'answered';
   vopros_question_save($question);
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;
+  $answer->status = 'complete';
+  $form_state['answer'] = $answer;
   vopros_answer_save($answer);
   drupal_set_message('Answer saved and question marked as answered');
   $form_state['redirect'] = 'admin/vopros/question/' . $question->question_id;

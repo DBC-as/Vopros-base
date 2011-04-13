@@ -231,7 +231,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_postal_code']['id'] = 'user_postal_code';
   $handler->display->display_options['fields']['user_postal_code']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_postal_code']['field'] = 'user_postal_code';
-  $handler->display->display_options['fields']['user_postal_code']['label'] = 'User\'s posta code';
+  $handler->display->display_options['fields']['user_postal_code']['label'] = 'User\'s postal code';
   $handler->display->display_options['fields']['user_postal_code']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_postal_code']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_postal_code']['alter']['absolute'] = 0;
@@ -307,7 +307,7 @@ function vopros_question_views_default_views() {
     t('User\'s name'),
     t('User\'s age'),
     t('User\'s field of study'),
-    t('User\'s posta code'),
+    t('User\'s postal code'),
     t('User\'s library'),
     t('All'),
     t('%1'),

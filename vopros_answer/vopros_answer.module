@@ -71,6 +71,12 @@ function vopros_answer_entity_property_info() {
   return $info;
 }
 
+function vopros_answer_enable() {
+  // When the module is enabled, we need to clear cache to make sure that the
+  // menu is buildt correctly with the entity info.s
+  drupal_flush_all_caches();
+}
+
 /**
  * Implements hook_entity_property_info_alter().
  */
@@ -190,6 +196,11 @@ function vopros_answer_new($values = array()) {
   $values += $default_values;
   if (isset($values['question_id'])) {
     $values['question'] = $values['question_id'];
+  }
+  // During installation, the entity might not be available for menu item.
+  // So we need to create a fake entity in that case.
+  if (!entity_get_info('vopros_answer')) {
+    return new stdClass();
   }
   return entity_create('vopros_answer', $values);
 }

@@ -40,7 +40,7 @@ function vopros_menu() {
  *
  * @see commerce_line_item_entity_property_info()
  */
-function voprot_get_properties($entity, array $options, $name) {
+function vopros_get_properties($entity, array $options, $name) {
   return $entity->{$name.'_id'};
 }
 
