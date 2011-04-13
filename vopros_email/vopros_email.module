@@ -1,0 +1,342 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_email_entity_info() {
+  $return = array(
+    'vopros_email' => array(
+      'label' => t('Email', array(), array('context' => 'a vopros email')),
+      'controller class' => 'VoprosEmailEntityController',
+      'base table' => 'vopros_email',
+      'revision table' => 'vopros_email_revision',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'email_id',
+        'revision' => 'revision_id',
+        'label' => 'subject',
+      ),
+      'bundles' => array(
+        'vopros_email' => array(
+          'label' => t('Email', array(), array('context' => 'a vopros email')),
+          'admin' => array(
+            'path' => 'admin/vopros/config/email',
+            'access arguments' => array('administer emails'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_email_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_email_access',
+      'views controller class' => 'EntityDefaultViewsController',
+    ),
+  );
+
+  return $return;
+}
+
+function vopros_email_enable() {
+  drupal_flush_all_caches();
+  // Create fields for the email entity
+}
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_email_menu() {
+  return array(
+    'admin/vopros/config/email' => array(
+      'title' => 'Email settings',
+      'description' => 'Configure general email settings, fields, and displays.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_settings_form'),
+      'access arguments' => array('administer emails'),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
+    'admin/vopros/config/email/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+    ),
+    'admin/vopros/answer/%vopros_answer/new-email' => array(
+      'title' => 'Answer question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_form', 3, vopros_email_new()),
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array(3),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
+    'admin/vopros/email/%vopros_email' => array(
+      'title callback' => 'vopros_email_title',
+      'title arguments' => array(3),
+       'page callback' => 'vopros_email_page_view',
+       'page arguments' => array(3),
+       'access callback' => 'vopros_email_access',
+       'access arguments' => array('view'),
+       'file' => 'includes/vopros_email.admin.inc',
+    ),
+    'admin/vopros/email/%vopros_email/view' => array(
+      'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => -10,
+    ),
+    'admin/vopros/email/%vopros_email/edit' => array(
+      'title' => 'Edit',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+  );
+}
+
+/**
+ * Title callback for emails
+ */
+function vopros_email_title($email) {
+  return isset($mail->subject) && !empty($mail->subject) ? $mail->subject : t('New email');
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function vopros_email_entity_property_info() {
+  $info = array();
+
+  // Add meta-data about the basic commerce_line_item properties.
+  $properties = &$info['vopros_email']['properties'];
+
+  $properties['answer'] = array(
+    'label' => t('Answer'),
+    'type' => 'vopros_answer',
+    'description' => t('The unique ID of answer the email belongs to.'),
+    'getter callback' => 'vopros_get_properties',
+    'setter callback' => 'vopros_set_properties',
+    'clear' => array('answer_id'),
+    'schema field' => 'vopros_answer',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function vopros_email_entity_property_info_alter(&$info) {
+  // Need to clear the quesiton cache when the question_id is altered.
+  $info['vopros_email']['properties']['answer_id']['clear'] = array('question');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_email_permission() {
+  $permissions = array(
+    'administer emails' => array(
+      'title' => t('Administer emails'),
+      'restrict access' => TRUE,
+    ),
+    'access emails' => array(
+      'title' => t('Access lists of emails, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create emails' => array(
+      'title' => t('Create emails'),
+      'restrict access' => TRUE,
+    ),
+    'edit any email' => array(
+      'title' => t('Edit any email'),
+      'restrict access' => TRUE,
+    ),
+    'edit own emails' => array(
+      'title' => t('Edit own emails'),
+      'restrict access' => TRUE,
+    ),
+    'view own emails' => array(
+      'title' => t('View own emails'),
+    ),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Checks order access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $email
+ *   Optionally an anwer to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_email_access($op, $email = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any order for administrators.
+  if (user_access('administer emails', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access orders permission
+  // or to a user's own orders with the view own orders permission.
+  if ($op == 'view') {
+    if (user_access('access emails', $account)) {
+      return TRUE;
+    }
+    elseif (user_access('view own emails', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create emails', $account)) {
+    return TRUE;
+  }
+
+  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+    if (user_access('edit any email', $account)) {
+      return TRUE;
+    }
+
+    // Others either don't have any access or must match the order uid.
+    if ($account->uid && user_access('edit own emails', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Create a new email object
+ */
+function vopros_email_new($values = array()) {
+  $default_values = array(
+    'status' => 'unsent',
+  );
+  $values += $default_values;
+  // During installation, the entity might not be available for menu item.
+  // So we need to create a fake entity in that case.
+  if (!entity_get_info('vopros_email')) {
+    return new stdClass();
+  }
+  return entity_create('vopros_email', $values);
+}
+
+/**
+ * Save a email
+ *
+ * @param $email
+ *    The email object
+ * @param $revision
+ *    Bolean indicator, if a new revision should be created.
+ */
+function vopros_email_save($email, $revision = 1) {
+  $email->revision = $revision;
+  entity_save('vopros_email', $email);
+}
+
+/**
+ * Loads an email by ID.
+ */
+function vopros_email_load($email_id, $reset = FALSE) {
+  $emails = vopros_email_load_multiple(array($email_id), array(), $reset);
+  return $emails ? reset($emails) : FALSE;
+}
+
+/**
+ * Wrapper function to send the actual email.
+ *
+ * @param $email
+ *    The email entity object
+ * @param $template
+ *    Which template to use for the email (not used atm)
+ */
+function vopros_email_send($email, $template = 'default') {
+  $email_wrapper = entity_metadata_wrapper('vopros_email', $email);
+  $answer = $email_wrapper->answer->value();
+  $question = $email_wrapper->answer->question->value();
+  $params = array(
+    'template' => $template,
+    'email' => $email,
+    'answer' => $answer,
+    'question' => $question,
+  );
+  return drupal_mail('vopros_email', 'vopros_email', $question->user_email, user_preferred_language($GLOBALS['user']), $params);
+}
+
+/**
+ * Loads multiple emails by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $email_ids
+ *   An array of email IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_email} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal email loading cache.
+ *
+ * @return
+ *   An array of email objects indexed by email_id.
+ */
+function vopros_email_load_multiple($email_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_email', $email_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_mail().
+ */
+function vopros_email_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'vopros_email':
+      $message['subject'] = $params['email']->subject;
+      $message['body'][] = $params['email']->content;
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function vopros_email_form_vopros_answer_form_alter(&$form, &$form_state) {
+  // Add ajax callback a email should be sent.
+  $form['save_submit']['#submit'][] = 'vopros_email_form_vopros_answer_form_submit';
+  /*$form['save_submit']['#ajax'] = array(
+    'callback' => 'vopros_email_js_form',
+  );
+
+  $form['email'] = array(
+    '#markup' => '<div id="vopros-email"></div>',
+  );*/
+}
+
+function vopros_email_form_vopros_answer_form_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/answer/' . $form_state['answer']->answer_id . '/new-email';
+}
+
+/*function vopros_email_js_form($form, $form_state) {
+  module_load_include('inc', 'vopros_email', 'includes/vopros_email.admin');
+  $form_html = '<h2>' . t('Send email') . '</h2>';
+  $form_html .= drupal_render(drupal_get_form('vopros_email_form', $form_state['answer'], vopros_email_new()));
+  $commands = array();
+  $commands[] = ajax_command_invoke('#vopros-answer-form > div > *:not(#vopros-email)', 'hide', array());
+  $commands[] = ajax_command_after('#vopros-answer-form', $form_html);
+  return array('#type' => 'ajax', '#commands' => $commands);
+}*/
