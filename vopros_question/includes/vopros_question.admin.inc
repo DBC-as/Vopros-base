@@ -9,6 +9,14 @@
  * Question settings form
  */
 function vopros_question_settings_form($form, &$form_state) {
+
+  $form['vopros_question_sms_keyword'] = array(
+    '#type' => 'textfield',
+    '#title' => t('SMS keyword'),
+    '#description' => t('Enter the keyword used by the sms gateway to identify the message, which should be removed from the question content.'),
+    '#default_value' => variable_get('vopros_question_sms_keyword', ''),
+  );
+
   return system_settings_form($form);
 }
 
