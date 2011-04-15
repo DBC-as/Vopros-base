@@ -61,10 +61,12 @@ function vopros_question_create_sms() {
   // Where to use keyword?
   $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
   // What format is used for recieved ?
-  $recieved = isset($_GET['rec']) ? ? $_GET['rec'] : '';
+  $recieved = isset($_GET['rec']) ? $_GET['rec'] : '';
   // The question will always be valid, as we always recieve the phone number.
   // The only thing that could happen is an empty question.
-  vopros_question_save($question);
+  if ($question->question_content) {
+    vopros_question_save($question);
+  }
   $output = 
 '<?xml version="1.0" encoding="iso-8859-1"?>
   <action>
