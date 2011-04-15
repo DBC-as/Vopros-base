@@ -1,0 +1,10 @@
+name = Vopros Questions
+description = Defines the Question entity and associated features.
+package = Vopros
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = vopros
+
+; Entity controller include:
+files[] = includes/vopros_question.controller.inc

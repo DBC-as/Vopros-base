@@ -1,0 +1,378 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_question_entity_info() {
+  $return = array(
+    'vopros_question' => array(
+      'label' => t('Question', array(), array('context' => 'a vopros question')),
+      'controller class' => 'VoprosQuestionEntityController',
+      'base table' => 'vopros_question',
+      'revision table' => 'vopros_question_revision',
+      'fieldable' => TRUE,
+      'uri callback' => 'vopros_question_uri',
+      'entity keys' => array(
+        'id' => 'question_id',
+        'revision' => 'revision_id',
+        'label' => 'question_title',
+      ),
+      'bundles' => array(
+        'vopros_question' => array(
+          'label' => t('Question', array(), array('context' => 'a vopros question')),
+          'admin' => array(
+            'path' => 'admin/vopros/config/question',
+            'access arguments' => array('administer questions'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_question_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+        'public' => array(
+          'label' => t('Public'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_question_access',
+      'views controller class' => 'EntityDefaultViewsController',
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Entity uri callback.
+ */
+function vopros_question_uri($question) {
+  return array(
+    'path' => 'admin/vopros/question/' . $question->question_id,
+  );
+}
+
+function vopros_question_enable() {
+  // When the module is enabled, we need to clear cache to make sure that the
+  // menu is buildt correctly with the entity info.s
+  drupal_flush_all_caches();
+  // Create the question vopros_question_subject_category vocabolary
+  if (!taxonomy_vocabulary_machine_name_load('vopros_question_subject_category')) {
+    $vocabulary = (object) array(
+      'name' => t('Subject category'),
+      'machine_name' => 'vopros_question_subject_category',
+      'module' => 'vopros_question',
+    );
+    taxonomy_vocabulary_save($vocabulary);
+  }
+  vopros_question_configure_question();
+}
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_question_menu() {
+  return array(
+    'admin/vopros/config/question' => array(
+      'title' => 'Question settings',
+      'description' => 'Configure general question settings, fields, and displays.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_settings_form'),
+      'access arguments' => array('administer questions'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/config/question/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+    ),
+    'admin/vopros/config/question/add' => array(
+      'title' => 'Add a question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_question_form', vopros_question_new()),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('create'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/question/%vopros_question' => array(
+      'title callback' => 'vopros_question_title',
+      'title arguments' => array(3),
+       'page callback' => 'vopros_question_page_view',
+       'page arguments' => array(3),
+       'access callback' => 'vopros_question_access',
+       'access arguments' => array('view'),
+       'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/question/%vopros_question/view' => array(
+      'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => -10,
+    ),
+    'admin/vopros/question/%vopros_question/edit' => array(
+      'title' => 'Edit',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_question_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_question.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'vopros/question/create/service' => array(
+      'page callback' => 'vopros_question_create_service',
+      'access arguments' => array('access content'),
+      'file' => 'includes/vopros_question.pages.inc',
+    ),
+    'vopros/question/create/sms' => array(
+      'page callback' => 'vopros_question_create_sms',
+      'access arguments' => array('access content'),
+      'file' => 'includes/vopros_question.pages.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function vopros_question_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  // Add action link 'admin/commerce/questions/add' on 'admin/commerce/questions'.
+  if ($root_path == 'admin/vopros/config/question') {
+    $item = menu_get_item('admin/vopros/config/question/add');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_question_permission() {
+  $permissions = array(
+    'administer questions' => array(
+      'title' => t('Administer questions'),
+      'restrict access' => TRUE,
+    ),
+    'access questions' => array(
+      'title' => t('Access lists of questions, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create questions' => array(
+      'title' => t('Create questions'),
+      'restrict access' => TRUE,
+    ),
+    'edit question' => array(
+      'title' => t('Edit any question'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Checks question access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_question_access($op, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any question for administrators.
+  if (user_access('administer questions', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access questions permission
+  // or to a user's own questions with the view own questions permission.
+  if ($op == 'view') {
+    if (user_access('access questions', $account)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create questions', $account)) {
+    return TRUE;
+  }
+
+  if (($op == 'update' || $op == 'delete') && user_access('edit any question', $account)) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Title callback for questions
+ */
+function vopros_question_title($question) {
+  return isset($question->question_title) && !empty($question->question_title) ? $question->question_title : t('New question');
+}
+
+/**
+ * Create a new question object
+ */
+function vopros_question_new($values = array()) {
+  $default_values = array(
+    'question_status' => 'new',
+    'question_title' => t('New question'),
+    'question_content' => '',
+    'question_deadline' => -1,
+  );
+  $values += $default_values;
+  return entity_create('vopros_question', $values);
+}
+
+/**
+ * Save a question
+ *
+ * @param $question
+ *    The question object
+ * @param $revision
+ *    Bolean indicator, if a new revision should be created.
+ */
+function vopros_question_save($question, $revision = 1) {
+  $question->revision = $revision;
+  entity_save('vopros_question', $question);
+}
+
+/**
+ * Loads an question by ID.
+ */
+function vopros_question_load($question_id, $reset = FALSE) {
+  $questions = vopros_question_load_multiple(array($question_id), array(), $reset);
+  return $questions ? reset($questions) : FALSE;
+}
+
+/**
+ * Validates the data for the question.
+ */
+function vopros_question_validate_data($question) {
+  return entity_get_controller('vopros_question')->validateData($question);
+}
+
+/**
+ * Loads multiple questions by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $question_ids
+ *   An array of question IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_question} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal question loading cache.
+ *
+ * @return
+ *   An array of question objects indexed by question_id.
+ */
+function vopros_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_question', $question_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function vopros_question_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_question') . '/includes',
+  );
+}
+
+
+/**
+ * Ensures the line item field is present on the default order bundle.
+ */
+function vopros_question_configure_question() {
+  $type = 'vopros_question';
+  $bundle = 'vopros_question';
+
+  // Create a taxonomy term reference field
+  $field_name = 'subject_category';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => 1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'locked' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          'vocabolary' => 'vopros_question_subject_category',
+        ),
+      ),
+      'field_name' => $field_name,
+      'type' => 'taxonomy_term_reference',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Subject'),
+      'widget' => array(
+        'type' => 'options_select',
+      ),
+      'settings' => array(),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'taxonomy_term_reference_link',
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
+}
+
+/**
+ * Utility function to get the question usage options
+ */
+function _vopros_question_usage() {
+  return array(
+    'business' => t('Business'),
+    'other' => t('Other'),
+    'personal' => t('Personal'),
+    'school1' => t('Assignment for groundschool'),
+    'school2' => t('Assignment for highschool'),
+    'school3' => t('Assignment for college education'),
+    'school4' => t('Assignment for university education or research'),
+  );
+}
+
+/**
+ * Utility function to get the question usage options
+ */
+function _vopros_question_status() {
+  return array(
+    'new' => t('New'),
+    'in_progress' => t('In progress'),
+    'locked' => t('Locked'),
+    'answered' => t('Answered'),
+  );
+}

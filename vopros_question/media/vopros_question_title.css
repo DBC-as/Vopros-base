@@ -1,0 +1,7 @@
+.hidden.title-form {
+  display: none;
+}
+
+.view-vopros-question-admin .views-field-question-title .field-content:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,317 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_question_schema() {
+  $schema = array();
+
+  $schema['vopros_question'] = array(
+    'description' => 'The base table for questions.',
+    'fields' => array(
+      'question_id' => array(
+        'description' => 'The primary identifier for an question.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_id' => array(
+        'description' => 'The current {vopros_question_revision}.revision_id version identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The owner of the question, who is allowed to answer the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'question_title' => array(
+        'description' => 'The question title, the label of the entity.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'question_content' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'question_status' => array(
+        'description' => 'The status name of this question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'question_deadline' => array(
+        'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
+        'type' => 'int',
+      ),
+      'question_usage' => array(
+        'description' => 'How the question should be used.',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'question_note' => array(
+        'description' => 'A note about the question, like search queries etc.',
+        'type' => 'text',
+        'size' => 'big',
+      ),
+      // Info about the origin of the question
+      'qanda_service_name' => array(
+        'description' => 'The service that brought us the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'agency_id' => array(
+        'description' => 'The agency/portal that sent the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'referenced_by' => array(
+        'description' => 'Referenced from.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_name' => array(
+        'description' => 'The name of the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_email' => array(
+        'description' => 'The email address for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_postal_code' => array(
+        'description' => 'The postal code of the person who sent in the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_mobile_phone' => array(
+        'description' => 'The mobile phone number for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_age' => array(
+        'description' => 'The age of the person that asked the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'user_gender' => array(
+        'description' => 'The gender of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_field_of_study' => array(
+        'description' => 'The field of study of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_library' => array(
+        'description' => 'The library of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_answer_preference' => array(
+        'description' => 'The way the user wants to recieve the answer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the question was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the question was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('question_id'),
+    'unique keys' => array(
+      'revision_id' => array('revision_id'),
+    ),
+    'foreign keys' => array(
+      'current_revision' => array(
+        'table' => 'vopros_question_revision',
+        'columns'=> array('revision_id' => 'revision_id'),
+      ),
+    ),
+  );
+
+  $schema['vopros_question_revision'] = array(
+    'description' => 'Saves information about each saved revision of a {vopros_question}.',
+    'fields' => array(
+      'revision_id' => array(
+        'description' => 'The primary identifier for this revision.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_uid' => array(
+        'description' => 'The {users}.uid that created this revision.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The {vopros_question}.question_id of the question this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The owner of the question, who is allowed to answer the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'question_title' => array(
+        'description' => 'The question title, the label of the entity.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'question_content' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'question_status' => array(
+        'description' => 'The status name of this question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'question_deadline' => array(
+        'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
+        'type' => 'int',
+      ),
+      'question_usage' => array(
+        'description' => 'How the question should be used.',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'question_note' => array(
+        'description' => 'A note about the question, like search queries etc.',
+        'type' => 'text',
+        'size' => 'big',
+      ),
+      // Info about the origin of the question
+      'qanda_service_name' => array(
+        'description' => 'The service that brought us the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'agency_id' => array(
+        'description' => 'The agency/portal that sent the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'referenced_by' => array(
+        'description' => 'Referenced from.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_name' => array(
+        'description' => 'The name of the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_email' => array(
+        'description' => 'The email address for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_ostal_code' => array(
+        'description' => 'The postal code of the person who sent in the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_mobile_phone' => array(
+        'description' => 'The mobile phone number for the person that asked the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_age' => array(
+        'description' => 'The age of the person that asked the question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'user_gender' => array(
+        'description' => 'The gender of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_field_of_study' => array(
+        'description' => 'The field of study of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_library' => array(
+        'description' => 'The library of the person asking the question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'user_answer_preference' => array(
+        'description' => 'The way the user wants to recieve the answer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+      ),
+      'log' => array(
+        'description' => 'The log entry explaining the changes in this version.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_timestamp' => array(
+        'description' => 'The Unix timestamp when this revision was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'foreign keys' => array(
+      'question' => array(
+        'table' => 'vopros_question',
+        'columns'=> array('question_id' => 'question_id'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,12 @@
+name = Vopros Email
+description = Defines the Email entity and associated features.
+package = Vopros
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = vopros
+dependencies[] = vopros_answer
+
+
+; Entity controller include:
+files[] = includes/vopros_email.controller.inc
