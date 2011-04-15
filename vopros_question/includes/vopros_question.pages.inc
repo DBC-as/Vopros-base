@@ -49,22 +49,18 @@ function vopros_question_create_service() {
 function vopros_question_create_sms() {
   $default_values = array(
     'user_answer_preference' => 'sms',
-    // We need Q and A and agencuy id for SMS gateway.
-    // Should be static enough to keep in code.
-    'qanda_service_name' => 'SMS1919', 
     'agency_id' => 'SMS1919',
   );
 
   $question = vopros_question_new($default_values);
-  $question->question_content = trim(preg_replace('/^' . variable_get('vopros_question_sms_keyword') . '/', '', $_GET['msg']));
-  $question->user_mobile_phone = $_GET['origin'];
-  // Where to use keyword?
-  $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
-  // What format is used for recieved ?
-  $recieved = isset($_GET['rec']) ? $_GET['rec'] : '';
-  // The question will always be valid, as we always recieve the phone number.
-  // The only thing that could happen is an empty question.
-  if ($question->question_content) {
+  $message = isset($_GET['msg']) ? $_GET['msg'] : '';
+  $phone = isset($_GET['origin']) ? $_GET['origin'] : '';
+  if ($message && $phone) {
+    $words = explode(' ', $message);
+    $keyword = array_shift($words);
+    $question->qanda_service_name = $keyword;
+    $question->question_content = implode(' ', $words);
+    $question->user_mobile_phone = $phone;
     vopros_question_save($question);
   }
   $output = 
