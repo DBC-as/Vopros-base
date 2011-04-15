@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_sms_schema() {
+  $schema = array();
+
+  $schema['vopros_sms'] = array(
+    'description' => 'The base table for orders.',
+    'fields' => array(
+      'sms_id' => array(
+        'description' => 'The primary identifier for an sms.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'answer_id' => array(
+        'description' => 'Reference to the answer being smsed.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The uid of the user smsing the answer.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'content' => array(
+        'description' => 'The actual sms that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'status' => array(
+        'description' => 'The status of the sms.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'revision_id' => array(
+        'description' => 'The current {vopros_sms_revision}.revision_id version identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the order was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('sms_id'),
+    'unique keys' => array(
+      'revision_id' => array('revision_id'),
+    ),
+    'foreign keys' => array(
+      'current_revision' => array(
+        'table' => 'vopros_sms_revision',
+        'columns'=> array('revision_id' => 'revision_id'),
+      ),
+      'answer' => array(
+        'table' => 'vopros_answer',
+        'columns'=> array('answer_id' => 'answer_id'),
+      ),
+    ),
+  );
+
+  $schema['vopros_sms_revision'] = array(
+    'description' => 'Saves information about each saved revision of a {vopros_sms}.',
+    'fields' => array(
+      'revision_id' => array(
+        'description' => 'The primary identifier for this revision.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_uid' => array(
+        'description' => 'The {users}.uid that created this revision.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'sms_id' => array(
+        'description' => 'The {vopros_sms}.sms_id of the sms this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'answer_id' => array(
+        'description' => 'The {vopros_answer}.answer_id of the order this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The uid of the user smsing the answer.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'content' => array(
+        'description' => 'The actual sms that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'status' => array(
+        'description' => 'The status of the sms.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'log' => array(
+        'description' => 'The log entry explaining the changes in this version.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_timestamp' => array(
+        'description' => 'The Unix timestamp when this revision was created/changed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'foreign keys' => array(
+      'sms' => array(
+        'table' => 'vopros_sms',
+        'columns'=> array('sms_id' => 'sms_id'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

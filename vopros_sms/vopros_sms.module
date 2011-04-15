@@ -1,0 +1,337 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_sms_entity_info() {
+  $return = array(
+    'vopros_sms' => array(
+      'label' => t('Email', array(), array('context' => 'a vopros sms')),
+      'controller class' => 'VoprosSMSEntityController',
+      'base table' => 'vopros_sms',
+      'revision table' => 'vopros_sms_revision',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'sms_id',
+        'revision' => 'revision_id',
+        'label' => 'subject',
+      ),
+      'bundles' => array(
+        'vopros_sms' => array(
+          'label' => t('Email', array(), array('context' => 'a vopros sms')),
+          'admin' => array(
+            'path' => 'admin/vopros/config/sms',
+            'access arguments' => array('administer SMSes'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_sms_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_sms_access',
+      'views controller class' => 'EntityDefaultViewsController',
+    ),
+  );
+
+  return $return;
+}
+
+function vopros_sms_enable() {
+  drupal_flush_all_caches();
+  // Create fields for the sms entity
+}
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_sms_menu() {
+  return array(
+    'admin/vopros/config/sms' => array(
+      'title' => 'SMS settings',
+      'description' => 'Configure general sms settings, fields, and displays.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_sms_settings_form'),
+      'access arguments' => array('administer SMSes'),
+      'file' => 'includes/vopros_sms.admin.inc',
+    ),
+    'admin/vopros/config/sms/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+    ),
+    'admin/vopros/answer/%vopros_answer/new-sms' => array(
+      'title' => 'Answer question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_sms_form', 3, vopros_sms_new()),
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array(3),
+      'file' => 'includes/vopros_sms.admin.inc',
+    ),
+    'admin/vopros/sms/%vopros_sms' => array(
+      'title callback' => 'vopros_sms_title',
+      'title arguments' => array(3),
+       'page callback' => 'vopros_sms_page_view',
+       'page arguments' => array(3),
+       'access callback' => 'vopros_sms_access',
+       'access arguments' => array('view'),
+       'file' => 'includes/vopros_sms.admin.inc',
+    ),
+    'admin/vopros/sms/%vopros_sms/view' => array(
+      'title' => 'View',
+       'type' => MENU_DEFAULT_LOCAL_TASK,
+       'weight' => -10,
+    ),
+    'admin/vopros/sms/%vopros_sms/edit' => array(
+      'title' => 'Edit',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_sms_form', 3),
+      'access callback' => 'vopros_sms_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_sms.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+  );
+}
+
+/**
+ * Title callback for SMSes
+ */
+function vopros_sms_title($sms) {
+  return isset($mail->subject) && !empty($mail->subject) ? $mail->subject : t('New sms');
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function vopros_sms_entity_property_info() {
+  $info = array();
+
+  // Add meta-data about the basic commerce_line_item properties.
+  $properties = &$info['vopros_sms']['properties'];
+
+  $properties['answer'] = array(
+    'label' => t('Answer'),
+    'type' => 'vopros_answer',
+    'description' => t('The unique ID of answer the sms belongs to.'),
+    'getter callback' => 'vopros_get_properties',
+    'setter callback' => 'vopros_set_properties',
+    'clear' => array('answer_id'),
+    'schema field' => 'vopros_answer',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function vopros_sms_entity_property_info_alter(&$info) {
+  // Need to clear the quesiton cache when the question_id is altered.
+  $info['vopros_sms']['properties']['answer_id']['clear'] = array('question');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_sms_permission() {
+  $permissions = array(
+    'administer SMSes' => array(
+      'title' => t('Administer SMSes'),
+      'restrict access' => TRUE,
+    ),
+    'access SMSes' => array(
+      'title' => t('Access lists of SMSes, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create SMSes' => array(
+      'title' => t('Create SMSes'),
+      'restrict access' => TRUE,
+    ),
+    'edit any sms' => array(
+      'title' => t('Edit any sms'),
+      'restrict access' => TRUE,
+    ),
+    'edit own SMSes' => array(
+      'title' => t('Edit own SMSes'),
+      'restrict access' => TRUE,
+    ),
+    'view own SMSes' => array(
+      'title' => t('View own SMSes'),
+    ),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Checks order access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $sms
+ *   Optionally an anwer to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_sms_access($op, $sms = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any order for administrators.
+  if (user_access('administer SMSes', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access orders permission
+  // or to a user's own orders with the view own orders permission.
+  if ($op == 'view') {
+    if (user_access('access SMSes', $account)) {
+      return TRUE;
+    }
+    elseif (user_access('view own SMSes', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create SMSes', $account)) {
+    return TRUE;
+  }
+
+  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+    if (user_access('edit any sms', $account)) {
+      return TRUE;
+    }
+
+    // Others either don't have any access or must match the order uid.
+    if ($account->uid && user_access('edit own SMSes', $account) && $order->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Create a new sms object
+ */
+function vopros_sms_new($values = array()) {
+  $default_values = array(
+    'status' => 'unsent',
+  );
+  $values += $default_values;
+  // During installation, the entity might not be available for menu item.
+  // So we need to create a fake entity in that case.
+  if (!entity_get_info('vopros_sms')) {
+    return new stdClass();
+  }
+  return entity_create('vopros_sms', $values);
+}
+
+/**
+ * Save a sms
+ *
+ * @param $sms
+ *    The sms object
+ * @param $revision
+ *    Bolean indicator, if a new revision should be created.
+ */
+function vopros_sms_save($sms, $revision = 1) {
+  $sms->revision = $revision;
+  entity_save('vopros_sms', $sms);
+}
+
+/**
+ * Loads an sms by ID.
+ */
+function vopros_sms_load($sms_id, $reset = FALSE) {
+  $smses = vopros_sms_load_multiple(array($sms_id), array(), $reset);
+  return $smses ? reset($smses) : FALSE;
+}
+
+/**
+ * Wrapper function to send the actual sms.
+ *
+ * @param $sms
+ *    The sms entity object
+ */
+function vopros_sms_send($sms, $template = 'default') {
+  $base_url = variable_get('vopros_sms_push_api_url', '');
+  $user_name = variable_get('vopros_sms_push_user_name', '');
+  $password = variable_get('vopros_sms_push_password', '');
+  $short_code = variable_get('vopros_sms_push_short_code', '');
+  $sender = variable_get('vopros_sms_push_sender', '');
+  if (!$base_url || !$user_name || !$password || !$short_code) {
+    return FALSE;
+  }
+  $sms_wrapper = entity_metadata_wrapper('vopros_sms', $sms);
+  $number = $sms_wrapper->answer->question->user_mobile_phone->value();
+
+  // Construct the url:
+  $url = url($base_url, array('query' => array(
+    'recipient' => $number,
+    'username' => $user_name,
+    'password' => $password,
+    'shortcode' => $short_code,
+    'text' => $sms->content,
+    'price' => 0,
+    'from' => $sender,
+  )));
+
+  // Try to send the sms.
+  $request = drupal_http_request($url);
+  if ($request != 200) {
+    return FALSE;
+  }
+
+  if ($sms->status == 'unsent') {
+    $sms->status = 'sent';
+    vopros_sms_save($sms);
+  }
+
+  return $sms;
+}
+
+/**
+ * Loads multiple SMSes by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $sms_ids
+ *   An array of sms IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_sms} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal sms loading cache.
+ *
+ * @return
+ *   An array of sms objects indexed by sms_id.
+ */
+function vopros_sms_load_multiple($sms_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_sms', $sms_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function vopros_sms_form_vopros_answer_form_alter(&$form, &$form_state) {
+  // Hook into the form, if user wants an sms sent. 
+  if ($form['question']['#value']->user_answer_preference == 'sms') {
+    $form['save_submit']['#submit'][] = 'vopros_sms_form_vopros_answer_form_submit';
+  }
+}
+
+function vopros_sms_form_vopros_answer_form_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/answer/' . $form_state['answer']->answer_id . '/new-sms';
+}

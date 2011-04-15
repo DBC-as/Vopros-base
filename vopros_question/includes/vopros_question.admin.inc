@@ -9,14 +9,6 @@
  * Question settings form
  */
 function vopros_question_settings_form($form, &$form_state) {
-
-  $form['vopros_question_sms_keyword'] = array(
-    '#type' => 'textfield',
-    '#title' => t('SMS keyword'),
-    '#description' => t('Enter the keyword used by the sms gateway to identify the message, which should be removed from the question content.'),
-    '#default_value' => variable_get('vopros_question_sms_keyword', ''),
-  );
-
   return system_settings_form($form);
 }
 
@@ -210,8 +202,8 @@ function vopros_question_title_form($form, &$form_state, $question) {
  * Handle the display of a question
  */
 function vopros_question_page_view($question) {
-  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.js');
-  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/media/vopros_question_title.css');
+  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
   $build = array();
   $build[] = array(

@@ -316,27 +316,12 @@ function vopros_email_mail($key, &$message, $params) {
  * Implements hook_form_FORM_ID_alter()
  */
 function vopros_email_form_vopros_answer_form_alter(&$form, &$form_state) {
-  // Add ajax callback a email should be sent.
-  $form['save_submit']['#submit'][] = 'vopros_email_form_vopros_answer_form_submit';
-  /*$form['save_submit']['#ajax'] = array(
-    'callback' => 'vopros_email_js_form',
-  );
-
-  $form['email'] = array(
-    '#markup' => '<div id="vopros-email"></div>',
-  );*/
+  // Hook into the form, if user wants an sms sent. 
+  if ($form['question']['#value']->user_answer_preference == 'mail') {
+    $form['save_submit']['#submit'][] = 'vopros_email_form_vopros_answer_form_submit';
+  }
 }
 
 function vopros_email_form_vopros_answer_form_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/answer/' . $form_state['answer']->answer_id . '/new-email';
 }
-
-/*function vopros_email_js_form($form, $form_state) {
-  module_load_include('inc', 'vopros_email', 'includes/vopros_email.admin');
-  $form_html = '<h2>' . t('Send email') . '</h2>';
-  $form_html .= drupal_render(drupal_get_form('vopros_email_form', $form_state['answer'], vopros_email_new()));
-  $commands = array();
-  $commands[] = ajax_command_invoke('#vopros-answer-form > div > *:not(#vopros-email)', 'hide', array());
-  $commands[] = ajax_command_after('#vopros-answer-form', $form_html);
-  return array('#type' => 'ajax', '#commands' => $commands);
-}*/
