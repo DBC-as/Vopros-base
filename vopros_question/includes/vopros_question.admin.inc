@@ -250,3 +250,310 @@ function vopros_question_title_form_cancel(&$form, &$form_state) {
   $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'show');
   return array('#type' => 'ajax', '#commands' => $commands);
 }
+
+function vopros_question_revisions_form($form, &$form_state, $question) {
+  $form['#theme'] = 'diff_node_revisions';
+
+  $form['question'] = array(
+    '#type' => 'value',
+    '#value' => $question,
+  );
+
+  $revisions = vopros_question_revision_list($question);
+  $revision_ids = array();
+
+  foreach ($revisions as $revision) {
+    $revision->account = user_load($revision->revision_uid);
+    $operations = array();
+    $revision_ids[$revision->revision_id] = '';
+
+    if ($revision->revision_id == $question->revision_id) {
+      $form['info'][$revision->revision_id] = array(
+        '#markup' => t('!date by !username', array(
+          '!date' => l(format_date($revision->revision_timestamp, 'small'), "admin/vopros/questions/$question->question_id"),
+          '!username' => theme('username', (array) $revision)))
+        . (($revision->log != '') ? '<p class="revision-log">'. filter_xss($revision->log) .'</p>' : ''),
+      );
+    }
+    else {
+      $form['info'][$revision->revision_id] = array(
+        '#markup' => t('!date by !username', array(
+          '!date' => l(format_date($revision->revision_timestamp, 'small'), "admin/vopros/questions/$question->question_id/revisions/$revision->revision_id/view"),
+          '!username' => theme('username', (array) $revision)))
+        . (($revision->log != '') ? '<p class="revision-log">'. filter_xss($revision->log) .'</p>' : '')
+      );
+      $operations[] = array('#markup' => l(t('revert'), "admin/vopros/questions/$question->question_id/revisions/$revision->revision_id/revert"));
+      // Set a dummy, even if the user has no permission for the other
+      // operations, so that we can check if the operations array is
+      // empty to know if the row denotes the current revision.
+      $operations[] = array();
+    }
+    $form['operations'][$revision->revision_id] = $operations;
+
+  }
+  $new_revision_id = key($revision_ids);
+  next($revision_ids);
+  $old_revision_id = key($revision_ids);
+  $form['diff']['old'] = array(
+    '#type' => 'radios',
+    '#options' => $revision_ids,
+    '#default_value' => $old_revision_id
+  );
+  $form['diff']['new'] = array(
+    '#type' => 'radios',
+    '#options' => $revision_ids,
+    '#default_value' => $new_revision_id
+  );
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Show diff'));
+
+  return $form;
+}
+
+/**
+ * Submit code for input form to select two revisions.
+ */
+function vopros_question_revisions_form_submit($form, &$form_state) {
+  // the ids are ordered so the old revision is always on the left
+  $old_revision_id = min($form_state['values']['old'], $form_state['values']['new']);
+  $new_revision_id = max($form_state['values']['old'], $form_state['values']['new']);
+  $form_state['redirect'] =  'admin/vopros/questions/'. $form_state['values']['question']->question_id .'/revisions/view/'. $old_revision_id .'/'. $new_revision_id;
+}
+
+/**
+ * Show the diff for two questions.
+ */
+function vopros_question_diffs_show($question, $old_revision_id, $new_revision_id) {
+  module_load_include('inc', 'diff', 'diff.pages');
+  $old_question = vopros_question_load($question->question_id, $old_revision_id);
+  $old_question->account = user_load($old_question->revision_uid);
+  $new_question = vopros_question_load($question->question_id, $new_revision_id);
+  $new_question->account = user_load($new_question->revision_uid);
+
+  // Generate table header (date, username, logmessage).
+  $old_header = t('!date by !username', array(
+    '!date' => l(format_date($old_question->revision_timestamp), "admin/vopros/questions/$question->question_id/revisions/$old_question->revision_id/view"),
+    '!username' => theme('username', (array) $old_question),
+  ));
+  $new_header = t('!date by !username', array(
+    '!date' => l(format_date($new_question->revision_timestamp), "admin/vopros/questions/$question->question_id/revisions/$new_question->revision_id/view"),
+    '!username' => theme('username', (array) $new_question),
+  ));
+
+  $old_log = $old_question->log != '' ? '<p class="revision-log">'. filter_xss($old_question->log) .'</p>' : '';
+  $new_log = $new_question->log != '' ? '<p class="revision-log">'. filter_xss($new_question->log) .'</p>' : '';
+
+  // Get the next and previous revisions.
+  $revisions = vopros_question_revision_list($question);
+  ksort($revisions);
+  $prev_revision = $next_revision_id = 0;
+  $get_next_revision = FALSE;
+  foreach ($revisions as $revision_id => $value) {
+    if ($get_next_revision == TRUE) {
+      $get_next_revision = FALSE;
+      $next_revision_id = $revision_id;
+    }
+    if ($revision_id == $new_question->revision_id) {
+      $get_next_revision = TRUE;
+    }
+    if ($revision_id == $old_question->revision_id) {
+      $prev_revision_id = $prev_revision;
+    }
+    $prev_revision = $revision_id;
+  }
+
+  if ($next_revision_id) {
+    $next_link = l(t('next diff >'), 'admin/vopros/questions/'. $question->question_id .'/revisions/view/'. $new_question->revision_id .'/'. $next_revision_id);
+  }
+  else {
+    $next_link = '';
+  }
+  if ($prev_revision_id) {
+    $prev_link = l(t('< previous diff'), 'admin/vopros/questions/'. $question->question_id .'/revisions/view/'. $prev_revision_id .'/'. $old_question->revision_id);
+  }
+  else {
+    $prev_link = '';
+  }
+
+  $cols = _diff_default_cols();
+  $header = _diff_default_header($old_header, $new_header);
+  $rows = array();
+  if ($old_log || $new_log) {
+    $rows[] = array(
+      array(
+        'data' => $old_log,
+        'colspan' => 2
+      ),
+      array(
+        'data' => $new_log,
+        'colspan' => 2
+      )
+    );
+  }
+  $rows[] = array(
+    array(
+      'data' => $prev_link,
+      'class' => array('diff-prevlink'),
+      'colspan' => 2
+    ),
+    array(
+      'data' => $next_link,
+      'class' => array('diff-nextlink'),
+      'colspan' => 2
+    )
+  );
+  $rows = array_merge($rows, _vopros_question_diff_rows($old_question, $new_question));
+  $output = theme('diff_table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('diff')), 'cols' => $cols));
+
+  if ($question->revision_id == $new_question->revision_id) {
+    $output .= '<div class="diff-section-title">'. t('Current revision:') .'</div>';
+  }
+  else {
+    $output .= '<div class="diff-section-title">'. t('Revision of !new_date:', array('!new_date' => format_date($new_question->revision_timestamp))) .'</div>';
+  }
+  return $output;
+}
+
+/**
+ * Creates an array of rows which represent a diff between $old_question and $new_question.
+ * The rows can be used via theme('diff_table') to be displayed.
+ *
+ * @param $old_question
+ *   Node for comparison which will be displayed on the left side.
+ * @param $new_question
+ *   Node for comparison which will be displayed on the right side.
+ */
+function _vopros_question_diff_rows($old_question, $new_question) {
+  drupal_add_css(drupal_get_path('module', 'diff') .'/diff.css', 'module', 'all', FALSE);
+
+  $rows = array();
+  $any_visible_change = FALSE;
+
+  $question_diffs = array();
+  $info = entity_get_property_info('vopros_question');
+  $p = $info['properties'];
+  $select = array(
+    'question_usage' => _vopros_question_usage(),
+    'question_status' => _vopros_question_status(),
+    'question_deadline' => _vopros_question_deadline(),
+  );
+  
+  $single_line = array(
+    'question_title',
+    'question_status',
+    'question_usage',
+    'question_deadline',
+    'user_name',
+    'user_email',
+    'user_postal_code',
+    'user_mobile_phone',
+    'user_age',
+    'user_gender',
+    'user_field_of_study',
+    'user_library',
+    'user_answer_preference',
+  );
+
+  foreach ($single_line as $key) {
+    $question_diffs[$key] = array(
+      '#name' => t(str_replace('_', ' ', $p[$key]['label'])),
+      '#old' => array(isset($select[$key]) ? $select[$key][$old_question->{$key}] : $old_question->{$key}),
+      '#new' => array(isset($select[$key]) ? $select[$key][$new_question->{$key}] : $new_question->{$key}),
+      '#format' => array(
+        'show_header' => FALSE,
+      ),
+    );
+  }
+
+  $multi_line = array(
+    'question_content',
+    'question_note',
+  );
+
+  foreach ($multi_line as $key) {
+    $question_diffs[$key] = array(
+      '#name' => t(str_replace('_', ' ', $p[$key]['label'])),
+      '#old' => explode("\n", $new_question->{$key}),
+      '#new' => explode("\n", $old_question->{$key}),
+    );
+  }
+
+  // @TODO: Add diff for fields
+  /*$instances = field_info_instances('node', field_extract_bundle('node', $type));
+  foreach ($instances as $instance) {
+    $field_name = $instance['field_name'];
+    $langcode = field_language('node', $new_node, $field_name);
+    if (isset($new_node->{$field_name}[$langcode])) {
+      foreach (array_keys($new_node->{$field_name}[$langcode]) as $delta) {
+        if (isset($new_node->{$field_name}[$langcode][$delta]['value'])) {
+          $view_old = $old_node->{$field_name}[$langcode][$delta]['value'];
+          $view_new = $new_node->{$field_name}[$langcode][$delta]['value'];
+          $result["{$field_name}_{$delta}"] = array(
+            '#name' => t($instance['label']),
+            '#old' => explode("\n", $view_old),
+            '#new' => explode("\n", $view_new),
+          );
+        }
+      }
+    }
+  }*/
+
+
+  // We start off assuming all form elements are in the correct order.
+  $question_diffs['#sorted'] = TRUE;
+
+  // Recurse through all child elements.
+  $count = 0;
+  foreach (element_children($question_diffs) as $key) {
+    // Assign a decimal placeholder weight to preserve original array order.
+    if (!isset($question_diffs[$key]['#weight'])) {
+      $question_diffs[$key]['#weight'] = $count/1000;
+    }
+    else {
+      // If one of the child elements has a weight then we will need to sort
+      // later.
+      unset($question_diffs['#sorted']);
+    }
+    $count++;
+  }
+
+  // One of the children has a #weight.
+  if (!isset($question_diffs['#sorted'])) {
+    uasort($question_diffs, "element_sort");
+  }
+
+  // Render diffs for each.
+  foreach ($question_diffs as $question_diff) {
+    $show_header = isset($question_diff['#format']['show_header']) ? $question_diff['#format']['show_header'] : FALSE;
+    if ($question_diff_rows = diff_get_rows($question_diff['#old'], $question_diff['#new'], $show_header)) {
+      $rows[] = array(array(
+        'data' => t('Changes to %name', array('%name' => $question_diff['#name'])),
+        'class' => 'diff-section-title',
+        'colspan' => 4
+      ));
+      $rows = array_merge($rows, $question_diff_rows);
+      $any_visible_change = TRUE;
+    }
+  }
+  if (!$any_visible_change) {
+    $rows[] = array(array(
+      'data' => t('No visible changes'),
+      'class' => 'diff-section-title',
+      'colspan' => 4
+    ));
+    // Needed to keep safari happy
+    $rows[] = array(
+      array('data' => ''),
+      array('data' => ''),
+      array('data' => ''),
+      array('data' => ''),
+    );
+  }
+  return $rows;
+}
+
+function vopros_question_revision_revert($question, $revision) {
+  if ($question->revision_id != $revision->revision_id && $question->question_id == $revision->question_id) {
+    drupal_write_record('vopros_question', $revision, 'question_id');
+  }
+  return drupal_goto('admin/vopros/questions/' . $question->question_id . '/revisions');
+}

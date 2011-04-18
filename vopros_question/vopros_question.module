@@ -125,6 +125,34 @@ function vopros_question_menu() {
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
+    'admin/vopros/questions/%vopros_question/revisions' => array(
+      'title' => 'Revisions',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_revisions_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/questions/%vopros_question/revisions/view' => array(
+      'title' => 'Diff',
+      'page callback' => 'vopros_question_diffs_show',
+      'page arguments' => array(3, 6, 7),
+      'type' => MENU_LOCAL_TASK,
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'tab_parent' => 'admin/vopros/questions/%/revisions',
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
+    'admin/vopros/questions/%vopros_question/revisions/%vopros_question_revision/revert' => array(
+      'title' => 'Revert revision',
+      'page callback' => 'vopros_question_revision_revert',
+      'page arguments' => array(3, 5),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
     'vopros/question/create/service' => array(
       'page callback' => 'vopros_question_create_service',
       'access arguments' => array('access content'),
@@ -293,6 +321,21 @@ function vopros_question_revision_load($revision_id) {
  */
 function vopros_question_validate_data($question) {
   return entity_get_controller('vopros_question')->validateData($question);
+}
+
+/**
+ * Get a list of revisions for a question.
+ */
+function vopros_question_revision_list($question) {
+  $revisions = array();
+  $result = db_query("SELECT q.revision_id, q.revision_uid, q.uid, q.question_title, q.question_content, q.question_note, q.question_status, q.question_usage, q.log, q.revision_timestamp, u.name FROM {vopros_question_revision} AS q
+                      LEFT JOIN {users} AS u ON q.revision_uid = u.uid
+                      WHERE q.question_id = :question_id
+                      ORDER BY -q.revision_id", array(':question_id' => $question->question_id));
+  foreach ($result as $revision) {
+    $revisions[$revision->revision_id] = $revision;
+  }
+  return $revisions;
 }
 
 /**
