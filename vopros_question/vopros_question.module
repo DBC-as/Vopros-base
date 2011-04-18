@@ -58,6 +58,9 @@ function vopros_question_uri($question) {
   );
 }
 
+/**
+ * Implements hook_enable().
+ */
 function vopros_question_enable() {
   // When the module is enabled, we need to clear cache to make sure that the
   // menu is buildt correctly with the entity info.s

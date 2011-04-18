@@ -144,15 +144,43 @@ function vopros_answer_menu() {
       'access arguments' => array(3),
       'file' => 'includes/vopros_answer.admin.inc',
     ),
-    'admin/vopros/answer/%vopros_answer/edit' => array(
+    'admin/vopros/answers/%vopros_answer/edit' => array(
       'title' => 'Edit answer',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_answer_form', '', 3),
       'access callback' => 'vopros_answer_access',
-      'access arguments' => array('edit', 3),
+      'access arguments' => array('update', 3),
       'file' => 'includes/vopros_answer.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/answers/%vopros_answer/revisions' => array(
+      'title' => 'Revisions',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_answer_revisions_form', 3),
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_answer.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/answers/%vopros_answer/revisions/view' => array(
+      'title' => 'Diff',
+      'page callback' => 'vopros_answer_diffs_show',
+      'page arguments' => array(3, 6, 7),
+      'type' => MENU_LOCAL_TASK,
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array('update'),
+      'tab_parent' => 'admin/vopros/answerss/%/revisions',
+      'file' => 'includes/vopros_answer.admin.inc',
+    ),
+    'admin/vopros/answers/%vopros_answer/revisions/%vopros_answer_revision/revert' => array(
+      'title' => 'Revert revision',
+      'page callback' => 'vopros_answer_revision_revert',
+      'page arguments' => array(3, 5),
+      'access callback' => 'vopros_answer_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_answer.admin.inc',
     ),
   );
 }
@@ -190,12 +218,9 @@ function vopros_answer_permission() {
   return $permissions;
 }
 
-/**************************
-*                         *
-*     ENTITY CALLBACKS    *
-*                         *
-/*************************/
-
+/**
+ * Initialize a new answer.
+ */
 function vopros_answer_new($values = array()) {
   $default_values = array(
     'status' => 'in progress',
@@ -228,10 +253,24 @@ function vopros_answer_save($answer, $revision = 1) {
 /**
  * Loads an answer by ID.
  */
-function vopros_answer_load($answer_id) {
-  $answers = vopros_answer_load_multiple(array($answer_id), array());
+function vopros_answer_load($answer_id, $revision_id = NULL, $reset = FALSE) {
+  $conditions = array();
+  if ($revision_id) {
+    $conditions['revision_id'] = $revision_id;
+  }
+  $answers = vopros_answer_load_multiple(array($answer_id), $conditions, $reset);
   return $answers ? reset($answers) : FALSE;
 }
+
+/**
+ * Loads an revision of a question.
+ */
+function vopros_answer_revision_load($revision_id) {
+  $answers = vopros_answer_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
+  return $answers ? reset($answers) : FALSE;
+}
+
+
 
 /**
  * Loads multiple answers by ID or based on a set of matching conditions.
@@ -252,6 +291,21 @@ function vopros_answer_load($answer_id) {
 function vopros_answer_load_multiple($answer_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_answer', $answer_ids, $conditions, $reset);
 }
+
+/**
+ * Get a list of revisions for a question.
+ */
+function vopros_answer_revision_list($answer) {
+  $revisions = array();
+  $result = db_query("SELECT a.revision_id, a.revision_uid, a.revision_timestamp, a.log, a.uid, a.status, a.answer_content FROM {vopros_answer_revision} AS a
+                      WHERE a.answer_id = :answer_id
+                      ORDER BY -a.revision_id", array(':answer_id' => $answer->answer_id));
+  foreach ($result as $revision) {
+    $revisions[$revision->revision_id] = $revision;
+  }
+  return $revisions;
+}
+
 
 /**
  * Implements hook_vopros_question_view_alter().
@@ -322,7 +376,7 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
     $answer->uid = $GLOBALS['user']->uid;
     $answer->author_name = $GLOBALS['user']->name;
     vopros_answer_save($answer);
-    $form_state['redirect'] = 'admin/vopros/answer/' . $answer->answer_id . '/edit';
+    $form_state['redirect'] = 'admin/vopros/answers/' . $answer->answer_id . '/edit';
   }
   else {
     $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id . '/new-answer';

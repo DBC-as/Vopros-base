@@ -68,7 +68,7 @@ function vopros_sms_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
     ),
-    'admin/vopros/answer/%vopros_answer/new-sms' => array(
+    'admin/vopros/answers/%vopros_answer/new-sms' => array(
       'title' => 'Answer question',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_sms_form', 3, vopros_sms_new()),
@@ -333,5 +333,5 @@ function vopros_sms_form_vopros_answer_form_alter(&$form, &$form_state) {
 }
 
 function vopros_sms_form_vopros_answer_form_submit(&$form, &$form_state) {
-  $form_state['redirect'] = 'admin/vopros/answer/' . $form_state['answer']->answer_id . '/new-sms';
+  $form_state['redirect'] = 'admin/vopros/answers/' . $form_state['answer']->answer_id . '/new-sms';
 }

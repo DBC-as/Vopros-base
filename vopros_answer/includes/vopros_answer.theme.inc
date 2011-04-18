@@ -22,7 +22,7 @@ function theme_vopros_answer_answers_pl_content($variables) {
     $answer = array_shift($answers);
     $output = theme('vopros_answer_answer_content', array('answer' => $answer));
     if ($variables['edit']) {
-      $output .= l('Edit answer', 'admin/vopros/answer/' . $answer->answer_id . '/edit');
+      $output .= l('Edit answer', 'admin/vopros/answers/' . $answer->answer_id . '/edit');
     }
     return $output;
   }
@@ -30,7 +30,7 @@ function theme_vopros_answer_answers_pl_content($variables) {
   foreach ($answers as $answer) {
     $output = theme('vopros_answer_answer_content', array('answer' => $answer));
     if ($variables['edit']) {
-      $output .= l('Edit answer', 'admin/vopros/answer/' . $answer->answer_id . '/edit');
+      $output .= l('Edit answer', 'admin/vopros/answers/' . $answer->answer_id . '/edit');
     }
     $items[] = $output;
   }

@@ -251,6 +251,9 @@ function vopros_question_title_form_cancel(&$form, &$form_state) {
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
+/**
+ * Form to display revisions for an question.
+ */
 function vopros_question_revisions_form($form, &$form_state, $question) {
   $form['#theme'] = 'diff_node_revisions';
 
@@ -436,7 +439,7 @@ function _vopros_question_diff_rows($old_question, $new_question) {
     'question_status' => _vopros_question_status(),
     'question_deadline' => _vopros_question_deadline(),
   );
-  
+
   $single_line = array(
     'question_title',
     'question_status',
@@ -497,7 +500,6 @@ function _vopros_question_diff_rows($old_question, $new_question) {
     }
   }*/
 
-
   // We start off assuming all form elements are in the correct order.
   $question_diffs['#sorted'] = TRUE;
 
@@ -551,6 +553,9 @@ function _vopros_question_diff_rows($old_question, $new_question) {
   return $rows;
 }
 
+/**
+ * Menu callback: Revert a question to different revision.
+ */
 function vopros_question_revision_revert($question, $revision) {
   if ($question->revision_id != $revision->revision_id && $question->question_id == $revision->question_id) {
     drupal_write_record('vopros_question', $revision, 'question_id');
