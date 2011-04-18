@@ -49,6 +49,10 @@ function vopros_question_schema() {
         'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
         'type' => 'int',
       ),
+      'question_deadline_timestamp' => array(
+        'description' => 'The timestamp for when the question deadline is. Used to sort and display time in views.',
+        'type' => 'int',
+      ),
       'question_usage' => array(
         'description' => 'How the question should be used.',
         'type' => 'varchar',
@@ -207,6 +211,10 @@ function vopros_question_schema() {
         'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
         'type' => 'int',
       ),
+      'question_deadline_timestamp' => array(
+        'description' => 'The timestamp for when the question deadline is. Used to sort and display time in views.',
+        'type' => 'int',
+      ),
       'question_usage' => array(
         'description' => 'How the question should be used.',
         'type' => 'varchar',
@@ -250,7 +258,7 @@ function vopros_question_schema() {
         'length' => '255',
         'default' => '',
       ),
-      'user_ostal_code' => array(
+      'user_postal_code' => array(
         'description' => 'The postal code of the person who sent in the question.',
         'type' => 'varchar',
         'length' => '255',

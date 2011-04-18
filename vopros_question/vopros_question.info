@@ -8,3 +8,6 @@ dependencies[] = vopros
 
 ; Entity controller include:
 files[] = includes/vopros_question.controller.inc
+
+; Views handlers
+files[] = includes/views/handlers/views_handler_field_vopros_question.inc

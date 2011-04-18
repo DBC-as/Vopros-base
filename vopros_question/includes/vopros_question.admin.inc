@@ -44,6 +44,13 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#weight' => -10,
   );
 
+  $form['question_deadline'] = array(
+    '#type' => 'select',
+    '#title' => t('Deadline'),
+    '#options' => _vopros_question_deadline(),
+    '#default_value' => isset($question->question_deadline) ? $question->question_deadline : -1,
+  );
+
   $form['question_usage'] = array(
     '#type' => 'select',
     '#title' => t('Usage'),
@@ -212,6 +219,7 @@ function vopros_question_page_view($question) {
   $build[] = array(
     '#markup' => vopros_embed_view('vopros_question_admin', 'default', array($question->question_id))
   );
+  
   drupal_alter('vopros_question_view', $build, $question);
   return $build;
 }

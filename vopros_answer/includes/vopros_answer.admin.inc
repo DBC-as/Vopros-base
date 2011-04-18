@@ -36,7 +36,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   );
 
   $form['link'] = array(
-    '#markup' => l('See question', 'admin/vopros/question/' . $question->question_id),
+    '#markup' => l('See question', 'admin/vopros/questions/' . $question->question_id),
     '#prefix' => '<div class="question-link">',
     '#suffix' => '</div>',
   );
@@ -99,7 +99,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   $question->uid = 0;
   $question->question_status = 'in progress';
   vopros_question_save($question);
-  $form_state['redirect'] = 'admin/vopros/question/' . $question->question_id;
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
 /**
@@ -115,7 +115,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $answer->author_name = $GLOBALS['user']->name;
   vopros_answer_save($answer);
   drupal_set_message('Answer saved and question released for others to answer');
-  $form_state['redirect'] = 'admin/vopros/question/' . $question->question_id;
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
 /**
@@ -133,5 +133,5 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $form_state['answer'] = $answer;
   vopros_answer_save($answer);
   drupal_set_message('Answer saved and question marked as answered');
-  $form_state['redirect'] = 'admin/vopros/question/' . $question->question_id;
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }

@@ -139,5 +139,5 @@ function vopros_sms_form_submit(&$form, &$form_state) {
   if ($sms->status != 'sent') {
     vopros_sms_send($sms);
   }
-  $form_state['redirect'] = 'admin/vopros/question/' . $sms_wrapper->answer->question->question_id->value();
+  $form_state['redirect'] = 'admin/vopros/questions/' . $sms_wrapper->answer->question->question_id->value();
 }

@@ -54,7 +54,7 @@ function vopros_question_entity_info() {
  */
 function vopros_question_uri($question) {
   return array(
-    'path' => 'admin/vopros/question/' . $question->question_id,
+    'path' => 'admin/vopros/questions/' . $question->question_id,
   );
 }
 
@@ -101,7 +101,7 @@ function vopros_question_menu() {
       'access arguments' => array('create'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
-    'admin/vopros/question/%vopros_question' => array(
+    'admin/vopros/questions/%vopros_question' => array(
       'title callback' => 'vopros_question_title',
       'title arguments' => array(3),
        'page callback' => 'vopros_question_page_view',
@@ -110,17 +110,17 @@ function vopros_question_menu() {
        'access arguments' => array('view'),
        'file' => 'includes/vopros_question.admin.inc',
     ),
-    'admin/vopros/question/%vopros_question/view' => array(
+    'admin/vopros/questions/%vopros_question/view' => array(
       'title' => 'View',
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
     ),
-    'admin/vopros/question/%vopros_question/edit' => array(
+    'admin/vopros/questions/%vopros_question/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_question_question_form', 3),
       'access callback' => 'vopros_question_access',
-      'access arguments' => array('edit'),
+      'access arguments' => array('update'),
       'file' => 'includes/vopros_question.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
@@ -171,7 +171,7 @@ function vopros_question_permission() {
       'title' => t('Create questions'),
       'restrict access' => TRUE,
     ),
-    'edit question' => array(
+    'edit questions' => array(
       'title' => t('Edit any question'),
       'restrict access' => TRUE,
     ),
@@ -239,6 +239,23 @@ function vopros_question_new($values = array()) {
 }
 
 /**
+ * Implements hook_entity_presave().
+ */
+function vopros_entity_presave($entity, $type) {
+  // Set the calculated deadline timestamp.
+  if ($type == 'vopros_question' && $entity->created) {
+    if ($entity->question_deadline == -1) {
+      // We set the deadline quite high: 1 year from creation.
+      $entity->question_deadline_timestamp = 86400 * 365 + $entity->created;
+    }
+    else {
+      // Set the deadline to x hours from creation.
+      $entity->question_deadline_timestamp = 3600 * $entity->question_deadline + $entity->created;
+    }
+  }
+}
+
+/**
  * Save a question
  *
  * @param $question
@@ -254,8 +271,20 @@ function vopros_question_save($question, $revision = 1) {
 /**
  * Loads an question by ID.
  */
-function vopros_question_load($question_id, $reset = FALSE) {
-  $questions = vopros_question_load_multiple(array($question_id), array(), $reset);
+function vopros_question_load($question_id, $revision_id = NULL, $reset = FALSE) {
+  $conditions = array();
+  if ($revision_id) {
+    $conditions['revision_id'] = $revision_id;
+  }
+  $questions = vopros_question_load_multiple(array($question_id), $conditions, $reset);
+  return $questions ? reset($questions) : FALSE;
+}
+
+/**
+ * Loads an revision of a question.
+ */
+function vopros_question_revision_load($revision_id) {
+  $questions = vopros_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
   return $questions ? reset($questions) : FALSE;
 }
 
@@ -292,7 +321,62 @@ function vopros_question_load_multiple($question_ids = array(), $conditions = ar
 function vopros_question_views_api() {
   return array(
     'api' => 3,
-    'path' => drupal_get_path('module', 'vopros_question') . '/includes',
+    'path' => drupal_get_path('module', 'vopros_question') . '/includes/views',
+  );
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function vopros_question_views_data_alter(&$data) {
+  // Add relationships to other tables.
+  $data['vopros_question']['uid']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'users',
+    'field' => 'uid',
+    'label' => 'user',
+  );
+  $data['vopros_question']['revision_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_question_revision',
+    'field' => 'revision_id',
+    'label' => 'Question revision',
+  );
+
+  // Set timestamps as dates.
+  $data['vopros_question']['created']['field']['handler'] =
+  $data['vopros_question']['changed']['field']['handler'] =
+  $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'views_handler_field_date';
+  $data['vopros_question']['created']['sort']['handler'] =
+  $data['vopros_question']['changed']['sort']['handler'] =
+  $data['vopros_question']['question_deadline_timestamp']['sort']['handler'] = 'views_handler_sort_date';
+  $data['vopros_question']['created']['filter']['handler'] =
+  $data['vopros_question']['changed']['filter']['handler'] =
+  $data['vopros_question']['question_deadline_timestamp']['filter']['handler'] = 'views_handler_filter_date';
+
+  // Add custom handlers for select fields.
+  $data['vopros_question']['question_status']['field']['handler'] =
+  $data['vopros_question']['question_usage']['field']['handler'] = 'views_handler_field_vopros_question';
+
+  // Add revision table.
+  $data['vopros_question_revision'] = $data['vopros_question'];
+  $data['vopros_question_revision']['table'] = array(
+    'group' => 'Question revisions',
+    'base' => array(
+      'field' => 'revision_id',
+      'title' => 'Question revisions',
+      'help' => '',
+    ),
+  );
+  // Add revision uid.
+  $data['vopros_question_revision']['revision_uid'] = $data['vopros_question_revision']['uid'];
+  unset($data['vopros_question_revision']['revision_id']['relationship']);
+
+  $data['vopros_question_revision']['question_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_question',
+    'field' => 'question_id',
+    'label' => 'Question',
   );
 }
 
@@ -364,6 +448,19 @@ function _vopros_question_usage() {
     'school4' => t('Assignment for university education or research'),
   );
 }
+
+/**
+ * Utility function to get the question usage options
+ */
+function _vopros_question_deadline() {
+  return array(
+    -1 => t('No deadline'),
+    2 => t('2 hours'),
+    24 => t('1 day'),
+    168 => t('1 week'),
+  );
+}
+
 
 /**
  * Utility function to get the question usage options

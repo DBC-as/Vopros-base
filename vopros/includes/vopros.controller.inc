@@ -17,6 +17,9 @@ class VoprosAPIEntityController extends EntityAPIController {
    *   in their transaction object.
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
+    if (empty($entity->created)) {
+      $entity->created = time();
+    }
     $transaction = isset($transaction) ? $transaction : db_transaction();
     try {
       $entity->changed = time();
@@ -49,7 +52,6 @@ class VoprosAPIEntityController extends EntityAPIController {
       else {
         // Save revision.
         $this->saveRevision($this->entityInfo['revision table'], $entity);
-        $entity->created = time();
         $return = drupal_write_record($this->entityInfo['base table'], $entity);
         // Update the revision.
         db_update($this->entityInfo['revision table'])

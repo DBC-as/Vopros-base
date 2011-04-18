@@ -10,7 +10,7 @@
 function vopros_sms_entity_info() {
   $return = array(
     'vopros_sms' => array(
-      'label' => t('Email', array(), array('context' => 'a vopros sms')),
+      'label' => t('SMS', array(), array('context' => 'a vopros sms')),
       'controller class' => 'VoprosSMSEntityController',
       'base table' => 'vopros_sms',
       'revision table' => 'vopros_sms_revision',
@@ -22,7 +22,7 @@ function vopros_sms_entity_info() {
       ),
       'bundles' => array(
         'vopros_sms' => array(
-          'label' => t('Email', array(), array('context' => 'a vopros sms')),
+          'label' => t('SMS', array(), array('context' => 'a vopros sms')),
           'admin' => array(
             'path' => 'admin/vopros/config/sms',
             'access arguments' => array('administer SMSes'),
