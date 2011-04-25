@@ -321,5 +321,9 @@ function vopros_question_schema() {
     ),
   );
 
+  module_load_include('inc', 'uuid', 'uuid.schema');
+  uuid_schema_generate($schema, 'vopros_question');
+  uuid_schema_generate($schema, 'vopros_question_revision');
+
   return $schema;
 }

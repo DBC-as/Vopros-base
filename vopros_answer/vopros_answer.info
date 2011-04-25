@@ -3,7 +3,9 @@ description = Defines the Answer entity and associated features.
 package = Vopros
 core = 7.x
 
+dependencies[] = diff
 dependencies[] = entity
+dependencies[] = uuid
 dependencies[] = vopros
 dependencies[] = vopros_question
 

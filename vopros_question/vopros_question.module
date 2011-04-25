@@ -296,6 +296,10 @@ function vopros_entity_presave($entity, $type) {
  */
 function vopros_question_save($question, $revision = 1) {
   $question->revision = $revision;
+  $answer->revision = $revision;
+  if (empty($question->uuid)) {
+    $question->uuid = uuid_uuid();
+  }
   entity_save('vopros_question', $question);
 }
 

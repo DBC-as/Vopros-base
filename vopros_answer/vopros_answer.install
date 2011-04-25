@@ -159,5 +159,9 @@ function vopros_answer_schema() {
     ),
   );
 
+  module_load_include('inc', 'uuid', 'uuid.schema');
+  uuid_schema_generate($schema, 'vopros_answer');
+  uuid_schema_generate($schema, 'vopros_answer_revision');
+
   return $schema;
 }

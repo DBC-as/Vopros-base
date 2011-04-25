@@ -5,6 +5,7 @@ core = 7.x
 
 dependencies[] = diff
 dependencies[] = entity
+dependencies[] = uuid
 dependencies[] = vopros
 
 ; Entity controller include:
