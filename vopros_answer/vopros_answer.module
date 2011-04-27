@@ -333,7 +333,8 @@ function vopros_answer_vopros_question_view_alter(&$build, $question) {
   elseif ($question->question_status == 'in progress') {
     $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
     if ($answers) {
-      $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
+      $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
+      $build[] = array('#markup' => $output);
     }
     $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
   }

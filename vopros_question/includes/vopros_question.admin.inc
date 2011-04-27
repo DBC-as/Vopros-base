@@ -211,6 +211,7 @@ function vopros_question_title_form($form, &$form_state, $question) {
 function vopros_question_page_view($question) {
   drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_page.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
   $build = array();
   $build[] = array(

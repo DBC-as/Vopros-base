@@ -153,6 +153,7 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
     '#title' => t('Subject'),
     '#description' => t('The subject for the email.'),
     '#default_value' => isset($email->subject) ? $email->subject : '',
+    '#required' => TRUE,
   );
 
   $form['content_field'] = array(
@@ -194,8 +195,10 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
 
   $form['content_field']['content'] = array(
     '#type' => 'textarea',
+    '#title' => t('Mail body'),
     '#description' => t('The main content of the email.'),
     '#default_value' => isset($email->content) ? $email->content : (isset($answer->answer_content) ? $answer->answer_content : ''),
+    '#required' => TRUE,
   );
 
   $form['send'] = array(
