@@ -1,6 +1,6 @@
 <?php
 
-class views_handler_field_vopros_question extends views_handler_field {
+class vopros_question_handler_field_vopros_question extends views_handler_field {
   function render($values) {
     $value = $this->get_value($values);
     $san = $this->sanitize_value($value);

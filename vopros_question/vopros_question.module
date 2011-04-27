@@ -395,8 +395,7 @@ function vopros_question_views_data_alter(&$data) {
 
   // Set timestamps as dates.
   $data['vopros_question']['created']['field']['handler'] =
-  $data['vopros_question']['changed']['field']['handler'] =
-  $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'views_handler_field_date';
+  $data['vopros_question']['changed']['field']['handler']  = 'views_handler_field_date';
   $data['vopros_question']['created']['sort']['handler'] =
   $data['vopros_question']['changed']['sort']['handler'] =
   $data['vopros_question']['question_deadline_timestamp']['sort']['handler'] = 'views_handler_sort_date';
@@ -406,7 +405,8 @@ function vopros_question_views_data_alter(&$data) {
 
   // Add custom handlers for select fields.
   $data['vopros_question']['question_status']['field']['handler'] =
-  $data['vopros_question']['question_usage']['field']['handler'] = 'views_handler_field_vopros_question';
+  $data['vopros_question']['question_usage']['field']['handler'] = 'vopros_question_handler_field_vopros_question';
+  $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'vopros_question_handler_field_date';
 
   // Add revision table.
   $data['vopros_question_revision'] = $data['vopros_question'];
