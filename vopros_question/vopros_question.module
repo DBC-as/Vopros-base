@@ -451,7 +451,10 @@ function vopros_question_configure_question() {
       'locked' => TRUE,
       'settings' => array(
         'allowed_values' => array(
-          'vocabolary' => 'vopros_question_subject_category',
+          array(
+            'vocabulary' => 'vopros_question_subject_category',
+            'parent' => 0,
+          ),
         ),
       ),
       'field_name' => $field_name,

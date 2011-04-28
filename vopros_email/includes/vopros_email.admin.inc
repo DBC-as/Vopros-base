@@ -64,7 +64,7 @@ function vopros_email_settings_form($form, &$form_state) {
     );
   }
 
-  $form['snippets']['new_snippets'][0]['#prefix'] = '<div id="new_snippetss">';
+  $form['snippets']['new_snippets'][0]['#prefix'] = '<div id="new_snippets">';
   $form['snippets']['new_snippets'][count($form['snippets']['new_snippets']) - 1]['#suffix'] = '</div>';
 
   $form['snippets']['add'] = array(
@@ -72,7 +72,7 @@ function vopros_email_settings_form($form, &$form_state) {
     '#value' => t('Add another'),
     '#ajax' => array(
       'callback' => 'vopros_email_snippet_js',
-      'wrapper' => 'new_snippetss',
+      'wrapper' => 'new_snippets',
     ),
     '#submit' => array('vopros_email_snippet_submit'),
   );
