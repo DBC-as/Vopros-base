@@ -6,7 +6,7 @@ core = 7.x
 dependencies[] = diff
 dependencies[] = entity
 dependencies[] = uuid
-dependencies[] = vopros
+dependencies[] = vopros_base
 
 ; Entity controller include:
 files[] = includes/vopros_question.controller.inc

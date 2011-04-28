@@ -1,4 +1,4 @@
-name = "Vopros"
+name = "Vopros Base"
 description = "General module to tie all vopros together with admin interface"
 package = Vopros
 core = 7.x
@@ -6,5 +6,4 @@ core = 7.x
 dependencies[] = entity
 dependencies[] = views
 
-
-files[] = includes/vopros.controller.inc
+files[] = includes/vopros_base.controller.inc

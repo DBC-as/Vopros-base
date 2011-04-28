@@ -123,8 +123,8 @@ function vopros_email_entity_property_info() {
     'label' => t('Answer'),
     'type' => 'vopros_answer',
     'description' => t('The unique ID of answer the email belongs to.'),
-    'getter callback' => 'vopros_get_properties',
-    'setter callback' => 'vopros_set_properties',
+    'getter callback' => 'vopros_base_get_properties',
+    'setter callback' => 'vopros_base_set_properties',
     'clear' => array('answer_id'),
     'schema field' => 'vopros_answer',
   );

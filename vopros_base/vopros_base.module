@@ -7,7 +7,7 @@
 /**
  * Implements hook_menu().
  */
-function vopros_menu() {
+function vopros_base_menu() {
   // Top level "Vopros" container.
   return array(
     'admin/vopros' => array(
@@ -38,14 +38,14 @@ function vopros_menu() {
 /**
  * Callback for getting entity properties
  */
-function vopros_get_properties($entity, array $options, $name) {
+function vopros_base_get_properties($entity, array $options, $name) {
   return $entity->{$name.'_id'};
 }
 
 /**
  * Callback for setting line item properties.
  */
-function vopros_set_properties($entity, $name, $value) {
+function vopros_base_set_properties($entity, $name, $value) {
   return $entity->{$name.'_id'} = $value;
 }
 
@@ -62,7 +62,7 @@ function vopros_set_properties($entity, $name, $value) {
  * @return
  *   The rendered output of the chosen View display.
  */
-function vopros_embed_view($view_id, $display_id = 'default', $arguments = array()) {
+function vopros_base_embed_view($view_id, $display_id = 'default', $arguments = array()) {
   // Load the cart line item View.
   $view = views_get_view($view_id);
   $view->set_display($display_id);

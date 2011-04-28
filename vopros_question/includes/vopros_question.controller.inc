@@ -1,5 +1,8 @@
 <?php
 
+// Needed during install.
+module_load_include('inc', 'vopros_base', 'includes/vopros.controller');
+
 /**
  * Entity controller class for vopros question.
  */

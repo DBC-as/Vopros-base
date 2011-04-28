@@ -219,7 +219,7 @@ function vopros_question_page_view($question) {
     '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
   );
   $build[] = array(
-    '#markup' => vopros_embed_view('vopros_question_admin', 'default', array($question->question_id))
+    '#markup' => vopros_base_embed_view('vopros_question_admin', 'default', array($question->question_id))
   );
   
   drupal_alter('vopros_question_view', $build, $question);

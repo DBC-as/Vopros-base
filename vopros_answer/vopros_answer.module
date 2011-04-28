@@ -62,8 +62,8 @@ function vopros_answer_entity_property_info() {
     'label' => t('Question'),
     'type' => 'vopros_question',
     'description' => t('The unique ID of the question the answer belongs to.'),
-    'getter callback' => 'vopros_get_properties',
-    'setter callback' => 'vopros_set_properties',
+    'getter callback' => 'vopros_base_get_properties',
+    'setter callback' => 'vopros_base_set_properties',
     'clear' => array('question_id'),
     'schema field' => 'vopros_question',
   );
