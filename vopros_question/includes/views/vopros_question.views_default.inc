@@ -508,8 +508,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_deadline_timestamp']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['question_deadline_timestamp']['field'] = 'question_deadline_timestamp';
   $handler->display->display_options['fields']['question_deadline_timestamp']['label'] = 'Deadline';
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['text'] = '[question_deadline_timestamp] until';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['external'] = 0;
@@ -524,7 +523,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_deadline_timestamp']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_deadline_timestamp']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'raw time hence';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'vopros_question_deadline';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

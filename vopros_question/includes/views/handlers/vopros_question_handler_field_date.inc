@@ -20,7 +20,7 @@ class vopros_question_handler_field_date extends views_handler_field_date {
       return t('No Deadline');
     }
     else {
-      return t('%time to deadline', array('%time' => format_interval(-$time_diff, 3)));
+      return t('%time to deadline', array('%time' => format_interval(-$time_diff, 2)));
     }
     
     return 'test';
