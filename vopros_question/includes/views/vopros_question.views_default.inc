@@ -6,6 +6,8 @@
 function vopros_question_views_default_views() {
   $views = array();
 
+  // The display of a question.
+
   $view = new view;
   $view->name = 'vopros_question_admin';
   $view->description = 'Displays a question for admins';
@@ -45,6 +47,27 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_title']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
+  /* Field: Question: Subject */
+  $handler->display->display_options['fields']['subject_category']['id'] = 'subject_category';
+  $handler->display->display_options['fields']['subject_category']['table'] = 'field_data_subject_category';
+  $handler->display->display_options['fields']['subject_category']['field'] = 'subject_category';
+  $handler->display->display_options['fields']['subject_category']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['subject_category']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['subject_category']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['subject_category']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['subject_category']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['subject_category']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['subject_category']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['subject_category']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['subject_category']['click_sort_column'] = 'tid';
+  $handler->display->display_options['fields']['subject_category']['field_api_classes'] = 0;
   /* Field: Question: Question_content */
   $handler->display->display_options['fields']['question_content']['id'] = 'question_content';
   $handler->display->display_options['fields']['question_content']['table'] = 'vopros_question';
@@ -85,27 +108,27 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_note']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_note']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_note']['empty_zero'] = 0;
-  /* Field: Question: Question_deadline */
-  $handler->display->display_options['fields']['question_deadline']['id'] = 'question_deadline';
-  $handler->display->display_options['fields']['question_deadline']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_deadline']['field'] = 'question_deadline';
-  $handler->display->display_options['fields']['question_deadline']['label'] = 'Deadline';
-  $handler->display->display_options['fields']['question_deadline']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_deadline']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_deadline']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_deadline']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_deadline']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['question_deadline']['format_plural'] = 0;
+  /* Field: Question: Question_deadline_timestamp */
+  $handler->display->display_options['fields']['question_deadline_timestamp']['id'] = 'question_deadline_timestamp';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['field'] = 'question_deadline_timestamp';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['label'] = 'Question deadline';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'short';
   /* Field: Question: Question_status */
   $handler->display->display_options['fields']['question_status']['id'] = 'question_status';
   $handler->display->display_options['fields']['question_status']['table'] = 'vopros_question';
@@ -281,10 +304,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['arguments']['question_id']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['question_id']['break_phrase'] = 0;
   $handler->display->display_options['arguments']['question_id']['not'] = 0;
-
-  /* Display: Page */
   $translatables['vopros_question_admin'] = array(
-    t('Displays a question for admins'),
     t('Master'),
     t('more'),
     t('Apply'),
@@ -296,23 +316,24 @@ function vopros_question_views_default_views() {
     t('- All -'),
     t('Offset'),
     t('Label'),
+    t('Subject'),
     t('Question'),
     t('Note from user'),
-    t('Deadline'),
-    t('.'),
-    t(','),
+    t('Question deadline'),
     t('Status'),
     t('Referenced by'),
     t('Usage'),
     t('User\'s name'),
     t('User\'s age'),
+    t('.'),
+    t(','),
     t('User\'s field of study'),
     t('User\'s postal code'),
     t('User\'s library'),
     t('All'),
     t('%1'),
-    t('Page'),
   );
+  
 
   $views[$view->name] = $view;
 

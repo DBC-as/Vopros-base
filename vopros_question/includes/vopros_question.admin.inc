@@ -148,7 +148,8 @@ function vopros_question_question_form($form, &$form_state, $question) {
  * Validate handler for vopros_question_question_form().
  */
 function vopros_question_question_form_validate(&$form, &$form_state) {
-  
+  $question = $form_state['vopros_question'];
+  field_attach_validate('vopros_question', $question, $form, $form_state);
 }
 
 /**
@@ -166,7 +167,7 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
   }
 
   // Notify field widgets.
-  field_attach_submit('commerce_product', $question, $form, $form_state);
+  field_attach_submit('vopros_question', $question, $form, $form_state);
 
   // Save the product.
   vopros_question_save($question);
