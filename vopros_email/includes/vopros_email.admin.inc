@@ -13,6 +13,27 @@ function vopros_email_settings_form($form, &$form_state) {
     $form_state['new_snippets_count'] = 1;
   }
 
+  $form['macros'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('E-mail macros'),
+    '#description' => t('Create macros inserted when sending an email.'),
+  );
+
+  $form['macros']['vopros_email_answered_question_macro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Answered question'),
+    '#description' => t('Macro used when answering a question.'),
+    '#default_value' => variable_get('vopros_email_answered_question_macro', ''),
+  );
+
+  $form['macros']['tokens'] = array(
+    '#markup' => theme('token_tree', array(
+      'token_types' => array('vopros_answer', 'vopros_question'),
+      'global_types' => FALSE,
+    )),
+  );
+  
+
   $snippets = variable_get('vopros_email_snippets', array());
 
   $form['snippets'] = array(
@@ -110,13 +131,15 @@ function vopros_email_snippet_js($form, $form_state) {
 function vopros_email_settings_form_submit(&$form, &$form_state) {
   $snippets = variable_get('vopros_email_snippets', array());
 
-  foreach ($form_state['values']['saved_snippets'] as $key => $snippet) {
-    if ($snippet['delete'] || (empty($snippet['name']) || empty($snippet['snippet']))) {
-      unset($snippets[$key]);
-    }
-    else {
-      $snippets[$key]['name'] = $snippet['name'];
-      $snippets[$key]['snippet'] = $snippet['snippet'];
+  if (isset($form_state['values']['saved_snippets'])) {
+    foreach ($form_state['values']['saved_snippets'] as $key => $snippet) {
+      if ($snippet['delete'] || (empty($snippet['name']) || empty($snippet['snippet']))) {
+        unset($snippets[$key]);
+      }
+      else {
+        $snippets[$key]['name'] = $snippet['name'];
+        $snippets[$key]['snippet'] = $snippet['snippet'];
+      }
     }
   }
 
@@ -129,6 +152,7 @@ function vopros_email_settings_form_submit(&$form, &$form_state) {
     }
   }
   variable_set('vopros_email_snippets', $snippets);
+  variable_set('vopros_email_answered_question_macro', $form_state['values']['vopros_email_answered_question_macro']);
 }
 
 /**
@@ -158,7 +182,7 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
 
   $form['content_field'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Content')
+    '#title' => t('Content'),
   );
 
   $snippets = variable_get('vopros_email_snippets', array());
@@ -197,7 +221,10 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
     '#type' => 'textarea',
     '#title' => t('Mail body'),
     '#description' => t('The main content of the email.'),
-    '#default_value' => isset($email->content) ? $email->content : (isset($answer->answer_content) ? $answer->answer_content : ''),
+    '#default_value' => token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
+      'vopros_answer' => $answer,
+      'vopros_question' => vopros_question_load($answer->question_id),
+    )),
     '#required' => TRUE,
   );
 
