@@ -4,7 +4,7 @@ package = Vopros
 core = 7.x
 
 dependencies[] = entity
-dependencies[] = vopros
+dependencies[] = vopros_base
 dependencies[] = vopros_answer
 
 

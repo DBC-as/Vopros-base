@@ -44,9 +44,13 @@ function vopros_sms_entity_info() {
   return $return;
 }
 
+/**
+ * Implements hook_enable().
+ */
 function vopros_sms_enable() {
-  drupal_flush_all_caches();
-  // Create fields for the sms entity
+  // When the module is enabled, we need to make sure that the
+  // menu is buildt correctly with the entity info.
+  menu_rebuild();
 }
 
 

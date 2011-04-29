@@ -71,10 +71,13 @@ function vopros_answer_entity_property_info() {
   return $info;
 }
 
+/**
+ * Implements hook_enable().
+ */
 function vopros_answer_enable() {
-  // When the module is enabled, we need to clear cache to make sure that the
-  // menu is buildt correctly with the entity info.s
-  drupal_flush_all_caches();
+  // When the module is enabled, we need to make sure that the
+  // menu is buildt correctly with the entity info.
+  menu_rebuild();
 }
 
 /**

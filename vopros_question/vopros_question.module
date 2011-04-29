@@ -62,9 +62,9 @@ function vopros_question_uri($question) {
  * Implements hook_enable().
  */
 function vopros_question_enable() {
-  // When the module is enabled, we need to clear cache to make sure that the
-  // menu is buildt correctly with the entity info.s
-  drupal_flush_all_caches();
+  // When the module is enabled, we need to make sure that the
+  // menu is buildt correctly with the entity info.
+  menu_rebuild();
   // Create the question vopros_question_subject_category vocabolary
   if (!taxonomy_vocabulary_machine_name_load('vopros_question_subject_category')) {
     $vocabulary = (object) array(
