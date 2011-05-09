@@ -65,11 +65,11 @@ function vopros_question_enable() {
   // When the module is enabled, we need to make sure that the
   // menu is buildt correctly with the entity info.
   menu_rebuild();
-  // Create the question vopros_question_subject_category vocabolary
-  if (!taxonomy_vocabulary_machine_name_load('vopros_question_subject_category')) {
+  // Create the question vopros_question_subject_catagory vocabolary
+  if (!taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory')) {
     $vocabulary = (object) array(
-      'name' => t('Subject category'),
-      'machine_name' => 'vopros_question_subject_category',
+      'name' => t('Subject catagory'),
+      'machine_name' => 'vopros_question_subject_catagory',
       'module' => 'vopros_question',
     );
     taxonomy_vocabulary_save($vocabulary);
@@ -439,7 +439,7 @@ function vopros_question_configure_question() {
   $bundle = 'vopros_question';
 
   // Create a taxonomy term reference field
-  $field_name = 'subject_category';
+  $field_name = 'subject_catagory';
   $field = field_info_field($field_name);
   $instance = field_info_instance($type, $field_name, $bundle);
 
@@ -452,7 +452,7 @@ function vopros_question_configure_question() {
       'settings' => array(
         'allowed_values' => array(
           array(
-            'vocabulary' => 'vopros_question_subject_category',
+            'vocabulary' => 'vopros_question_subject_catagory',
             'parent' => 0,
           ),
         ),

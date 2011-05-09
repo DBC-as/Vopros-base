@@ -128,7 +128,7 @@ function vopros_migrate_perform_migrate_users_submit(&$form, &$form_state) {
 /**
  * Form to perform migration of taxonomy terms
  */
-function vopros_migrate_perform_migrate_terms($form, &$form_state) {
+function vopros_migrate_perform_migrate_vocabolary($form, &$form_state) {
   $form['count'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of terms to migrate'),
@@ -145,7 +145,7 @@ function vopros_migrate_perform_migrate_terms($form, &$form_state) {
 /**
  * Validate handler for vopros_migrate_perform_migrate_questions().
  */
-function vopros_migrate_perform_migrate_terms_validate(&$form, &$form_state) {
+function vopros_migrate_perform_migrate_vocabolary_validate(&$form, &$form_state) {
   if (!is_numeric($form_state['values']['count'])) {
     form_set_error('count', t('Must be a number'));
   }
@@ -154,6 +154,6 @@ function vopros_migrate_perform_migrate_terms_validate(&$form, &$form_state) {
 /**
  * Submit handler for vopros_migrate_perform_migrate_questions().
  */
-function vopros_migrate_perform_migrate_terms_submit(&$form, &$form_state) {
-  _vopros_migrate_perform_migrate_terms((int) $form_state['values']['count']);
+function vopros_migrate_perform_migrate_vocabolary_submit(&$form, &$form_state) {
+  _vopros_migrate_perform_migrate_vocabolary((int) $form_state['values']['count']);
 }

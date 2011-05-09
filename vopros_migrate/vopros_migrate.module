@@ -33,11 +33,11 @@ function vopros_migrate_menu() {
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
-    'admin/vopros/migrate/migrate_terms' => array(
-      'title' => 'Migrate terms',
+    'admin/vopros/migrate/migrate_vocabolary' => array(
+      'title' => 'Migrate vocabolary',
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_migrate_perform_migrate_terms'),
+      'page arguments' => array('vopros_migrate_perform_migrate_vocabolary'),
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
@@ -81,7 +81,10 @@ function _vopros_migrate_perform_migrate_questions($count, $offset = 0) {
     $top_question_id = mssql_fetch_object(mssql_query("SELECT TOP 1 QuestionId FROM Questions ORDER BY QuestionId DESC"));
     $top_question_id = $top_question_id->QuestionId - $offset;
     $bottom_question_id = $top_question_id - $count + 1;
-    $query = mssql_query("SELECT * FROM Questions WHERE QuestionId BETWEEN $bottom_question_id AND $top_question_id ORDER BY QuestionId DESC");
+    $query = mssql_query("SELECT q.*, c.catagory_id FROM Questions AS q
+                          LEFT JOIN QA ON QA.QuestionId = q.QuestionId
+                          LEFT JOIN Kbase_CatagoryConnections AS c ON c.QAId = QA.QAId
+                          WHERE q.QuestionId BETWEEN $bottom_question_id AND $top_question_id ORDER BY q.QuestionId DESC");
     while ($row = mssql_fetch_object($query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
@@ -122,7 +125,7 @@ function _vopros_migrate_perform_migrate_users($count, $offset = 0) {
 /**
  * Performs the actual migration of taxonomy terms.
  */
-function _vopros_migrate_perform_migrate_terms($count, $offset = 0) {
+function _vopros_migrate_perform_migrate_vocabolary($count, $offset = 0) {
   global $user;
   if (vopros_migrate_connect()) {
     $count = min(50, (int) $count);
@@ -131,7 +134,7 @@ function _vopros_migrate_perform_migrate_terms($count, $offset = 0) {
     $top_term_id = $top_term_id->catagory_id - $offset;
     $bottom_term_id = $top_term_id - $count + 1;
     $query = mssql_query("SELECT * FROM KbaseCatagories WHERE catagory_id BETWEEN $bottom_term_id AND $top_term_id ORDER BY catagory_id DESC");
-    $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_category');
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory');
     while ($row = mssql_fetch_object($query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
@@ -191,6 +194,18 @@ function _vopros_migrate_create_question($row) {
     );
     // Create and save the question
     $question = vopros_question_new($question_values);
+    if ($row->catagory_id) {
+      $tid = db_select('vopros_migrate', 'v')
+        ->fields('v', array('entity_id'))
+        ->condition('migrate_id', $row->catagory_id)
+        ->condition('entity_type', 'taxonomy_term')
+        ->execute()
+        ->fetch();
+      if ($tid) {
+        $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+        $question_wrapper->subject_catagory = $tid->entity_id;
+      }
+    }
     vopros_question_save($question);
     // Update link in database to make sure we don't export the same question multiple times.
     if (isset($question->question_id) && $question->question_id) {
@@ -265,7 +280,6 @@ function _vopros_migrate_create_user($row) {
  * Create a taxonomy term from the data from the migration database.
  */
 function _vopros_migrate_create_term($row, $vid) {
-  dpm($row);
   $count = db_select('vopros_migrate')
     ->condition('migrate_id', $row->catagory_id)
     ->condition('entity_type', 'taxonomy_term')
