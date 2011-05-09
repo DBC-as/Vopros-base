@@ -483,6 +483,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 0;
   $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
   $handler->display->display_options['fields']['subject_catagory']['click_sort_column'] = 'tid';
+  $handler->display->display_options['fields']['subject_catagory']['type'] = 'taxonomy_term_reference_plain';
   $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
   /* Field: Question: Question_usage */
   $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
@@ -578,7 +579,6 @@ function vopros_question_views_default_views() {
     t('Usage'),
     t('Status'),
     t('Deadline'),
-    t('[question_deadline_timestamp] until'),
     t('Page'),
   );
 
