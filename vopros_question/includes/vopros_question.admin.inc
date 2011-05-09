@@ -98,9 +98,10 @@ function vopros_question_question_form($form, &$form_state, $question) {
   );
 
   $form['ask']['user_age'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
     '#title' => t('Age'),
     '#default_value' => isset($question->user_age) ? $question->user_age : '',
+    '#options' => _vopros_question_user_age(),
   );
 
   $form['ask']['user_gender'] = array(

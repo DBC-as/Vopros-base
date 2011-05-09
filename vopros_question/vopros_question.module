@@ -514,6 +514,20 @@ function _vopros_question_deadline() {
   );
 }
 
+/**
+ * Utility function to get the question user age options
+ */
+function _vopros_question_user_age() {
+  return array(
+    '0 - 14 years' => t('0 - 14 years'),
+    '15 - 19 years' => t('15 - 19 years'),
+    '20 - 25 years' => t('20 - 25 years'),
+    '26 - 45 years' => t('26 - 45 years'),
+    '46 - 65 years' => t('46 - 65 years'),
+    '66 +' => t('66 +'),
+    'no inform' => t('Doesn\'t want to inform'),
+  );
+}
 
 /**
  * Utility function to get the question usage options

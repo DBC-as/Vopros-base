@@ -168,6 +168,7 @@ function _vopros_migrate_create_question($row) {
   if ($count->expression == 0) {
     $question_status_mapping = vopros_migrate_question_status_mapping();
     $question_time_limit_mapping = vopros_migrate_time_limit_mapping();
+    $question_user_age_mapping = vopros_migrate_user_age_mapping();
     $question_values = array(
       'question_title' => $row->Title,
       'question_content' => $row->Question,
@@ -175,7 +176,7 @@ function _vopros_migrate_create_question($row) {
       'user_email' => $row->Email,
       'user_postal_code' => $row->PostalCode,
       'user_mobile_phone' => $row->Phone,
-      'user_age' => '',
+      'user_age' => isset($question_user_age_mapping[$row->AgeGroupId]) ? $question_user_age_mapping[$row->AgeGroupId] : 'no inform',
       'user_gender' => '',
       'user_field_of_study' => $row->Education,
       'user_library' => '',
@@ -328,16 +329,14 @@ function vopros_migrate_question_status_mapping() {
 }
 
 function vopros_migrate_user_age_mapping() {
-  $mapping = array(
+  return array(
     1 => '0 - 14 years',
     2 => '15 - 19 years',
     3 => '20 - 25 years',
     4 => '26 - 45 years',
     5 => '46 - 65 years',
     6 => '66 +',
-    7 => t('Doesn\'t want to inform'),
-  );
-  return array(
+    7 => 'no inform',
   );
 }
 

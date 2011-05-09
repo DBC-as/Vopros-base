@@ -110,8 +110,9 @@ function vopros_question_schema() {
       ),
       'user_age' => array(
         'description' => 'The age of the person that asked the question.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
       ),
       'user_gender' => array(
         'description' => 'The gender of the person asking the question.',
@@ -272,8 +273,9 @@ function vopros_question_schema() {
       ),
       'user_age' => array(
         'description' => 'The age of the person that asked the question.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
       ),
       'user_gender' => array(
         'description' => 'The gender of the person asking the question.',
