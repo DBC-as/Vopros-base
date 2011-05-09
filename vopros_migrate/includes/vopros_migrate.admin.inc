@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * General settings form.
+ */
+function vopros_migrate_setting_form($form, &$form_state) {
+  $connect = vopros_migrate_connect();
+  if (!$connect) {
+    drupal_set_message(t('Could not connect to the Vopros migration database'), 'error');
+  }
+  else {
+    drupal_set_message(t('Successfully connected to Vopros migration database'));
+  }
+
+  $form['database_configuration'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Database configuration'),
+    '#collapsible' => TRUE,
+    '#collapsed' => $connect,
+    '#access' => user_access('administer vopros_migrate'),
+  );
+  
+  $form['database_configuration']['vopros_migrate_host'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Host'),
+    '#description' => t('The IP address to the database.'),
+    '#default_value' => variable_get('vopros_migrate_host', ''),
+  );
+
+  $form['database_configuration']['vopros_migrate_username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#description' => t('The Username used to login to the database.'),
+    '#default_value' => variable_get('vopros_migrate_username', ''),
+  );
+
+  $form['database_configuration']['vopros_migrate_password'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Password'),
+    '#description' => t('The password for the database.'),
+    '#default_value' => variable_get('vopros_migrate_password', ''),
+  );
+
+  $form['database_configuration']['vopros_migrate_database'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Database name'),
+    '#description' => t('The name of the database.'),
+    '#default_value' => variable_get('vopros_migrate_database', ''),
+  );
+
+  $form['database_configuration']['vopros_migrate_driver'] = array(
+    '#type' => 'select',
+    '#title' => t('Database driver'),
+    '#options' => array(
+      'mssql' => t('Mssql'),
+    ),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Form to perform migration of questions
+ */
+function vopros_migrate_perform_migrate_questions($form, &$form_state) {
+  $form['count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of questions to migrate'),
+  );
+
+  $form['migrate'] = array(
+    '#type' => 'submit',
+    '#value' => t('Migrate'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_questions_validate(&$form, &$form_state) {
+  if (!is_numeric($form_state['values']['count'])) {
+    form_set_error('count', t('Must be a number'));
+  }
+}
+
+/**
+ * Submit handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_questions_submit(&$form, &$form_state) {
+  _vopros_migrate_perform_migrate_questions((int) $form_state['values']['count']);
+}
+
+/**
+ * Form to perform migration of users
+ */
+function vopros_migrate_perform_migrate_users($form, &$form_state) {
+  $form['count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of users to migrate'),
+  );
+
+  $form['migrate'] = array(
+    '#type' => 'submit',
+    '#value' => t('Migrate'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_users_validate(&$form, &$form_state) {
+  if (!is_numeric($form_state['values']['count'])) {
+    form_set_error('count', t('Must be a number'));
+  }
+}
+
+/**
+ * Submit handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_users_submit(&$form, &$form_state) {
+  _vopros_migrate_perform_migrate_users((int) $form_state['values']['count']);
+}

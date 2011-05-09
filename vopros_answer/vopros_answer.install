@@ -30,7 +30,7 @@ function vopros_answer_schema() {
         'default' => 0,
       ),
       'author_name' => array(
-        'description' => 'The status of the answer.',
+        'description' => 'The name of the answer author.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,

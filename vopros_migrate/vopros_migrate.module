@@ -1,0 +1,276 @@
+<?php
+
+/**
+ * Implementation of hook_menu().
+ */
+function vopros_migrate_menu() {
+  return array(
+    'admin/vopros/migrate' => array(
+      'title' => 'Migration',
+      'description' => 'Migration of old Q & A content to Vopros.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_migrate_setting_form'),
+      'access arguments' => array('administer vopros_migrate'),
+      'file' => 'includes/vopros_migrate.admin.inc',
+    ),
+    'admin/vopros/migrate/settings' => array(
+      'title' => 'Settings',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+    ),
+    'admin/vopros/migrate/migrate_questions' => array(
+      'title' => 'Migrate questions',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_migrate_perform_migrate_questions'),
+      'access arguments' => array('administer vopros_migrate'),
+      'file' => 'includes/vopros_migrate.admin.inc',
+    ),
+    'admin/vopros/migrate/migrate_users' => array(
+      'title' => 'Migrate users',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_migrate_perform_migrate_users'),
+      'access arguments' => array('administer vopros_migrate'),
+      'file' => 'includes/vopros_migrate.admin.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_migrate_permission() {
+  $permissions = array(
+    'administer vopros_migrate' => array(
+      'title' => t('Configure migration'),
+    ),
+  );
+
+  return $permissions;
+}
+
+
+/**
+ * Function to connect to the migration database.
+ */
+function vopros_migrate_connect() {
+  $host = variable_get('vopros_migrate_host', '');
+  $username = variable_get('vopros_migrate_username', '');
+  $password = variable_get('vopros_migrate_password', '');
+  $database = variable_get('vopros_migrate_database', '');
+  // Itentionally kill errors when trying to connect.
+  $link = @mssql_connect($host, $username, $password);
+  return $link && @mssql_select_db($database, $link);
+}
+
+/**
+ * Performs the actual migration of questions.
+ */
+function _vopros_migrate_perform_migrate_questions($count, $offset = 0) {
+  if (vopros_migrate_connect()) {
+    $count = min(50, (int) $count);
+    // Get top question id:
+    $top_question_id = mssql_fetch_object(mssql_query("SELECT TOP 1 QuestionId FROM Questions ORDER BY QuestionId DESC"));
+    $top_question_id = $top_question_id->QuestionId - $offset;
+    $bottom_question_id = $top_question_id - $count + 1;
+    $query = mssql_query("SELECT * FROM Questions WHERE QuestionId BETWEEN $bottom_question_id AND $top_question_id ORDER BY QuestionId DESC");
+    while ($row = mssql_fetch_object($query)) {
+      // Format data:
+      foreach ((array) $row as $key => $value) {
+        $row->$key = utf8_encode($value);
+      }
+      $row->AnswerTimestamp = _vopros_migrate_mssql_date_convert($row->AnswerTimestamp);
+      $row->QuestionTimestamp = _vopros_migrate_mssql_date_convert($row->QuestionTimestamp);
+      $question = _vopros_migrate_create_question($row);
+      if ($question) {
+        _vopros_migrate_create_answer($row, $question);
+      }
+    }
+  }
+}
+
+/**
+ * Performs the actual migration of users.
+ */
+function _vopros_migrate_perform_migrate_users($count, $offset = 0) {
+  global $user;
+  if (vopros_migrate_connect()) {
+    $count = min(50, (int) $count);
+    // Get top question id:
+    $top_user_id = mssql_fetch_object(mssql_query("SELECT TOP 1 UserId FROM Users ORDER BY UserId DESC"));
+    $top_user_id = $top_user_id->UserId - $offset;
+    $bottom_user_id = $top_user_id - $count + 1;
+    $query = mssql_query("SELECT * FROM Users WHERE UserId BETWEEN $bottom_user_id AND $top_user_id ORDER BY UserId DESC");
+    while ($row = mssql_fetch_object($query)) {
+      // Format data:
+      foreach ((array) $row as $key => $value) {
+        $row->$key = utf8_encode($value);
+      }
+      _vopros_migrate_create_user($row);
+    }
+  }
+}
+
+/**
+ * Function to convert MSSQL time formats to ISO-8601 formats.
+ */
+function _vopros_migrate_mssql_date_convert($time_string) {
+  $formated_string = preg_replace('/\:+\d{3}/', ' ', $time_string);
+  $unix_time = strtotime($formated_string);
+  return $unix_time;
+}
+
+/**
+ * Create a question from the data from the migration database.
+ */
+function _vopros_migrate_create_question($row) {
+  $count = db_select('vopros_migrate')
+    ->condition('migrate_id', $row->QuestionId)
+    ->condition('entity_type', 'question')
+    ->countQuery()
+    ->execute()
+    ->fetch();
+  if ($count->expression == 0) {
+    $question_status_mapping = vopros_migrate_question_status_mapping();
+    $question_time_limit_mapping = vopros_migrate_time_limit_mapping();
+    $question_values = array(
+      'question_title' => $row->Title,
+      'question_content' => $row->Question,
+      'user_name' => $row->Name,
+      'user_email' => $row->Email,
+      'user_postal_code' => $row->PostalCode,
+      'user_mobile_phone' => $row->Phone,
+      'user_age' => '',
+      'user_gender' => '',
+      'user_field_of_study' => $row->Education,
+      'user_library' => '',
+      'user_answer_preference' => '',
+      'created' => $row->QuestionTimestamp,
+      'changed' => $row->QuestionTimestamp,
+      'uid' => NULL,
+      'question_status' => isset($question_status_mapping[$row->QuestionStatusId]) ? $question_status_mapping[$row->QuestionStatusId] : 'answered',
+      'question_deadline' => isset($question_time_limit_mapping[$row->TimeLimitId]) ? $question_time_limit_mapping[$row->TimeLimitId] : -1,
+      'question_deadline_timestamp' => NULL,
+      'question_usage' => NULL,
+      'question_note' => $row->InternalNote,
+      'qanda_service_name' => NULL,
+      'agency_id' => NULL,
+      'referenced_by' => NULL,
+    );
+    // Create and save the question
+    $question = vopros_question_new($question_values);
+    vopros_question_save($question);
+    // Update link in database to make sure we don't export the same question multiple times.
+    if (isset($question->question_id) && $question->question_id) {
+      $migration = array(
+        'entity_id' => $question->question_id,
+        'entity_type' => 'question',
+        'migrate_id' => $row->QuestionId,
+        'created' => time(),
+      );
+      drupal_write_record('vopros_migrate', $migration);
+      return $question;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Create a question from the data from the migration database.
+ */
+function _vopros_migrate_create_answer($row, $question) {
+  if (empty($row->Answer)) {
+    return FALSE;
+  }
+  $uid = db_select('vopros_migrate', 'v')
+    ->fields('v', array('entity_id'))
+    ->condition('migrate_id', $row->AnswerUserId)
+    ->condition('entity_type', 'user')
+    ->execute()
+    ->fetch();
+
+  $answer = vopros_answer_new(array(
+    'question_id' => $question->question_id,
+    'uid' => $uid ? $uid->entity_id : 0,
+    'answer_content' => $row->Answer,
+    'status' => 'complete',
+  ));
+  vopros_answer_save($answer);
+}
+
+/**
+ * Create a user from the data from the migration database.
+ */
+function _vopros_migrate_create_user($row) {
+  $count = db_select('vopros_migrate')
+    ->condition('migrate_id', $row->UserId)
+    ->condition('entity_type', 'user')
+    ->countQuery()
+    ->execute()
+    ->fetch();
+  if ($count->expression == 0 && $row->IsDeleted == 0) {
+     $user_data = array(
+      'name' => $row->Username,
+      'pass' => user_password(), // Set random password for the new users.
+      'mail' => $row->Email,
+      'init' => $row->Email,
+      'status' => $row->IsEnabled,
+    );
+    $account = user_save(NULL, $user_data);
+    if ($account->uid) {
+      $migration = array(
+        'entity_id' => $account->uid,
+        'entity_type' => 'user',
+        'migrate_id' => $row->UserId,
+        'created' => time(),
+      );
+      drupal_write_record('vopros_migrate', $migration);
+    }
+  }
+}
+
+function vopros_migrate_question_status_mapping() {
+  $mapping = array(
+    1 => 'Nyt spørgsmål',
+    2 => 'Under arbejde',
+    3 => 'Besvaret',
+    4 => 'Overført',
+    5 => 'Videresendt',
+    6 => 'Bedt om flere oplysninger',
+    7 => 'Afsluttet uden svar',
+    14 => 'Spam',
+    15 => 'IT-Taskforce',
+    16 => 'Problemspørgsmål',
+    17 => 'Olivia-spørgsmål',
+  );
+  return array(
+    1 => 'new',
+    2 => 'in_progress',
+    3 => 'answered',
+  );
+}
+
+function vopros_migrate_user_age_mapping() {
+  $mapping = array(
+    1 => '0 - 14 years',
+    2 => '15 - 19 years',
+    3 => '20 - 25 years',
+    4 => '26 - 45 years',
+    5 => '46 - 65 years',
+    6 => '66 +',
+    7 => t('Doesn\'t want to inform'),
+  );
+  return array(
+  );
+}
+
+function vopros_migrate_time_limit_mapping() {
+  return array(
+    1 => 2,
+    2 => 8,
+    3 => 24,
+    4 => 48,
+    5 => 24,
+    6 => 168,
+  );
+}

@@ -228,6 +228,7 @@ function vopros_answer_new($values = array()) {
   $default_values = array(
     'status' => 'in progress',
     'answer_text' => '',
+    'author_name' => ''
   );
   $values += $default_values;
   if (isset($values['question_id'])) {

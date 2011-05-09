@@ -1,0 +1,9 @@
+name = Vopros Migrate
+description = Handles the migration and mapping of content
+package = Vopros
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = vopros_answer
+dependencies[] = vopros_base
+dependencies[] = vopros_question
