@@ -124,3 +124,36 @@ function vopros_migrate_perform_migrate_users_validate(&$form, &$form_state) {
 function vopros_migrate_perform_migrate_users_submit(&$form, &$form_state) {
   _vopros_migrate_perform_migrate_users((int) $form_state['values']['count']);
 }
+
+/**
+ * Form to perform migration of taxonomy terms
+ */
+function vopros_migrate_perform_migrate_terms($form, &$form_state) {
+  $form['count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of terms to migrate'),
+  );
+
+  $form['migrate'] = array(
+    '#type' => 'submit',
+    '#value' => t('Migrate'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_terms_validate(&$form, &$form_state) {
+  if (!is_numeric($form_state['values']['count'])) {
+    form_set_error('count', t('Must be a number'));
+  }
+}
+
+/**
+ * Submit handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_terms_submit(&$form, &$form_state) {
+  _vopros_migrate_perform_migrate_terms((int) $form_state['values']['count']);
+}
