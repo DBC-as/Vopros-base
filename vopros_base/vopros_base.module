@@ -77,3 +77,16 @@ function vopros_base_embed_view($view_id, $display_id = 'default', $arguments = 
   // Return the rendered View.
   return $view->render();
 }
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_base_permission() {
+  $permissions = array(
+    'administer vopros' => array(
+      'title' => t('Access to various vopros administration'),
+    ),
+  );
+
+  return $permissions;
+}

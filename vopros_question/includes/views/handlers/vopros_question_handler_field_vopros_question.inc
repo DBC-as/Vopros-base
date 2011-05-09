@@ -13,6 +13,11 @@ class vopros_question_handler_field_vopros_question extends views_handler_field 
         $statuses = _vopros_question_usage();
         return isset($statuses[$san]) ? $statuses[$san] : $san;
         break;
+      case 'user_age':
+        $mapping = _vopros_question_user_age();
+        return isset($mapping[$san]) ? $mapping[$san] : $mapping['no inform'];
+        return 'test';
+        break;
     }
     return $san;
   }

@@ -7,7 +7,6 @@ function vopros_question_views_default_views() {
   $views = array();
 
   // The display of a question.
-
   $view = new view;
   $view->name = 'vopros_question_admin';
   $view->description = 'Displays a question for admins';
@@ -32,6 +31,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['question_title']['field'] = 'question_title';
+  $handler->display->display_options['fields']['question_title']['label'] = '';
   $handler->display->display_options['fields']['question_title']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['question_title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['question_title']['alter']['absolute'] = 0;
@@ -43,92 +43,10 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_title']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['question_title']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['question_title']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_title']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_title']['element_label_colon'] = 0;
   $handler->display->display_options['fields']['question_title']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
-  /* Field: Question: Subject */
-  $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['click_sort_column'] = 'tid';
-  $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
-  /* Field: Question: Question_content */
-  $handler->display->display_options['fields']['question_content']['id'] = 'question_content';
-  $handler->display->display_options['fields']['question_content']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_content']['field'] = 'question_content';
-  $handler->display->display_options['fields']['question_content']['label'] = 'Question';
-  $handler->display->display_options['fields']['question_content']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_content']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_content']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_content']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_content']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_content']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_content']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_content']['empty_zero'] = 0;
-  /* Field: Question: Question_note */
-  $handler->display->display_options['fields']['question_note']['id'] = 'question_note';
-  $handler->display->display_options['fields']['question_note']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_note']['field'] = 'question_note';
-  $handler->display->display_options['fields']['question_note']['label'] = 'Note from user';
-  $handler->display->display_options['fields']['question_note']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_note']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_note']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_note']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_note']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_note']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_note']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_note']['empty_zero'] = 0;
-  /* Field: Question: Question_deadline_timestamp */
-  $handler->display->display_options['fields']['question_deadline_timestamp']['id'] = 'question_deadline_timestamp';
-  $handler->display->display_options['fields']['question_deadline_timestamp']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_deadline_timestamp']['field'] = 'question_deadline_timestamp';
-  $handler->display->display_options['fields']['question_deadline_timestamp']['label'] = 'Question deadline';
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'short';
   /* Field: Question: Question_status */
   $handler->display->display_options['fields']['question_status']['id'] = 'question_status';
   $handler->display->display_options['fields']['question_status']['table'] = 'vopros_question';
@@ -149,51 +67,114 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_status']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_status']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_status']['empty_zero'] = 0;
-  /* Field: Question: Referenced_by */
-  $handler->display->display_options['fields']['referenced_by']['id'] = 'referenced_by';
-  $handler->display->display_options['fields']['referenced_by']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['referenced_by']['field'] = 'referenced_by';
-  $handler->display->display_options['fields']['referenced_by']['label'] = 'Referenced by';
-  $handler->display->display_options['fields']['referenced_by']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['referenced_by']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['referenced_by']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['referenced_by']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['referenced_by']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['referenced_by']['empty_zero'] = 0;
-  /* Field: Question: Question_usage */
-  $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
-  $handler->display->display_options['fields']['question_usage']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_usage']['field'] = 'question_usage';
-  $handler->display->display_options['fields']['question_usage']['label'] = 'Usage';
-  $handler->display->display_options['fields']['question_usage']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_usage']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_usage']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_usage']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_usage']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_usage']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_usage']['empty_zero'] = 0;
+  /* Field: Question: Question_deadline_timestamp */
+  $handler->display->display_options['fields']['question_deadline_timestamp']['id'] = 'question_deadline_timestamp';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['field'] = 'question_deadline_timestamp';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['label'] = 'Question deadline';
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'vopros_question_deadline';
+  /* Field: Question: Subject */
+  $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
+  $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
+  $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';
+  $handler->display->display_options['fields']['subject_catagory']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['subject_catagory']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 1;
+  $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['subject_catagory']['click_sort_column'] = 'tid';
+  $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
+  /* Field: Question: Question_content */
+  $handler->display->display_options['fields']['question_content']['id'] = 'question_content';
+  $handler->display->display_options['fields']['question_content']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_content']['field'] = 'question_content';
+  $handler->display->display_options['fields']['question_content']['label'] = '';
+  $handler->display->display_options['fields']['question_content']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_content']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_content']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_content']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_content']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['question_content']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_content']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_content']['empty_zero'] = 0;
+  /* Field: Question: Question_note */
+  $handler->display->display_options['fields']['question_note']['id'] = 'question_note';
+  $handler->display->display_options['fields']['question_note']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_note']['field'] = 'question_note';
+  $handler->display->display_options['fields']['question_note']['label'] = 'Internal note';
+  $handler->display->display_options['fields']['question_note']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['question_note']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_note']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_note']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_note']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_note']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_note']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_note']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_note']['empty_zero'] = 0;
+  /* Field: Global: Custom text */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<h2 class="title">User info</h2>';
+  $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
   /* Field: Question: User_name */
   $handler->display->display_options['fields']['user_name']['id'] = 'user_name';
   $handler->display->display_options['fields']['user_name']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_name']['field'] = 'user_name';
-  $handler->display->display_options['fields']['user_name']['label'] = 'User\'s name';
+  $handler->display->display_options['fields']['user_name']['label'] = 'Name';
   $handler->display->display_options['fields']['user_name']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_name']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_name']['alter']['absolute'] = 0;
@@ -213,7 +194,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_age']['id'] = 'user_age';
   $handler->display->display_options['fields']['user_age']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_age']['field'] = 'user_age';
-  $handler->display->display_options['fields']['user_age']['label'] = 'User\'s age';
+  $handler->display->display_options['fields']['user_age']['label'] = 'Age';
   $handler->display->display_options['fields']['user_age']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_age']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_age']['alter']['absolute'] = 0;
@@ -229,12 +210,31 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_age']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['user_age']['hide_empty'] = 0;
   $handler->display->display_options['fields']['user_age']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['user_age']['format_plural'] = 0;
+  /* Field: Question: Question_usage */
+  $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
+  $handler->display->display_options['fields']['question_usage']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_usage']['field'] = 'question_usage';
+  $handler->display->display_options['fields']['question_usage']['label'] = 'Usage';
+  $handler->display->display_options['fields']['question_usage']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_usage']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_usage']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_usage']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_usage']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_usage']['hide_empty'] = 1;
+  $handler->display->display_options['fields']['question_usage']['empty_zero'] = 0;
   /* Field: Question: User_field_of_study */
   $handler->display->display_options['fields']['user_field_of_study']['id'] = 'user_field_of_study';
   $handler->display->display_options['fields']['user_field_of_study']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_field_of_study']['field'] = 'user_field_of_study';
-  $handler->display->display_options['fields']['user_field_of_study']['label'] = 'User\'s field of study';
+  $handler->display->display_options['fields']['user_field_of_study']['label'] = 'Field of study';
   $handler->display->display_options['fields']['user_field_of_study']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_field_of_study']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_field_of_study']['alter']['absolute'] = 0;
@@ -248,13 +248,13 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_field_of_study']['alter']['html'] = 0;
   $handler->display->display_options['fields']['user_field_of_study']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['user_field_of_study']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['user_field_of_study']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['user_field_of_study']['hide_empty'] = 1;
   $handler->display->display_options['fields']['user_field_of_study']['empty_zero'] = 0;
   /* Field: Question: User_postal_code */
   $handler->display->display_options['fields']['user_postal_code']['id'] = 'user_postal_code';
   $handler->display->display_options['fields']['user_postal_code']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_postal_code']['field'] = 'user_postal_code';
-  $handler->display->display_options['fields']['user_postal_code']['label'] = 'User\'s postal code';
+  $handler->display->display_options['fields']['user_postal_code']['label'] = 'Postal code';
   $handler->display->display_options['fields']['user_postal_code']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_postal_code']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_postal_code']['alter']['absolute'] = 0;
@@ -268,13 +268,13 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_postal_code']['alter']['html'] = 0;
   $handler->display->display_options['fields']['user_postal_code']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['user_postal_code']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['user_postal_code']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['user_postal_code']['hide_empty'] = 1;
   $handler->display->display_options['fields']['user_postal_code']['empty_zero'] = 0;
   /* Field: Question: User_library */
   $handler->display->display_options['fields']['user_library']['id'] = 'user_library';
   $handler->display->display_options['fields']['user_library']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['user_library']['field'] = 'user_library';
-  $handler->display->display_options['fields']['user_library']['label'] = 'User\'s library';
+  $handler->display->display_options['fields']['user_library']['label'] = 'Library';
   $handler->display->display_options['fields']['user_library']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['user_library']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['user_library']['alter']['absolute'] = 0;
@@ -288,7 +288,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['user_library']['alter']['html'] = 0;
   $handler->display->display_options['fields']['user_library']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['user_library']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['user_library']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['user_library']['hide_empty'] = 1;
   $handler->display->display_options['fields']['user_library']['empty_zero'] = 0;
   /* Contextual filter: Question: Question ID */
   $handler->display->display_options['arguments']['question_id']['id'] = 'question_id';
@@ -315,31 +315,25 @@ function vopros_question_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('Label'),
-    t('Subject'),
-    t('Question'),
-    t('Note from user'),
-    t('Question deadline'),
     t('Status'),
-    t('Referenced by'),
+    t('Question deadline'),
+    t('Subject'),
+    t('Internal note'),
+    t('<h2 class="title">User info</h2>'),
+    t('Name'),
+    t('Age'),
     t('Usage'),
-    t('User\'s name'),
-    t('User\'s age'),
-    t('.'),
-    t(','),
-    t('User\'s field of study'),
-    t('User\'s postal code'),
-    t('User\'s library'),
+    t('Field of study'),
+    t('Postal code'),
+    t('Library'),
     t('All'),
     t('%1'),
   );
-  
 
   $views[$view->name] = $view;
 
   // Question list view.
   // Used to display questions, to find the ones that can/should be answered.
-
   $view = new view;
   $view->name = 'vopros_question_list';
   $view->description = 'Used to display questions, to find the ones that can/should be answered';
@@ -546,6 +540,12 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_deadline_timestamp']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_deadline_timestamp']['date_format'] = 'vopros_question_deadline';
+  /* Filter criterion: Question: Question_status */
+  $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
+  $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
+  $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
+  $handler->display->display_options['filters']['question_status']['operator'] = '!=';
+  $handler->display->display_options['filters']['question_status']['value'] = 'answered';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
