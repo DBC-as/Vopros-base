@@ -178,6 +178,8 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
  * Ajax form for changing the title with ajax.
  */
 function vopros_question_title_form($form, &$form_state, $question) {
+  $form_state['build_info']['files']['form'] = drupal_get_path('module', 'vopros_question') . '/includes/vopros_question.admin.inc';
+  
   $form['title'] = array(
     '#type' => 'textfield',
     '#default_value' => $question->question_title,
@@ -258,7 +260,7 @@ function vopros_question_title_form_cancel(&$form, &$form_state) {
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-title', 'attr', array('value', $form['title']['#default_value']));
   $commands[] = ajax_command_invoke('#vopros-question-title-form', 'appendTo', array('.title-form'));
-  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'show');
+  $commands[] = ajax_command_invoke('h2.question-title', 'show');
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 

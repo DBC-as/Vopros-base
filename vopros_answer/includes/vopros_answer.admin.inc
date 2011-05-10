@@ -13,13 +13,43 @@ function vopros_answer_settings_form($form, &$form_state) {
 }
 
 /**
- * Answer form
+ * The answer page used when answering questions.
  */
-function vopros_answer_form($form, &$form_state, $question, $answer) {
+function vopros_answer_answer_page($question, $answer) {
+  module_load_include('inc', 'vopros_question', 'includes/vopros_question.admin');
+  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
   if (empty($question)) {
     $question = vopros_question_load($answer->question_id);
   }
 
+  $build = array(
+    'question_title' => array(
+      '#theme' => 'vopros_question_title',
+      '#question' => $question,
+    ),
+    'question_title_form' => array(
+      '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
+    ),
+    'question_content' => array(
+      '#markup' => $question->question_content,
+      '#prefix' => '<div class="question">',
+      '#suffix' => '</div>',
+    ),
+    'question_link' => array(
+      '#markup' => l('See question', 'admin/vopros/questions/' . $question->question_id),
+      '#prefix' => '<div class="question-link">',
+      '#suffix' => '</div>',
+    ),
+    'answer_form' => drupal_get_form('vopros_answer_form', $question, $answer),
+  );
+  return $build;
+}
+
+/**
+ * Answer form
+ */
+function vopros_answer_form($form, &$form_state, $question, $answer) {
   // Add the field related form elements.
   field_attach_form('vopros_answer', $answer, $form, $form_state);
 
@@ -31,18 +61,6 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   $form['answer'] = array(
     '#type' => 'value',
     '#value' => $answer,
-  );
-
-  $form['question_content'] = array(
-    '#markup' => $question->question_content,
-    '#prefix' => '<div class="question">',
-    '#suffix' => '</div>',
-  );
-
-  $form['link'] = array(
-    '#markup' => l('See question', 'admin/vopros/questions/' . $question->question_id),
-    '#prefix' => '<div class="question-link">',
-    '#suffix' => '</div>',
   );
 
   $form['answer_content'] = array(

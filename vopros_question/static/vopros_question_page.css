@@ -28,3 +28,7 @@ h2.question-title {
 h3.question-user-data {
   font-size: 14px;
 }
+
+#vopros-answer-question-view-form {
+  margin-top: 20px;
+}
