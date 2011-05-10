@@ -1,7 +1,7 @@
 (function ($) {
   Drupal.behaviors.voprosQuestion = {
     attach: function(context, settings) {
-      $(".views-field-question-title .field-content").click(function() {
+      $("h2.question-title").click(function() {
         $(this).hide().after($(".title-form > *"));
       });
     }

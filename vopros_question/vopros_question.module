@@ -50,6 +50,85 @@ function vopros_question_entity_info() {
 }
 
 /**
+ * Implements hook_field_extra_fields().
+ */
+function vopros_question_field_extra_fields() {
+  $extra = array();
+
+  $extra['vopros_question']['vopros_question'] = array(
+    'form' => array(
+      'question_title' => array(
+        'label' => t('Question title'),
+        'description' => t('The title of the question'),
+        'weight' => -5,
+      ),
+      'question_content' => array(
+        'label' => t('Question content'),
+        'description' => t('The content of the question'),
+        'weight' => -4,
+      ),
+      'question_deadline' => array(
+        'label' => t('Deadline'),
+        'description' => t('The deadline for the question'),
+        'weight' => -3,
+      ),
+      'question_usage' => array(
+        'label' => t('Usage'),
+        'description' => t('The usage of the question'),
+        'weight' => -2,
+      ),
+      'question_note' => array(
+        'label' => t('Question note'),
+        'description' => t('Internal note regarding the question'),
+        'weight' => -1,
+      ),
+      'ask' => array(
+        'label' => t('User data'),
+        'description' => t('Data about the user asking the question'),
+        'weight' => -1,
+      ),
+    ),
+    'display' => array(
+      'question_title' => array(
+        'label' => t('Question title'),
+        'description' => t('The title of the question'),
+        'weight' => -5,
+      ),
+      'question_content' => array(
+        'label' => t('Question content'),
+        'description' => t('The content of the question'),
+        'weight' => -4,
+      ),
+      'question_deadline' => array(
+        'label' => t('Deadline'),
+        'description' => t('The deadline for the question'),
+        'weight' => -3,
+      ),
+      'question_usage' => array(
+        'label' => t('Usage'),
+        'description' => t('The usage of the question'),
+        'weight' => -2,
+      ),
+      'question_note' => array(
+        'label' => t('Question note'),
+        'description' => t('Internal note regarding the question'),
+        'weight' => -1,
+      ),
+      'ask' => array(
+        'label' => t('User data'),
+        'description' => t('Data about the user asking the question'),
+        'weight' => -1,
+      ),
+    ),
+  );
+
+  drupal_alter('vopros_question_field_extra_fields', $extra);
+
+  return $extra;
+}
+
+
+/**
  * Entity uri callback.
  */
 function vopros_question_uri($question) {
@@ -489,6 +568,44 @@ function vopros_question_configure_question() {
 }
 
 /**
+ * Builds a structured array representing the questions' content.
+ */
+function vopros_question_build_content($question, $view_mode = 'public', $langcode = NULL) {
+  $question->content = array();
+  field_attach_prepare_view('vopros_question', array($question->question_id => $question), $view_mode);
+  entity_prepare_view('vopros_question', array($question->question_id => $question));
+  $question->content = field_attach_view('vopros_question', $question, $view_mode, $langcode);
+  // Add extra fields
+  $question->content['question_title'] = array(
+    '#theme' => 'vopros_question_title',
+    '#question' => $question,
+  );
+  $question->content['question_content'] = array(
+    '#theme' => 'vopros_question_content',
+    '#question' => $question,
+  );
+  $question->content['question_deadline'] = array(
+    '#theme' => 'vopros_question_deadline',
+    '#question' => $question,
+  );
+  $question->content['question_usage'] = array(
+    '#theme' => 'vopros_question_usage',
+    '#question' => $question,
+  );
+  $question->content['question_note'] = array(
+    '#theme' => 'vopros_question_note',
+    '#question' => $question,
+  );
+  $question->content['ask'] = array(
+    '#theme' => 'vopros_question_user_data',
+    '#question' => $question,
+  );
+  
+  module_invoke_all('entity_view', $question, 'vopros_question', $view_mode, $langcode);
+
+}
+
+/**
  * Utility function to get the question usage options
  */
 function _vopros_question_usage() {
@@ -539,5 +656,39 @@ function _vopros_question_status() {
     'in_progress' => t('In progress'),
     'locked' => t('Locked'),
     'answered' => t('Answered'),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_question_theme() {
+  $path = drupal_get_path('module', 'vopros_question') . '/theme';
+  return array(
+    'vopros_question_title' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_content' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_deadline' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_usage' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_user_data' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
   );
 }

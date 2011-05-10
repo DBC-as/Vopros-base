@@ -317,31 +317,35 @@ function vopros_answer_revision_list($answer) {
 /**
  * Implements hook_vopros_question_view_alter().
  */
-function vopros_answer_vopros_question_view_alter(&$build, $question) {
-  if ($question->question_status == 'new') {
-    $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
-  }
-  elseif ($question->question_status == 'locked') {
-    global $user;
-    if ($question->uid == $user->uid || user_access('administer answers')) {
+function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'vopros_question' && $view_mode == 'administrator') {
+    $question = $entity;
+    if ($question->question_status == 'new') {
+      $entity->content['vopros_answer'] = drupal_get_form('vopros_answer_question_view_form', $question);
+    }
+    elseif ($question->question_status == 'locked') {
+      global $user;
+      if ($question->uid == $user->uid || user_access('administer answers')) {
+        $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+        if ($answers) {
+          $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
+          $entity->content['vopros_answer'] = array('#markup' => $output, '#weight' => 10);
+        }
+        else {
+          $entity->content['vopros_answer'] = drupal_get_form('vopros_answer_question_view_form', $question);
+        }
+      }
+    }
+    elseif ($question->question_status == 'in progress') {
       $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
       if ($answers) {
-        $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
-        $build[] = array('#markup' => $output);
+        $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
+        $entity->content['vopros_answer'] = array('#markup' => $output);
       }
-      else {
-        $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
-      }
+      $entity->content['vopros_answer'] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
   }
-  elseif ($question->question_status == 'in progress') {
-    $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
-    if ($answers) {
-      $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
-      $build[] = array('#markup' => $output);
-    }
-    $build[] = drupal_get_form('vopros_answer_question_view_form', $question);
-  }
+  
 }
 
 /**
@@ -473,5 +477,16 @@ function vopros_answer_theme() {
       'variables' => array('answers' => NULL, 'edit' => NULL),
       'file' => 'includes/vopros_answer.theme.inc',
     )
+  );
+}
+
+/**
+ * Implements hook_vopros_question_field_extra_fields_alter().
+ */
+function vopros_answer_vopros_question_field_extra_fields_alter(&$extra) {
+  $extra['vopros_question']['vopros_question']['display']['vopros_answer'] = array(
+    'label' => t('Vopros answer'),
+    'description' => t('Either answer button or the actual answer'),
+    'weight' => 0,
   );
 }

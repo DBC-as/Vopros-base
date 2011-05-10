@@ -2,6 +2,6 @@
   display: none;
 }
 
-.view-vopros-question-admin .views-field-question-title .field-content:hover {
+h2.question-title:hover {
   cursor: pointer;
 }

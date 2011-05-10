@@ -14,12 +14,9 @@
   margin: 10px 0;
 }
 
-.views-label-user-name,
-.views-label-user-age,
-.views-label-question-usage,
-.views-label-user-field-of-study,
-.views-label-user-postal-code {
+.vopros-question-extra .label {
   width: 125px;
   display: block;
   float: left;
+  font-weight: bold;
 }

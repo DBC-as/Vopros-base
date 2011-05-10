@@ -210,20 +210,28 @@ function vopros_question_title_form($form, &$form_state, $question) {
 /**
  * Handle the display of a question
  */
-function vopros_question_page_view($question) {
+function vopros_question_page_view($question, $view_mode = 'administrator', $langcode = NULL) {
   drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_page.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
-  $build = array();
+
+  // View mode is needed to sort the build array.
+  $build = array(
+    '#view_mode' => $view_mode,
+  );
+
   $build[] = array(
     '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
   );
-  $build[] = array(
-    '#markup' => vopros_base_embed_view('vopros_question_admin', 'default', array($question->question_id))
-  );
-  
-  drupal_alter('vopros_question_view', $build, $question);
+
+  // Populate $vopros_question->content with a render() array.
+  vopros_question_build_content($question, $view_mode, $langcode);
+
+  $build += $question->content;
+
+  $type = 'vopros_question';
+  drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
   return $build;
 }
 
@@ -238,8 +246,8 @@ function vopros_question_title_form_save(&$form, &$form_state) {
   // Send back ajax commands.
   $commands = array();
   $commands[] = ajax_command_invoke('#vopros-question-title-form', 'appendTo', array('.title-form'));
-  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'show', array());
-  $commands[] = ajax_command_invoke('.views-field-question-title .field-content', 'text', array($form_state['values']['title']));
+  $commands[] = ajax_command_invoke('h2.question-title', 'show', array());
+  $commands[] = ajax_command_invoke('h2.question-title', 'text', array($form_state['values']['title']));
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
