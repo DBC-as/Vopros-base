@@ -67,8 +67,14 @@ function vopros_migrate_connect() {
   $password = variable_get('vopros_migrate_password', '');
   $database = variable_get('vopros_migrate_database', '');
   // Itentionally kill errors when trying to connect.
-  $link = @mssql_connect($host, $username, $password);
-  return $link && @mssql_select_db($database, $link);
+  if (function_exists('mssql_connect')) {
+    $link = @mssql_connect($host, $username, $password);
+    return $link && @mssql_select_db($database, $link);
+  }
+  else {
+    drupal_set_message(t("You need to install MySQL for your PHP"), 'error');
+    return FALSE;
+  }
 }
 
 /**
