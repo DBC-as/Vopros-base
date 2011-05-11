@@ -343,6 +343,7 @@ function vopros_question_new($values = array()) {
     'question_title' => t('New question'),
     'question_content' => '',
     'question_deadline' => -1,
+    'user_age' => 'no inform',
   );
   $values += $default_values;
   return entity_create('vopros_question', $values);
@@ -351,7 +352,7 @@ function vopros_question_new($values = array()) {
 /**
  * Implements hook_entity_presave().
  */
-function vopros_entity_presave($entity, $type) {
+function vopros_question_entity_presave($entity, $type) {
   // Set the calculated deadline timestamp.
   if ($type == 'vopros_question' && $entity->created) {
     if ($entity->question_deadline == -1) {

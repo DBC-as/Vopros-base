@@ -53,7 +53,7 @@ function vopros_question_create_sms() {
   );
 
   $question = vopros_question_new($default_values);
-  $message = isset($_GET['msg']) ? $_GET['msg'] : '';
+  $message = isset($_GET['msg']) ? iconv( 'CP1252', 'UTF-8', $_GET['msg']) : '';
   $phone = isset($_GET['origin']) ? $_GET['origin'] : '';
   if ($message && $phone) {
     $words = explode(' ', $message);
