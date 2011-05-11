@@ -218,8 +218,14 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
-  $handler->display->display_options['filters']['question_status']['operator'] = '!=';
-  $handler->display->display_options['filters']['question_status']['value'] = 'answered';
+  $handler->display->display_options['filters']['question_status']['value'] = 'new';
+  $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
+  $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Question status';
+  $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
+  $handler->display->display_options['filters']['question_status']['expose']['identifier'] = 'question_status';
+  $handler->display->display_options['filters']['question_status']['expose']['required'] = FALSE;
+  $handler->display->display_options['filters']['question_status']['expose']['multiple'] = FALSE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -253,8 +259,10 @@ function vopros_question_views_default_views() {
     t('Usage'),
     t('Status'),
     t('Deadline'),
+    t('Question status'),
     t('Page'),
   );
+  
 
   $views[$view->name] = $view;
 
