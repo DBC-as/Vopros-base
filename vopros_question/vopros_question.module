@@ -692,5 +692,10 @@ function vopros_question_theme() {
       'file' => 'vopros_question.theme.inc',
       'path' => $path,
     ),
+    'vopros_question_note' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
   );
 }

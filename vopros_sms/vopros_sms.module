@@ -294,7 +294,7 @@ function vopros_sms_send($sms, $template = 'default') {
 
   // Try to send the sms.
   $request = drupal_http_request($url);
-  if ($request != 200) {
+  if ($request->code != 200) {
     return FALSE;
   }
 

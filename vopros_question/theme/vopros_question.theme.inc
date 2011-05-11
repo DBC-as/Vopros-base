@@ -9,7 +9,7 @@
  */
 function theme_vopros_question_title($variables) {
   $question = $variables['question']['#question'];
-  return '<h2 class="question-title">' . $question->question_title . '</h2>';
+  return '<h2 class="question-title">' . check_plain($question->question_title) . '</h2>';
 }
 
 /**
@@ -17,7 +17,7 @@ function theme_vopros_question_title($variables) {
  */
 function theme_vopros_question_content($variables) {
   $question = $variables['question']['#question'];
-  return '<p class="question-content">' . $question->question_content . '</p>';
+  return '<p class="question-content">' . check_plain($question->question_content) . '</p>';
 }
 
 /**
@@ -60,7 +60,7 @@ function theme_vopros_question_usage($variables) {
  */
 function theme_vopros_question_note($variables) {
   $question = $variables['question']['#question'];
-  return '<p class="question-node">' . $question->question_note . '</p>';
+  return '<p class="question-node">' . check_plain($question->question_note) . '</p>';
 }
 
 /**
@@ -75,7 +75,7 @@ function theme_vopros_question_user_data($variables) {
 
   $output .= '<div class="question-user-name vopros-question-extra clearfix">';
   $output .= '<span class="label">' . t('Name:') .  '</span>';
-  $output .= '<span class="value">' . $question->user_name .  '</span>';
+  $output .= '<span class="value">' . check_plain($question->user_name) .  '</span>';
   $output .= '</div>';
   $output .= '<div class="question-user-age vopros-question-extra clearfix">';
   $output .= '<span class="label">' . t('Age:') .  '</span>';
@@ -84,19 +84,19 @@ function theme_vopros_question_user_data($variables) {
   if ($question->user_postal_code) {
     $output .= '<div class="question-user-postal-code vopros-question-extra clearfix">';
     $output .= '<span class="label">' . t('Postal code:') .  '</span>';
-    $output .= '<span class="value">' . $question->user_postal_code .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->user_postal_code) .  '</span>';
     $output .= '</div>';
   }
   if ($question->user_field_of_study) {
     $output .= '<div class="question-user-field-of-study vopros-question-extra clearfix">';
     $output .= '<span class="label">' . t('Field of study:') .  '</span>';
-    $output .= '<span class="value">' . $question->user_field_of_study .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->user_field_of_study) .  '</span>';
     $output .= '</div>';
   }
   if ($question->user_library) {
     $output .= '<div class="question-user-library vopros-question-extra clearfix">';
     $output .= '<span class="label">' . t('Library:') .  '</span>';
-    $output .= '<span class="value">' . $question->user_library .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->user_library) .  '</span>';
     $output .= '</div>';
   }
 
