@@ -26,6 +26,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Go';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -82,12 +83,10 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
-  $handler->display->display_options['empty']['area']['content'] = 'There are no questions at this time.';
+  /* Header: Question: Own questions */
+  $handler->display->display_options['header']['own_questions']['id'] = 'own_questions';
+  $handler->display->display_options['header']['own_questions']['table'] = 'vopros_question';
+  $handler->display->display_options['header']['own_questions']['field'] = 'own_questions';
   /* Field: Question: Question ID */
   $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
   $handler->display->display_options['fields']['question_id']['table'] = 'vopros_question';
@@ -234,21 +233,61 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['created']['hide_empty'] = 0;
   $handler->display->display_options['fields']['created']['empty_zero'] = 0;
   $handler->display->display_options['fields']['created']['date_format'] = 'short';
+  /* Contextual filter: Question: Uid */
+  $handler->display->display_options['arguments']['uid']['id'] = 'uid';
+  $handler->display->display_options['arguments']['uid']['table'] = 'vopros_question';
+  $handler->display->display_options['arguments']['uid']['field'] = 'uid';
+  $handler->display->display_options['arguments']['uid']['default_action'] = 'empty';
+  $handler->display->display_options['arguments']['uid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['uid']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['uid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['uid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['uid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['uid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['uid']['not'] = 0;
   /* Filter criterion: Question: Question_status */
   $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
-  $handler->display->display_options['filters']['question_status']['value'] = 'new';
+  $handler->display->display_options['filters']['question_status']['value'] = array(
+    'value' => '',
+  );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
-  $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Question status';
+  $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Show all';
   $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['identifier'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['expose']['required'] = FALSE;
+  $handler->display->display_options['filters']['question_status']['expose']['remember'] = 1;
   $handler->display->display_options['filters']['question_status']['expose']['multiple'] = FALSE;
+  /* Filter criterion: Question: Question_usage */
+  $handler->display->display_options['filters']['question_usage']['id'] = 'question_usage';
+  $handler->display->display_options['filters']['question_usage']['table'] = 'vopros_question';
+  $handler->display->display_options['filters']['question_usage']['field'] = 'question_usage';
+  $handler->display->display_options['filters']['question_usage']['value'] = array(
+    'value' => '',
+  );
+  $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
+  $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'questions user for';
+  $handler->display->display_options['filters']['question_usage']['expose']['operator'] = 'question_usage_op';
+  $handler->display->display_options['filters']['question_usage']['expose']['identifier'] = 'question_usage';
+  $handler->display->display_options['filters']['question_usage']['expose']['required'] = FALSE;
+  $handler->display->display_options['filters']['question_usage']['expose']['multiple'] = FALSE;
+  /* Filter criterion: Fields: Subject (subject_catagory) - tid */
+  $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
+  $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['path'] = 'admin/vopros/questions/list';
   $handler->display->display_options['menu']['type'] = 'default tab';
   $handler->display->display_options['menu']['title'] = 'Question list';
@@ -258,11 +297,17 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'Display a list of active questions';
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
+
+  /* Display: Own questions */
+  $handler = $view->new_display('page', 'Own questions', 'own_questions');
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  $handler->display->display_options['path'] = 'user/%/vopros/questions';
   $translatables['vopros_question_list'] = array(
     t('Master'),
     t('Question list'),
     t('more'),
-    t('Apply'),
+    t('Go'),
     t('Reset'),
     t('Sort by'),
     t('Asc'),
@@ -270,7 +315,6 @@ function vopros_question_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('There are no questions at this time.'),
     t('.'),
     t(','),
     t('Title'),
@@ -280,11 +324,13 @@ function vopros_question_views_default_views() {
     t('Status'),
     t('Deadline'),
     t('Created'),
-    t('Question status'),
+    t('All'),
+    t('Show all'),
+    t('questions user for'),
+    t('with the subject'),
     t('Page'),
+    t('Own questions'),
   );
-  
-  
 
   $views[$view->name] = $view;
 

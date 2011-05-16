@@ -90,3 +90,14 @@ function vopros_base_permission() {
 
   return $permissions;
 }
+
+/**
+ * Implements hook_field_views_data_alter().
+ */
+function vopros_base_field_views_data_alter(&$result, $field, $module) {
+  if ($module == 'taxonomy') {
+    if (isset($result['field_data_' . $field['field_name']][$field['field_name'] . '_tid']['filter']['handler'])) {
+      $result['field_data_' . $field['field_name']][$field['field_name'] . '_tid']['filter']['handler'] = 'vopros_base_taxonomy_tid_filter_handler';
+    }
+  }
+}

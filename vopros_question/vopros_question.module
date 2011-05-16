@@ -4,6 +4,12 @@
  * @file
  */
 
+function vopros_question_init() {
+  if (arg(0) == 'vopros' || arg(1) == 'vopros') {
+    drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question.base.css');
+  }
+}
+
 /**
  * Implements hook_entity_info().
  */
@@ -489,6 +495,7 @@ function vopros_question_views_data_alter(&$data) {
   $data['vopros_question']['question_usage']['field']['handler'] = 'vopros_question_handler_field_vopros_question';
   $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'vopros_question_handler_field_date';
   $data['vopros_question']['question_status']['filter']['handler'] = 'vopros_question_status_views_handler_filter_string';
+  $data['vopros_question']['question_usage']['filter']['handler'] = 'vopros_question_usage_views_handler_filter_string';
 
   // Add revision table.
   $data['vopros_question_revision'] = $data['vopros_question'];
@@ -509,6 +516,14 @@ function vopros_question_views_data_alter(&$data) {
     'base' => 'vopros_question',
     'field' => 'question_id',
     'label' => 'Question',
+  );
+
+  $data['vopros_question']['own_questions'] = array(
+    'title' => t('Own questions'),
+    'help' => t('Display a table with a users own questions.'),
+    'area' => array(
+      'handler' => 'vopros_question_area_own_questions',
+    ),
   );
 }
 
@@ -698,4 +713,16 @@ function vopros_question_theme() {
       'path' => $path,
     ),
   );
+}
+
+function vopros_question_views_query_alter(&$view, &$query) {
+  if ($view->name == 'vopros_question_list' && $view->current_display == 'page') {
+    foreach ($query->where as $w_key => $where) {
+      foreach ($where['conditions'] as $c_key => $condition) {
+        if (empty($condition['value']['value'])) {
+          unset($query->where[$w_key]['conditions'][$c_key]);
+        }
+      }
+    }
+  }
 }

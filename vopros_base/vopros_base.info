@@ -7,3 +7,6 @@ dependencies[] = entity
 dependencies[] = views
 
 files[] = includes/vopros_base.controller.inc
+
+; Views includes:
+files[] = includes/views/handlers/vopros_base_taxonomy_tid_filter_handler.inc

@@ -15,3 +15,5 @@ files[] = includes/vopros_question.controller.inc
 files[] = includes/views/handlers/vopros_question_handler_field_vopros_question.inc
 files[] = includes/views/handlers/vopros_question_handler_field_date.inc
 files[] = includes/views/handlers/vopros_question_status_views_handler_filter_string.inc
+files[] = includes/views/handlers/vopros_question_usage_views_handler_filter_string.inc
+files[] = includes/views/handlers/vopros_question_area_own_questions.inc
