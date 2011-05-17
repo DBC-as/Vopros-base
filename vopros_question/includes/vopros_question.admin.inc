@@ -75,7 +75,6 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'textfield',
     '#title' => t('Name'),
     '#default_value' => isset($question->user_name) ? $question->user_name : '',
-    '#required' => TRUE,
   );
 
   $form['ask']['user_email'] = array(
@@ -88,7 +87,6 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'textfield',
     '#title' => t('Postal code'),
     '#default_value' => isset($question->user_postal_code) ? $question->user_postal_code : '',
-    '#required' => TRUE,
   );
 
   $form['ask']['user_mobile_phone'] = array(
@@ -136,6 +134,13 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => isset($question->user_answer_preference) ? $question->user_answer_preference : '',
   );
 
+  $form['log'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Internal log'),
+    '#description' => t('Write notes about the question, is not displayed publicly.'),
+    '#default_value' => isset($question->log) ? $question->log : '',
+  );
+
   $form['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -166,6 +171,8 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
       $question->{$key} = $form_state['values'][$key];
     }
   }
+
+  $question->log = $form_state['values']['log'];
 
   // Notify field widgets.
   field_attach_submit('vopros_question', $question, $form, $form_state);

@@ -91,7 +91,12 @@ function vopros_question_field_extra_fields() {
       'ask' => array(
         'label' => t('User data'),
         'description' => t('Data about the user asking the question'),
-        'weight' => -1,
+        'weight' => -0,
+      ),
+      'log' => array(
+        'label' => t('Internal log'),
+        'description' => t('Internal log about the question itself.'),
+        'weight' => 1,
       ),
     ),
     'display' => array(
@@ -123,7 +128,12 @@ function vopros_question_field_extra_fields() {
       'ask' => array(
         'label' => t('User data'),
         'description' => t('Data about the user asking the question'),
-        'weight' => -1,
+        'weight' => 0,
+      ),
+      'log' => array(
+        'label' => t('Internal log'),
+        'description' => t('Internal log about the question itself.'),
+        'weight' => 1,
       ),
     ),
   );
@@ -617,7 +627,11 @@ function vopros_question_build_content($question, $view_mode = 'public', $langco
     '#theme' => 'vopros_question_user_data',
     '#question' => $question,
   );
-  
+  $question->content['log'] = array(
+    '#theme' => 'vopros_question_log',
+    '#question' => $question,
+  );
+
   module_invoke_all('entity_view', $question, 'vopros_question', $view_mode, $langcode);
 
 }
@@ -708,6 +722,11 @@ function vopros_question_theme() {
       'path' => $path,
     ),
     'vopros_question_note' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_log' => array(
       'render element' => 'question',
       'file' => 'vopros_question.theme.inc',
       'path' => $path,

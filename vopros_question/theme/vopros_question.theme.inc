@@ -103,3 +103,18 @@ function theme_vopros_question_user_data($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Theme function for the question log
+ */
+function theme_vopros_question_log($variables) {
+  $question = $variables['question']['#question'];
+  $output = '';
+  if ($question->log) {
+    $output .= '<div class="question-log vopros-question-extra clearfix">';
+    $output .= '<span class="label">' . t('Internal log:') .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->log) . '</span>';
+    $output .= '</div>';
+  }
+  return $output;
+}
