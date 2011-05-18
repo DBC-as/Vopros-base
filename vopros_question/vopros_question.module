@@ -687,6 +687,7 @@ function _vopros_question_status() {
     'in_progress' => t('In progress'),
     'locked' => t('Locked'),
     'answered' => t('Answered'),
+    'closed' => t('Closed without answer'),
   );
 }
 
