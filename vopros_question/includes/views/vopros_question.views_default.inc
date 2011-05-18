@@ -40,8 +40,9 @@ function vopros_question_views_default_views() {
     'question_usage' => 'question_usage',
     'question_status' => 'question_status',
     'question_deadline_timestamp' => 'question_deadline_timestamp',
+    'created' => 'created',
   );
-  $handler->display->display_options['style_options']['default'] = 'question_deadline_timestamp';
+  $handler->display->display_options['style_options']['default'] = 'created';
   $handler->display->display_options['style_options']['info'] = array(
     'question_id' => array(
       'sortable' => 0,
@@ -74,6 +75,12 @@ function vopros_question_views_default_views() {
       'separator' => '',
     ),
     'question_deadline_timestamp' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'created' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -300,6 +307,9 @@ function vopros_question_views_default_views() {
 
   /* Display: Own questions */
   $handler = $view->new_display('page', 'Own questions', 'own_questions');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   $handler->display->display_options['path'] = 'user/%/vopros/questions';
