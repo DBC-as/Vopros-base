@@ -135,6 +135,11 @@ function vopros_question_field_extra_fields() {
         'description' => t('Internal log about the question itself.'),
         'weight' => 1,
       ),
+      'buttons' => array(
+        'label' => t('Buttons'),
+        'description' => t('The various actions that can be taken.'),
+        'weight' => 100,
+      ),
     ),
   );
 
@@ -632,6 +637,8 @@ function vopros_question_build_content($question, $view_mode = 'public', $langco
     '#question' => $question,
   );
 
+  $question->content['buttons'] = drupal_get_form('vopros_question_handle_question_form', $question);
+
   module_invoke_all('entity_view', $question, 'vopros_question', $view_mode, $langcode);
 
 }
@@ -697,6 +704,12 @@ function _vopros_question_status() {
 function vopros_question_theme() {
   $path = drupal_get_path('module', 'vopros_question') . '/theme';
   return array(
+    'vopros_question' => array(
+      'render element' => 'elements',
+      'template' => 'vopros-question',
+      'path' => $path,
+      'file' => 'vopros_question.theme.inc',
+    ),
     'vopros_question_title' => array(
       'render element' => 'question',
       'file' => 'vopros_question.theme.inc',
@@ -746,3 +759,55 @@ function vopros_question_views_query_alter(&$view, &$query) {
     }
   }
 }
+
+/**
+ * Form to handle processing a question.
+ */
+function vopros_question_handle_question_form($form, &$form_state, $question) {
+  $form['question'] = array(
+    '#type' => 'value',
+    '#value' => $question,
+  );
+
+  $form['contact'] = array(
+    '#type' => 'submit',
+    '#value' => t('Contact user'),
+    '#submit' => array('vopros_question_handle_question_form_contact_submit'),
+  );
+
+  $form['close'] = array(
+    '#type' => 'submit',
+    '#value' => t('Close question'),
+    '#submit' => array('vopros_question_handle_question_form_close_submit'),
+  );
+
+  $form['edit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Edit'),
+    '#submit' => array('vopros_question_handle_question_form_edit_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_question_handle_quesiton_form edit action.
+ */
+function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/edit';
+}
+
+/**
+ * Submit handler for vopros_question_handle_quesiton_form cancel action.
+ */
+function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
+  drupal_set_message('Not implemented yet');
+}
+
+/**
+ * Submit handler for vopros_question_handle_quesiton_form contact action.
+ */
+function vopros_question_handle_question_form_contact_submit(&$form, &$form_state) {
+  drupal_set_message('Not implemented yet');
+}
+

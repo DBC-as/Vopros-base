@@ -29,6 +29,31 @@ h3.question-user-data {
   font-size: 14px;
 }
 
-#vopros-answer-question-view-form {
+#vopros-question-handle-question-form {
   margin-top: 20px;
 }
+
+.vopros-question .content {
+  width: 68%;
+  float: left;
+}
+
+.vopros-question .action {
+  margin-left: 2%;
+  width: 30%;
+  float: left;
+}
+
+.vopros-question .action .form-submit {
+  font-size: 3em;
+  background: #E5E5E5;
+  padding: 10px 30px;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+}
+
+.vopros-question .action .form-submit:active {
+  background: #666;
+}
+

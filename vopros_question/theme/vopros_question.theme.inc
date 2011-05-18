@@ -4,6 +4,22 @@
  * @file
  */
 
+function template_preprocess_vopros_question(&$variables) {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  $question = $variables['question'] = $variables['elements']['#question'];
+
+  // Flatten the node object's member fields.
+  $variables = array_merge((array) $question, $variables);
+
+  // Helpful $content variable for templates.
+  foreach (element_children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+
+  // Make the field variables available with the appropriate language.
+  field_attach_preprocess('question', $question, $variables['content'], $variables);
+}
+
 /**
  * Theme function for question title
  */

@@ -220,15 +220,16 @@ function vopros_question_title_form($form, &$form_state, $question) {
  * Handle the display of a question
  */
 function vopros_question_page_view($question, $view_mode = 'administrator', $langcode = NULL) {
+  if ($question->created == $question->changed) {
+    drupal_goto('admin/vopros/questions/' . $question->question_id . '/edit');
+  }
   drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
   drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_page.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
 
   // View mode is needed to sort the build array.
-  $build = array(
-    '#view_mode' => $view_mode,
-  );
+  $build = array();
 
   $build[] = array(
     '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
@@ -238,9 +239,18 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   vopros_question_build_content($question, $view_mode, $langcode);
 
   $build += $question->content;
+  unset($question->content);
+
+  $build += array(
+    '#view_mode' => $view_mode,
+    '#theme' => 'vopros_question',
+    '#question' => $question,
+    '#language' => $langcode,
+  );
 
   $type = 'vopros_question';
   drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
+
   return $build;
 }
 
