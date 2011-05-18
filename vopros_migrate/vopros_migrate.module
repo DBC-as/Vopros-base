@@ -173,6 +173,7 @@ function _vopros_migrate_create_question($row) {
     ->fetch();
   if ($count->expression == 0 && $row->IsDeleted == 0) {
     $question_status_mapping = vopros_migrate_question_status_mapping();
+    $question_status_reason_mapping = vopros_migrate_question_status_reason_mapping();
     $question_time_limit_mapping = vopros_migrate_time_limit_mapping();
     $question_user_age_mapping = vopros_migrate_user_age_mapping();
     $question_usage_mapping = vopros_migrate_question_usage_mapping();
@@ -192,6 +193,7 @@ function _vopros_migrate_create_question($row) {
       'changed' => $row->QuestionTimestamp,
       'uid' => NULL,
       'question_status' => isset($question_status_mapping[$row->QuestionStatusId]) ? $question_status_mapping[$row->QuestionStatusId] : 'answered',
+      'question_status_reason' => isset($question_status_reason_mapping[$row->QuestionStatusId]) ? $question_status_reason_mapping[$row->QuestionStatusId] : '',
       'question_deadline' => isset($question_time_limit_mapping[$row->TimeLimitId]) ? $question_time_limit_mapping[$row->TimeLimitId] : -1,
       'question_deadline_timestamp' => NULL,
       'question_usage' => isset($question_usage_mapping[$row->PurposeId]) ? $question_usage_mapping[$row->PurposeId] : 'other',
@@ -332,8 +334,46 @@ function vopros_migrate_question_status_mapping() {
     1 => 'new',
     2 => 'in_progress',
     3 => 'answered',
+    4 => 'closed',
+    5 => 'closed',
+    6 => 'closed',
+    7 => 'closed',
+    14 => 'closed',
+    15 => 'closed',
+    16 => 'closed',
+    17 => 'closed',
   );
 }
+
+function vopros_migrate_question_status_reason_mapping() {
+  $mapping = array(
+    1 => 'Nyt spørgsmål',
+    2 => 'Under arbejde',
+    3 => 'Besvaret',
+    4 => 'Overført',
+    5 => 'Videresendt',
+    6 => 'Bedt om flere oplysninger',
+    7 => 'Afsluttet uden svar',
+    14 => 'Spam',
+    15 => 'IT-Taskforce',
+    16 => 'Problemspørgsmål',
+    17 => 'Olivia-spørgsmål',
+  );
+  return array(
+    1 => '',
+    2 => '',
+    3 => '',
+    4 => '',
+    5 => '',
+    6 => 'need more info',
+    7 => '',
+    14 => 'spam',
+    15 => '',
+    16 => 'problem question',
+    17 => '',
+  );
+}
+
 
 /**
  * Mapping to question user age.
