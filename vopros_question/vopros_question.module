@@ -664,7 +664,7 @@ function _vopros_question_deadline() {
 }
 
 /**
- * Utility function to get the question user age options
+ * Utility function to get the question user age options.
  */
 function _vopros_question_user_age() {
   return array(
@@ -679,7 +679,7 @@ function _vopros_question_user_age() {
 }
 
 /**
- * Utility function to get the question usage options
+ * Utility function to get the question status options.
  */
 function _vopros_question_status() {
   return array(

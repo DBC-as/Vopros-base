@@ -40,9 +40,15 @@ function vopros_question_schema() {
         'size' => 'big',
       ),
       'question_status' => array(
-        'description' => 'The status name of this question.',
+        'description' => 'The status of the question.',
         'type' => 'varchar',
         'length' => '255',
+        'not null' => TRUE,
+      ),
+      'question_status_reason' => array(
+        'description' => 'The status reason of the question. Provides different types of the same status like closed (spam) and closed (bad question).',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
       ),
       'question_deadline' => array(
