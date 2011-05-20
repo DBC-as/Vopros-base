@@ -127,6 +127,9 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 function vopros_answer_form_submit_validate(&$form, &$form_state) {
   $answer = $form_state['values']['answer'];
   field_attach_validate('vopros_answer', $answer, $form, $form_state);
+  if (!(trim($form_state['values']['answer_content']))) {
+    form_set_error('answer_content', t('Answer field is required'));
+  }
 }
 
 /**
