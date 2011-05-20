@@ -17,30 +17,13 @@ function vopros_answer_settings_form($form, &$form_state) {
  */
 function vopros_answer_answer_page($question, $answer) {
   module_load_include('inc', 'vopros_question', 'includes/vopros_question.admin');
-  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
-  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
+  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/js/vopros_question_title.js');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question_title.css');
   if (empty($question)) {
     $question = vopros_question_load($answer->question_id);
   }
 
   $build = array(
-    'question_title' => array(
-      '#theme' => 'vopros_question_title',
-      '#question' => $question,
-    ),
-    'question_title_form' => array(
-      '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
-    ),
-    'question_content' => array(
-      '#markup' => $question->question_content,
-      '#prefix' => '<div class="question">',
-      '#suffix' => '</div>',
-    ),
-    'question_link' => array(
-      '#markup' => l('See question', 'admin/vopros/questions/' . $question->question_id),
-      '#prefix' => '<div class="question-link">',
-      '#suffix' => '</div>',
-    ),
     'answer_form' => drupal_get_form('vopros_answer_form', $question, $answer),
   );
   return $build;
@@ -53,6 +36,45 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   // Add the field related form elements.
   field_attach_form('vopros_answer', $answer, $form, $form_state);
 
+  $form['action'] = array(
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+
+  $form['action']['save_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save and submit'),
+    '#submit' => array('vopros_answer_form_save_submit_submit'),
+    '#validate' => array('vopros_answer_form_submit_validate'),
+  );
+
+  $form['action']['display_internal_note'] = array(
+    '#markup' => theme('vopros_question_log', array('question' => array('#question' => $question, 'show' => TRUE))),
+  );
+
+  $form['action']['internal_note_wrapper'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Edit internal log'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['action']['internal_note_wrapper']['log'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Internal note'),
+    '#default_value' => $question->log,
+    '#resizable' => FALSE,
+  );
+
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['question_view'] = array(
+    '#markup' => render(vopros_question_page_view($question, 'teaser')),
+  );
+
   $form['question'] = array(
     '#type' => 'value',
     '#value' => $question,
@@ -63,35 +85,34 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#value' => $answer,
   );
 
-  $form['answer_content'] = array(
+  $form['form']['answer_content'] = array(
     '#type' => 'textarea',
     '#title' => t('Answer'),
     '#default_value' => isset($answer->answer_content) ? $answer->answer_content : '',
-    
   );
 
-  $form['save'] = array(
+  $form['form']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#submit' => array('vopros_answer_form_save_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
 
-  $form['save_release'] = array(
+  $form['form']['save_release'] = array(
     '#type' => 'submit',
     '#value' => t('Save and release'),
     '#submit' => array('vopros_answer_form_save_release_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
 
-  $form['save_submit'] = array(
+  $form['form']['save_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save and submit'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
 
-  $form['cancel'] = array(
+  $form['form']['cancel'] = array(
     '#type' => 'submit',
     '#value' => t('Cancel'),
     '#submit' => array('vopros_answer_form_cancel_submit'),
@@ -115,6 +136,8 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $answer = $v['answer'];
   $question = $v['question'];
+  $question->log = $v['log'];
+  vopros_question_save($question);
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;
@@ -145,6 +168,8 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $question = $form_state['values']['question'];
   $question->uid = 0;
   $question->question_status = 'in progress';
+  $question->log = $form_state['values']['log'];
+  $answer = $form_state['values']['answer'];
   vopros_question_save($question);
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
@@ -163,6 +188,7 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $question = $form_state['values']['question'];
   $question->question_status = 'answered';
   vopros_question_save($question);
+  $answer = $v['answer'];
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;

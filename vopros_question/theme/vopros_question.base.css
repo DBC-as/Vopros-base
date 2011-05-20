@@ -14,3 +14,13 @@
 .view-vopros-question-list form .views-submit-button .form-submit {
   margin-top: 5px;
 }
+
+/**
+ * Basic styles for question list
+ */
+.view-vopros-question-list .view-header {
+  padding: 20px 35px;
+  border: 2px solid black;
+  margin-bottom: 20px;
+  background-color: #eee;
+}

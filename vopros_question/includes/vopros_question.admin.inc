@@ -223,9 +223,9 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   if ($question->created == $question->changed) {
     drupal_goto('admin/vopros/questions/' . $question->question_id . '/edit');
   }
-  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.js');
-  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_title.css');
-  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/static/vopros_question_page.css');
+  drupal_add_js(drupal_get_path('module', 'vopros_question') . '/js/vopros_question_title.js');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question_title.css');
+  drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question_page.css');
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
 
   // View mode is needed to sort the build array.

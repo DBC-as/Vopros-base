@@ -3,8 +3,8 @@
  *
  */
 ?>
-<div id="question-<?php print $question->question_id; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-  <div class="content clearfix"<?php print $content_attributes; ?>>
+<div id="question-<?php print $question->question_id; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
+  <div class="content"<?php print $content_attributes; ?>>
     <?php
       if (isset($content['action'])) {
         hide($content['action']);

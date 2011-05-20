@@ -21,6 +21,10 @@
   font-weight: bold;
 }
 
+.vopros-question-extra div.label {
+  float: none;
+}
+
 h2.question-title {
   font-size: 20px;
 }
@@ -31,6 +35,11 @@ h3.question-user-data {
 
 #vopros-question-handle-question-form {
   margin-top: 20px;
+}
+
+.vopros-question .vopros-question-extra,
+.vopros-question h3 {
+  clear: left;
 }
 
 .vopros-question .content {

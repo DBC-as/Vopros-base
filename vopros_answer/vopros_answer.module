@@ -5,6 +5,13 @@
  */
 
 /**
+ * Implementation of hook_init().
+ */
+function vopros_answer_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_answer') . '/theme/vopros_answer.base.css');
+}
+
+/**
  * Implements hook_entity_info().
  */
 function vopros_answer_entity_info() {
@@ -25,7 +32,6 @@ function vopros_answer_entity_info() {
           'label' => t('Question', array(), array('context' => 'a vopros answer')),
           'admin' => array(
             'path' => 'admin/vopros/config/answer',
-
             'access arguments' => array('administer answers'),
           ),
         ),

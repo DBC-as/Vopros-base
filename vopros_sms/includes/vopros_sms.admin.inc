@@ -122,7 +122,7 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
  * After build function to add JS for the vopros_sms_form.
  */
 function vopros_sms_form_add_js(&$form, &$form_state) {
-  drupal_add_js(drupal_get_path('module', 'vopros_sms') . '/static/vopros_sms_form.js');
+  drupal_add_js(drupal_get_path('module', 'vopros_sms') . '/js/vopros_sms_form.js');
   return $form;
 }
 

@@ -46,6 +46,10 @@ function vopros_question_entity_info() {
           'label' => t('Public'),
           'custom settings' => FALSE,
         ),
+        'teaser' => array(
+          'label' => t('Teaser'),
+          'custom settings' => FALSE,
+        ),
       ),
       'access callback' => 'vopros_question_access',
       'views controller class' => 'EntityDefaultViewsController',
@@ -109,6 +113,11 @@ function vopros_question_field_extra_fields() {
         'label' => t('Question content'),
         'description' => t('The content of the question'),
         'weight' => -4,
+      ),
+      'created' => array(
+        'label' => t('Created'),
+        'description' => t('When the question was created'),
+        'weight' => -3,
       ),
       'question_deadline' => array(
         'label' => t('Deadline'),
@@ -602,7 +611,7 @@ function vopros_question_configure_question() {
 /**
  * Builds a structured array representing the questions' content.
  */
-function vopros_question_build_content($question, $view_mode = 'public', $langcode = NULL) {
+function vopros_question_build_content($question, $view_mode = 'administrator', $langcode = NULL) {
   $question->content = array();
   field_attach_prepare_view('vopros_question', array($question->question_id => $question), $view_mode);
   entity_prepare_view('vopros_question', array($question->question_id => $question));
@@ -611,30 +620,42 @@ function vopros_question_build_content($question, $view_mode = 'public', $langco
   $question->content['question_title'] = array(
     '#theme' => 'vopros_question_title',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['question_content'] = array(
     '#theme' => 'vopros_question_content',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['question_deadline'] = array(
     '#theme' => 'vopros_question_deadline',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['question_usage'] = array(
     '#theme' => 'vopros_question_usage',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['question_note'] = array(
     '#theme' => 'vopros_question_note',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['ask'] = array(
     '#theme' => 'vopros_question_user_data',
     '#question' => $question,
+    '#view_mode' => $view_mode,
   );
   $question->content['log'] = array(
     '#theme' => 'vopros_question_log',
     '#question' => $question,
+    '#view_mode' => $view_mode,
+  );
+  $question->content['created'] = array(
+    '#theme' => 'vopros_question_created',
+    '#question' => $question,
+    '#view_mode' => $view_mode,
   );
 
   $question->content['buttons'] = drupal_get_form('vopros_question_handle_question_form', $question);
@@ -741,6 +762,11 @@ function vopros_question_theme() {
       'path' => $path,
     ),
     'vopros_question_log' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_created' => array(
       'render element' => 'question',
       'file' => 'vopros_question.theme.inc',
       'path' => $path,
