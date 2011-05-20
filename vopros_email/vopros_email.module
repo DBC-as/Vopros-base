@@ -45,6 +45,13 @@ function vopros_email_entity_info() {
 }
 
 /**
+ * Implementation of hook_init().
+ */
+function vopros_email_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_email') . '/theme/vopros_email.base.css');
+}
+
+/**
  * Implements hook_enabled().
  */
 function vopros_email_enable() {

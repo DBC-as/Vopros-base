@@ -13,6 +13,28 @@ function vopros_email_settings_form($form, &$form_state) {
     $form_state['new_snippets_count'] = 1;
   }
 
+  $form['contact'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Contact user e-mail macros'),
+  );
+
+  foreach (vopros_question_get_reasons('contact') as $key => $value) {
+    $key = str_replace(' ', '_', $key);
+    $form['contact']['vopros_email_macro_' . $key] = array(
+      '#type' => 'textarea',
+      '#title' => $value,
+      '#description' => t('Macro used when contacting a user.'),
+      '#default_value' => variable_get('vopros_email_macro_' . $key, ''),
+    );
+  }
+
+  $form['contact']['tokens'] = array(
+    '#markup' => theme('token_tree', array(
+      'token_types' => array('vopros_question'),
+      'global_types' => FALSE,
+    )),
+  );
+
   $form['macros'] = array(
     '#type' => 'fieldset',
     '#title' => t('E-mail macros'),
@@ -32,127 +54,8 @@ function vopros_email_settings_form($form, &$form_state) {
       'global_types' => FALSE,
     )),
   );
-  
 
-  $snippets = variable_get('vopros_email_snippets', array());
-
-  $form['snippets'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('E-mail snippets'),
-    '#description' => t('Create snippets used for sending emails.'),
-    'saved_snippets' => array('#tree' => TRUE),
-    'new_snippets' => array('#tree' => TRUE),
-  );
-
-  foreach ($snippets as $key => $snippet) {
-    $form['snippets']['saved_snippets'][$key] = array(
-      '#type' => 'fieldset',
-      '#title' => $snippet['name'],
-      'name' => array(
-        '#type' => 'textfield',
-        '#title' => t('Name'),
-        '#description' => t('Give your snippet a name.'),
-        '#default_value' => $snippet['name'],
-      ),
-      'snippet' => array(
-        '#type' => 'textarea',
-        '#title' => t('Snippet'),
-        '#description' => t('The text to be included in the email.'),
-        '#default_value' => $snippet['snippet'],
-      ),
-      'delete' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Delete'),
-        '#default_value' => -1,
-      ),
-    );
-  }
-
-  foreach (range(1, $form_state['new_snippets_count']) as $value) {
-    $form['snippets']['new_snippets'][] = array(
-      '#type' => 'fieldset',
-      '#title' => t('New text snippet'),
-      'name' => array(
-        '#type' => 'textfield',
-        '#title' => t('Name'),
-        '#description' => t('Give your snippet a name.'),
-      ),
-      'snippet' => array(
-        '#type' => 'textarea',
-        '#title' => t('Snippet'),
-        '#description' => t('The text to be included in the email.'),
-      ),
-    );
-  }
-
-  $form['snippets']['new_snippets'][0]['#prefix'] = '<div id="new_snippets">';
-  $form['snippets']['new_snippets'][count($form['snippets']['new_snippets']) - 1]['#suffix'] = '</div>';
-
-  $form['snippets']['add'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add another'),
-    '#ajax' => array(
-      'callback' => 'vopros_email_snippet_js',
-      'wrapper' => 'new_snippets',
-    ),
-    '#submit' => array('vopros_email_snippet_submit'),
-  );
-
-  $form['save_settings'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save settings'),
-    '#submit' => array('vopros_email_settings_form_submit'),
-  );
-
-  return $form;
-}
-
-/**
- * Submit handler for adding new snippets to settings form.
- */
-function vopros_email_snippet_submit($form, &$form_state) {
-  // Add one to the snippet count.
-  $form_state['new_snippets_count'] += 1;
-  // Rebuild the form, to the let form function change the form.
-  $form_state['rebuild'] = TRUE;
-}
-
-/**
- * AJAX callback, add new snippets to settings form.
- */
-function vopros_email_snippet_js($form, $form_state) {
-  // Only the new snippets are changed.
-  return $form['snippets']['new_snippets'];
-}
-
-/**
- * Submit handler for vopros_email_settings_form().
- */
-function vopros_email_settings_form_submit(&$form, &$form_state) {
-  $snippets = variable_get('vopros_email_snippets', array());
-
-  if (isset($form_state['values']['saved_snippets'])) {
-    foreach ($form_state['values']['saved_snippets'] as $key => $snippet) {
-      if ($snippet['delete'] || (empty($snippet['name']) || empty($snippet['snippet']))) {
-        unset($snippets[$key]);
-      }
-      else {
-        $snippets[$key]['name'] = $snippet['name'];
-        $snippets[$key]['snippet'] = $snippet['snippet'];
-      }
-    }
-  }
-
-  foreach ($form_state['values']['new_snippets'] as $snippet) {
-    if ($snippet['name'] && $snippet['snippet']) {
-      $snippets[] = array(
-        'name' => $snippet['name'],
-        'snippet' => $snippet['snippet'],
-      );
-    }
-  }
-  variable_set('vopros_email_snippets', $snippets);
-  variable_set('vopros_email_answered_question_macro', $form_state['values']['vopros_email_answered_question_macro']);
+  return system_settings_form($form);
 }
 
 /**
@@ -276,6 +179,11 @@ function vopros_email_form_submit(&$form, &$form_state) {
  * Form for answering a question.
  */
 function vopros_email_question_contact_form($form, &$form_state, $question) {
+  $form['send_mail'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send mail'),
+  );
+
   $form['question'] = array(
     '#value' => $question,
     '#type' => 'value',
@@ -293,6 +201,9 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#title' => t('Answer type'),
     '#options' => vopros_question_get_reasons(),
     '#required' => TRUE,
+    '#ajax' => array(
+      'callback' => 'vopros_email_question_contact_form_macro',
+    ),
   );
 
   $form['subject'] = array(
@@ -307,10 +218,16 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#required' => TRUE,
   );
 
-  $form['send_mail'] = array(
-    '#type' => 'submit',
-    '#value' => t('Send mail'),
-  );
-
   return $form;
+}
+
+function vopros_email_question_contact_form_macro($form, &$form_state) {
+  $key = str_replace(' ', '_', $form_state['values']['reason']);
+
+  $text = variable_get('vopros_email_macro_' . $key, '');
+
+  $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']));
+  $commands = array();
+  $commands[] = ajax_command_invoke('#edit-body', 'val', array($processed_text));
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
