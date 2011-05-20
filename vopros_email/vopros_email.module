@@ -288,15 +288,11 @@ function vopros_email_load($email_id, $reset = FALSE) {
  */
 function vopros_email_send($email, $template = 'default') {
   $email_wrapper = entity_metadata_wrapper('vopros_email', $email);
-  $answer = $email_wrapper->answer->value();
-  $question = $email_wrapper->answer->question->value();
   $params = array(
     'template' => $template,
     'email' => $email,
-    'answer' => $answer,
-    'question' => $question,
   );
-  return drupal_mail('vopros_email', 'vopros_email', $question->user_email, user_preferred_language($GLOBALS['user']), $params);
+  return drupal_mail('vopros_email', 'vopros_email', $email->email, user_preferred_language($GLOBALS['user']), $params);
 }
 
 /**

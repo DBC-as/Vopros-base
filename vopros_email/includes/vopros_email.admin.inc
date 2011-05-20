@@ -189,7 +189,7 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#type' => 'value',
   );
 
-  $form['mail'] = array(
+  $form['email'] = array(
     '#title' => t('To'),
     '#type' => 'textfield',
     '#default_value' => $question->user_email,
@@ -230,4 +230,38 @@ function vopros_email_question_contact_form_macro($form, &$form_state) {
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-body', 'val', array($processed_text));
   return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Validate handler for vopros_email_question_contact_form().
+ */
+function vopros_email_question_contact_form_validate(&$form, &$form_state) {
+  $mail = $form_state['values']['email'];
+  if (!valid_email_address($mail)) {
+    form_set_error('email', t('The e-mail address %mail is not valid.', array('%mail' => $mail)));
+  }
+}
+
+/**
+ * Validate handler for vopros_email_question_contact_form().
+ */
+function vopros_email_question_contact_form_submit(&$form, &$form_state) {
+  $v = $form_state['values'];
+  $question = $v['question'];
+  $email = vopros_email_new(array(
+    'question_id' => $question->question_id,
+    'uid' => $GLOBALS['user']->uid,
+    'content' => $v['body'],
+    'subject' => $v['subject'],
+    'email' => $v['email'],
+  ));
+  vopros_email_save($email);
+  if ($email->status != 'sent') {
+    vopros_email_send($email);
+    $email->status = 'sent';
+    vopros_email_save($email);
+  }
+  $question->question_status = 'closed';
+  $question->question_status_reason = $v['reason'];
+  vopros_question_save($question);
 }
