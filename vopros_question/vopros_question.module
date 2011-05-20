@@ -315,6 +315,9 @@ function vopros_question_permission() {
       'title' => t('Edit any question'),
       'restrict access' => TRUE,
     ),
+    'contact user about question' => array(
+      'title' => t('Contact user about question'),
+    ),
   );
 
   return $permissions;
@@ -329,7 +332,7 @@ function vopros_question_permission() {
  * @param $account
  *   The user to check for. Leave it to NULL to check for the current user.
  */
-function vopros_question_access($op, $account = NULL) {
+function vopros_question_access($op, $question = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
@@ -351,6 +354,13 @@ function vopros_question_access($op, $account = NULL) {
   }
 
   if (($op == 'update' || $op == 'delete') && user_access('edit any question', $account)) {
+    return TRUE;
+  }
+
+  if ($op == 'contact' && user_acccess('contact user about question')) {
+    if ($question && $question->status == 'locked' && $question->uid != $account->uid) {
+      return FALSE;
+    }
     return TRUE;
   }
 
@@ -830,3 +840,14 @@ function vopros_question_handle_question_form_contact_submit(&$form, &$form_stat
   drupal_set_message('Not implemented yet');
 }
 
+function vopros_question_get_reasons($type = 'contact') {
+  switch ($type) {
+    case 'contact':
+    default:
+      $options = array(
+        'need more info' => t('Need more info'),
+        'no time for deadline' => t('Not enough time for deadline'),
+      );
+  }
+  return $options;
+}

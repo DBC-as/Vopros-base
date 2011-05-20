@@ -15,18 +15,22 @@ function vopros_email_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'answer_id' => array(
-        'description' => 'Reference to the answer being emailed.',
+      'question_id' => array(
+        'description' => 'Reference to the question this email belings to.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'answer_id' => array(
+        'description' => 'Reference to the answer being emailed if any.',
+        'type' => 'int',
+        'unsigned' => TRUE,
         'default' => 0,
       ),
       'uid' => array(
         'description' => 'The uid of the user emailing the answer.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
         'default' => 0,
       ),
       'content' => array(

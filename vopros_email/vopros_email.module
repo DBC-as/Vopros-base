@@ -104,6 +104,14 @@ function vopros_email_menu() {
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
+    'admin/vopros/questions/%vopros_question/email' => array(
+      'title' => 'Contact user',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_question_contact_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update', 3),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
   );
 }
 
@@ -328,4 +336,20 @@ function vopros_email_form_vopros_answer_form_alter(&$form, &$form_state) {
 
 function vopros_email_form_vopros_answer_form_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/answers/' . $form_state['answer']->answer_id . '/new-email';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function vopros_email_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
+  if ($form['question']['#value']->user_answer_preference == 'mail') {
+    $form['contact']['#submit'][] = 'vopros_email_form_vopros_question_contact_user_submit';
+  }
+}
+
+/**
+ * Redirect users to the compose email form.
+ */
+function vopros_email_form_vopros_question_contact_user_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/email';
 }

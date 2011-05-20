@@ -271,3 +271,46 @@ function vopros_email_form_submit(&$form, &$form_state) {
   }
   $form_state['redirect'] = 'admin/vopros/email/' . $email->email_id;
 }
+
+/**
+ * Form for answering a question.
+ */
+function vopros_email_question_contact_form($form, &$form_state, $question) {
+  $form['question'] = array(
+    '#value' => $question,
+    '#type' => 'value',
+  );
+
+  $form['mail'] = array(
+    '#title' => t('To'),
+    '#type' => 'textfield',
+    '#default_value' => $question->user_email,
+    '#required' => TRUE,
+  );
+
+  $form['reason'] = array(
+    '#type' => 'select',
+    '#title' => t('Answer type'),
+    '#options' => vopros_question_get_reasons(),
+    '#required' => TRUE,
+  );
+
+  $form['subject'] = array(
+    '#title' => t('Subject'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+  );
+
+  $form['body'] = array(
+    '#title' => t('Mail body'),
+    '#type' => 'textarea',
+    '#required' => TRUE,
+  );
+
+  $form['send_mail'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send mail'),
+  );
+
+  return $form;
+}

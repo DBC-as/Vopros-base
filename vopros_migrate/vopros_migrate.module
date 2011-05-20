@@ -188,7 +188,7 @@ function _vopros_migrate_create_question($row) {
       'user_gender' => '',
       'user_field_of_study' => $row->Education,
       'user_library' => '',
-      'user_answer_preference' => '',
+      'user_answer_preference' => $row->Email ? 'mail' : 'sms',
       'created' => $row->QuestionTimestamp,
       'changed' => $row->QuestionTimestamp,
       'uid' => NULL,
