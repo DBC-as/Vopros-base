@@ -11,3 +11,6 @@ dependencies[] = vopros_question
 
 ; Entity controller include:
 files[] = includes/vopros_answer.controller.inc
+
+; Views handlers
+files[] = includes/views/handlers/vopros_answer_area_own_questions.inc

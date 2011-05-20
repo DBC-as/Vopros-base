@@ -542,13 +542,6 @@ function vopros_question_views_data_alter(&$data) {
     'label' => 'Question',
   );
 
-  $data['vopros_question']['own_questions'] = array(
-    'title' => t('Own questions'),
-    'help' => t('Display a table with a users own questions.'),
-    'area' => array(
-      'handler' => 'vopros_question_area_own_questions',
-    ),
-  );
 }
 
 

@@ -118,6 +118,15 @@ function vopros_answer_views_data_alter(&$data) {
     'field' => 'revision_id',
     'label' => 'Answer revision',
   );
+
+  // Add own questions.
+  $data['vopros_question']['own_questions'] = array(
+    'title' => t('Own questions'),
+    'help' => t('Display a table with a users own questions.'),
+    'area' => array(
+      'handler' => 'vopros_answer_area_own_questions',
+    ),
+  );
 }
 
 /**
@@ -319,6 +328,15 @@ function vopros_answer_revision_list($answer) {
   return $revisions;
 }
 
+/**
+ * Implements hook_views_api().
+ */
+function vopros_answer_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_answer') . '/includes/views',
+  );
+}
 
 /**
  * Implements hook_vopros_question_view_alter().
@@ -399,17 +417,18 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
   $question->uid = $GLOBALS['user']->uid;
   vopros_question_save($question);
   $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
-  // If there is only a single answer, the user should edit that, else a new is created.
-  if (count($answers) == 1) {
-    $answer = array_shift($answers);
-    $answer->uid = $GLOBALS['user']->uid;
-    $answer->author_name = $GLOBALS['user']->name;
-    vopros_answer_save($answer);
-    $form_state['redirect'] = 'admin/vopros/answers/' . $answer->answer_id . '/edit';
+  if (count($answers) !== 1) {
+    $answer = vopros_answer_new();
+    $answer->answer_content = '';
+    $answer->question_id = $question->question_id;
   }
   else {
-    $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id . '/new-answer';
+    $answer = array_shift($answers);
   }
+  $answer->uid = $GLOBALS['user']->uid;
+  $answer->author_name = $GLOBALS['user']->name;
+  vopros_answer_save($answer);
+  $form_state['redirect'] = 'admin/vopros/answers/' . $answer->answer_id . '/edit';
 }
 
 /**
