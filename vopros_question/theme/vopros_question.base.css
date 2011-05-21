@@ -24,3 +24,20 @@
   margin-bottom: 20px;
   background-color: #eee;
 }
+
+/**
+ * Close question styles
+ */
+#vopros-question-close-question-form #edit-save {
+  float: right;
+  font-size: 3em;
+  background: #E5E5E5;
+  padding: 10px 30px;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+}
+
+#vopros-question-close-question-form .form-item {
+  width: 70%;
+}

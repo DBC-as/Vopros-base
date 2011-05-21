@@ -592,3 +592,46 @@ function vopros_question_revision_revert($question, $revision) {
   }
   return drupal_goto('admin/vopros/questions/' . $question->question_id . '/revisions');
 }
+
+/**
+ * Form to close a question.
+ */
+function vopros_question_close_question_form($form, &$form_state, $question) {
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Close question'),
+  );
+
+  $form['question'] = array(
+    '#type' => 'value',
+    '#value' => $question,
+  );
+
+  $form['reason'] = array(
+    '#type' => 'select',
+    '#title' => t('Reason to close the question'),
+    '#options' => vopros_question_get_reasons('close'),
+    '#required' => TRUE,
+  );
+
+  $form['log'] = array(
+    '#type' => 'textarea',
+    '#default_value' => $question->log,
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_question_close_question_form().
+ */
+function vopros_question_close_question_form_submit(&$form, &$form_state) {
+  $v = $form_state['values'];
+  $question = $v['question'];
+  $question->log = $v['log'];
+  $question->question_status = 'closed';
+  $question->question_status_reason = $v['reason'];
+  vopros_question_save($question);
+  $form_state['redirect'] = 'admin/vopros/questions';
+}
+

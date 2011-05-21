@@ -265,6 +265,14 @@ function vopros_question_menu() {
       'access arguments' => array('update'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
+    'admin/vopros/questions/%vopros_question/close' => array(
+      'title' => 'Close',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_close_question_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
     'vopros/question/create/service' => array(
       'page callback' => 'vopros_question_create_service',
       'access arguments' => array('access content'),
@@ -829,11 +837,17 @@ function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) 
  * Submit handler for vopros_question_handle_quesiton_form cancel action.
  */
 function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
-  drupal_set_message('Not implemented yet');
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/close';
 }
 
 function vopros_question_get_reasons($type = 'contact_mail') {
   switch ($type) {
+    case 'close':
+     $options = array(
+      'spam' => t('Spam'),
+      'problem question' => t('Problem question'),
+     );
+     break;
     case 'contact_sms':
       $options = array(
         'ask for email' => t('Ask for email'),
