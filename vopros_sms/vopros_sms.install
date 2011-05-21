@@ -19,14 +19,18 @@ function vopros_sms_schema() {
         'description' => 'Reference to the answer being smsed.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The {vopros_question}.question_id that this sms belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
         'default' => 0,
       ),
       'uid' => array(
         'description' => 'The uid of the user smsing the answer.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
         'default' => 0,
       ),
       'content' => array(
@@ -34,6 +38,12 @@ function vopros_sms_schema() {
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
+      ),
+      'phone_number' => array(
+        'description' => 'The actual phone number to send the sms to.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
       ),
       'status' => array(
         'description' => 'The status of the sms.',
@@ -100,17 +110,21 @@ function vopros_sms_schema() {
         'default' => 0,
       ),
       'answer_id' => array(
-        'description' => 'The {vopros_answer}.answer_id of the order this revision belongs to.',
+        'description' => 'The {vopros_answer}.answer_id of that this sms belongs to.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The {vopros_question}.question_id that this sms belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
         'default' => 0,
       ),
       'uid' => array(
         'description' => 'The uid of the user smsing the answer.',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
         'default' => 0,
       ),
       'content' => array(
@@ -118,6 +132,12 @@ function vopros_sms_schema() {
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
+      ),
+      'phone_number' => array(
+        'description' => 'The actual phone number to send the sms to.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
       ),
       'status' => array(
         'description' => 'The status of the sms.',

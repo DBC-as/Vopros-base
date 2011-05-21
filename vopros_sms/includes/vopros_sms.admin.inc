@@ -141,3 +141,72 @@ function vopros_sms_form_submit(&$form, &$form_state) {
   }
   $form_state['redirect'] = 'admin/vopros/questions/' . $sms_wrapper->answer->question->question_id->value();
 }
+
+/**
+ * Form for sending an sms to the user.
+ */
+function vopros_sms_question_contact_form($form, &$form_state, $question) {
+  $form['#after_build'] = array('vopros_sms_form_add_js');
+
+  $form['send_sms'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send SMS'),
+  );
+
+  $form['question'] = array(
+    '#value' => $question,
+    '#type' => 'value',
+  );
+
+  $form['phone_number'] = array(
+    '#title' => t('To'),
+    '#type' => 'textfield',
+    '#default_value' => $question->user_mobile_phone,
+    '#required' => TRUE,
+  );
+
+  $form['reason'] = array(
+    '#type' => 'select',
+    '#title' => t('Answer type'),
+    '#options' => vopros_question_get_reasons('contact_sms'),
+    '#required' => TRUE,
+    /*'#ajax' => array(
+      'callback' => 'vopros_email_question_contact_form_macro',
+    ),*/
+  );
+
+  $form['content_wrapper']['chars'] = array(
+    '#markup' => '<div id="sms-counter">' . t('SMS counter:'). ' <span class="counter">' . 0 . '/' . 1 . '</span></div>',
+  );
+
+  $form['content_wrapper']['content'] = array(
+    '#title' => t('SMS body'),
+    '#type' => 'textarea',
+    '#required' => TRUE,
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_sms_question_contact_form().
+ */
+function vopros_sms_question_contact_form_submit(&$form, &$form_state) {
+  $v = $form_state['values'];
+  $question = $v['question'];
+  $sms = vopros_sms_new(array(
+    'question_id' => $question->question_id,
+    'uid' => $GLOBALS['user']->uid,
+    'content' => $v['content'],
+    'phone_number' => $v['phone_number'],
+  ));
+  vopros_sms_save($sms);
+  if ($sms->status != 'sent') {
+    vopros_sms_send($sms);
+    $sms->status = 'sent';
+    vopros_sms_save($sms);
+  }
+  $question->question_status = 'closed';
+  $question->question_status_reason = $v['reason'];
+  vopros_question_save($question);
+}

@@ -1,0 +1,14 @@
+/** Contact user email page **/
+#vopros-sms-question-contact-form #edit-send-sms {
+  float: right;
+  font-size: 3em;
+  background: #E5E5E5;
+  padding: 10px 30px;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+}
+
+#vopros-sms-question-contact-form .form-item {
+  width: 70%;
+}

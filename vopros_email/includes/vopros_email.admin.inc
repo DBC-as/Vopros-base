@@ -140,6 +140,9 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
   return $form;
 }
 
+/**
+ *
+ */
 function vopros_email_form_insert_snippet_js($form, &$form_state) {
   $snippets = variable_get('vopros_email_snippets', array());
   $key = $form_state['values']['snippet_option'];
@@ -221,6 +224,9 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
   return $form;
 }
 
+/**
+ * AJAX callback for displaying macros.
+ */
 function vopros_email_question_contact_form_macro($form, &$form_state) {
   $key = str_replace(' ', '_', $form_state['values']['reason']);
 

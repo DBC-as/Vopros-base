@@ -801,7 +801,6 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   $form['contact'] = array(
     '#type' => 'submit',
     '#value' => t('Contact user'),
-    '#submit' => array('vopros_question_handle_question_form_contact_submit'),
   );
 
   $form['close'] = array(
@@ -833,16 +832,16 @@ function vopros_question_handle_question_form_close_submit(&$form, &$form_state)
   drupal_set_message('Not implemented yet');
 }
 
-/**
- * Submit handler for vopros_question_handle_quesiton_form contact action.
- */
-function vopros_question_handle_question_form_contact_submit(&$form, &$form_state) {
-  drupal_set_message('Not implemented yet');
-}
-
-function vopros_question_get_reasons($type = 'contact') {
+function vopros_question_get_reasons($type = 'contact_mail') {
   switch ($type) {
-    case 'contact':
+    case 'contact_sms':
+      $options = array(
+        'ask for email' => t('Ask for email'),
+        'need more info' => t('Need more info'),
+        'no time for deadline' => t('Not enough time for deadline'),
+      );
+      break;
+    case 'contact_mail':
     default:
       $options = array(
         'need more info' => t('Need more info'),

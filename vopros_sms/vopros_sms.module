@@ -53,6 +53,12 @@ function vopros_sms_enable() {
   menu_rebuild();
 }
 
+/**
+ * Implementation of hook_init().
+ */
+function vopros_sms_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_sms') . '/theme/vopros_sms.base.css');
+}
 
 /**
  * Implementation of hook_menu().
@@ -103,6 +109,14 @@ function vopros_sms_menu() {
       'file' => 'includes/vopros_sms.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/questions/%vopros_question/sms' => array(
+      'title' => 'Contact user',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_sms_question_contact_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('contact', 3),
+      'file' => 'includes/vopros_sms.admin.inc',
     ),
   );
 }
@@ -278,8 +292,12 @@ function vopros_sms_send($sms, $template = 'default') {
   if (!$base_url || !$user_name || !$password || !$short_code) {
     return FALSE;
   }
-  $sms_wrapper = entity_metadata_wrapper('vopros_sms', $sms);
-  $number = $sms_wrapper->answer->question->user_mobile_phone->value();
+  $number = $sms->phone_number;
+  if (strlen($number) == 8) {
+    $number = '45' . $number;
+  }
+
+  $content = iconv('UTF-8', 'CP1252', $sms->content);
 
   // Construct the url:
   $url = url($base_url, array('query' => array(
@@ -287,7 +305,7 @@ function vopros_sms_send($sms, $template = 'default') {
     'username' => $user_name,
     'password' => $password,
     'shortcode' => $short_code,
-    'text' => $sms->content,
+    'text' => $content,
     'price' => 0,
     'from' => $sender,
   )));
@@ -336,6 +354,25 @@ function vopros_sms_form_vopros_answer_form_alter(&$form, &$form_state) {
   }
 }
 
+/**
+ * Redirect users to the compose SMS form.
+ */
 function vopros_sms_form_vopros_answer_form_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/answers/' . $form_state['answer']->answer_id . '/new-sms';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_sms_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
+  if ($form['question']['#value']->user_answer_preference == 'sms') {
+    $form['contact']['#submit'][] = 'vopros_sms_form_vopros_question_contact_user_submit';
+  }
+}
+
+/**
+ * Redirect users to the compose SMS form.
+ */
+function vopros_sms_form_vopros_question_contact_user_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/sms';
 }
