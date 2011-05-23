@@ -155,11 +155,11 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
  */
 function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   // TODO: What should happen here?
+  // Note to self, Back to previous status and redirect to question list.
   // Open up the question for others.
   $question = $form_state['values']['question'];
   $question->uid = 0;
   $question->question_status = 'in progress';
-  field_attach_submit('vopros_answer', $answer, $form, $form_state);
   vopros_question_save($question);
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
@@ -168,11 +168,12 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
  * Submit handler for save an answer and release the question.
  */
 function vopros_answer_form_save_release_submit(&$form, &$form_state) {
-  $question = $form_state['values']['question'];
+  $v = $form_state['values'];
+  $question = $v['question'];
   $question->uid = 0;
   $question->question_status = 'in progress';
   $question->log = $form_state['values']['log'];
-  $answer = $form_state['values']['answer'];
+  $answer = $v['answer'];
   vopros_question_save($question);
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];

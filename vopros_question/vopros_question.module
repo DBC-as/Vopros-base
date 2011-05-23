@@ -391,6 +391,7 @@ function vopros_question_new($values = array()) {
     'question_title' => t('New question'),
     'question_content' => '',
     'question_deadline' => -1,
+    'question_status_reason' => '',
     'user_age' => 'no inform',
   );
   $values += $default_values;
