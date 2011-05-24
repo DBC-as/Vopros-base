@@ -7,6 +7,8 @@
 function vopros_question_init() {
   if (arg(0) == 'vopros' || arg(1) == 'vopros') {
     drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question.base.css');
+    drupal_add_js(drupal_get_path('module', 'vopros_question') . '/js/vopros_question.base.js');
+    drupal_add_js(drupal_get_path('module', 'vopros_question') . '/js/tooltip.js');
   }
 }
 
@@ -227,10 +229,20 @@ function vopros_question_menu() {
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
     ),
+    'admin/vopros/questions/%vopros_question/admin-edit' => array(
+      'title' => 'Admin edit',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_question_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
     'admin/vopros/questions/%vopros_question/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_question_question_form', 3),
+      'page arguments' => array('vopros_question_question_frontend_form', 3),
       'access callback' => 'vopros_question_access',
       'access arguments' => array('update'),
       'file' => 'includes/vopros_question.admin.inc',

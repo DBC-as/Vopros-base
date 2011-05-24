@@ -635,3 +635,69 @@ function vopros_question_close_question_form_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions';
 }
 
+/**
+ * Front form that create a form with click to edit fields.
+ */
+function vopros_question_question_frontend_form($form, &$form_state, $question) {
+  $form['right'] = array(
+    '#weight' => -1000,
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div><div class="content">',
+  );
+  $form += vopros_question_question_form($form, $form_state, $question);
+
+  $form['#validate'] = array('vopros_question_question_form_validate');
+  $form['#submit'] = array('vopros_question_question_form_submit');
+
+  $form['right']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#weight' => -100,
+  );
+
+  $form['right']['log'] = $form['log'];
+  unset($form['log']);
+
+  $click_to_edit = array(
+    'question_content',
+    'question_status',
+    'question_deadline',
+    'question_usage',
+    'question_note',
+    'user_name',
+    'user_email',
+    'user_postal_code',
+    'user_mobile_phone',
+    'user_age',
+    'user_gender',
+    'user_field_of_study',
+    'user_library',
+    'user_answer_preference',
+  );
+
+  foreach ($form['ask'] as $key => $value) {
+    $form[$key] = $value;
+  }
+  unset($form['ask']);
+
+  foreach ($click_to_edit as $form_field) {
+    if (isset($form[$form_field])) {
+      $form[$form_field]['#prefix'] = '<div class="hidden">';
+      $form[$form_field]['#suffix'] = '</div>';
+      $default_value = $form[$form_field]['#default_value'];
+      if (isset($form[$form_field]['#options']) && isset($form[$form_field]['#options'][$default_value])) {
+        $default_value = $form[$form_field]['#options'][$default_value];
+      }
+      if ($default_value) {
+        $form[$form_field]['#prefix'] = '<div class="form-wrapper fake-wrapper"><div class="form-item fake-wrapper"><label>' . $form[$form_field]['#title'] . '</label><div class="fake-form-item">' . $default_value . '</div><div class="tooltip">' . t('Click to edit') .'</div></div></div>' . $form[$form_field]['#prefix'];
+      }
+    }
+  }
+
+  $form['end'] = array(
+    '#suffix' => '</div>',
+    '#weight' => 1000,
+  );
+
+  return $form;
+}
