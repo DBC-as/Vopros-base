@@ -315,6 +315,16 @@ function vopros_answer_load_multiple($answer_ids = array(), $conditions = array(
 }
 
 /**
+ * Load all answers for a question.
+ *
+ * @param $question_id
+ *  The id of the question which answers should be fetched.
+ */
+function vopros_answer_load_for_question($question_id) {
+  return vopros_answer_load_multiple(FALSE, array('question_id' => $question_id));
+}
+
+/**
  * Get a list of revisions for a question.
  */
 function vopros_answer_revision_list($answer) {
@@ -351,7 +361,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
     elseif ($question->question_status == 'locked') {
       global $user;
       if ($question->uid == $user->uid || user_access('administer answers')) {
-        $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+        $answers = vopros_answer_load_for_question($question->question_id);
         if ($answers) {
           $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
           $entity->content['action'][] = array('#markup' => $output, '#weight' => 10);
@@ -362,7 +372,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
       }
     }
     elseif ($question->question_status == 'in progress') {
-      $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+      $answers = vopros_answer_load_for_question($question->question_id);
       if ($answers) {
         $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
         $entity->content['action'][] = array('#markup' => $output);
@@ -373,6 +383,9 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
   
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
 function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
   $form['answer_question'] = array(
      '#type' => 'submit',
@@ -412,11 +425,12 @@ function vopros_answer_question_view_form_validate($form, &$form_state) {
 }
 
 function vopros_answer_question_view_form_submit($form, &$form_state) {
+  drupal_set_message(t('The question been locked for you, while you are answering it.'), 'warning');
   $question = $form_state['values']['question'];
   $question->question_status = 'locked';
   $question->uid = $GLOBALS['user']->uid;
   vopros_question_save($question);
-  $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+  $answers = vopros_answer_load_for_question($question->question_id);
   if (count($answers) !== 1) {
     $answer = vopros_answer_new();
     $answer->answer_content = '';

@@ -193,14 +193,26 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
  * Submit handler for cancelling an answer.
  */
 function vopros_answer_form_cancel_submit(&$form, &$form_state) {
-  // TODO: What should happen here?
-  // Note to self, Back to previous status and redirect to question list.
+  // Set the status to new, if the question doesn't have an answer or if it only has a single empty answer.
   // Open up the question for others.
+  drupal_set_message(t('The question has been unlocked for others to answer.'), 'warning');
   $question = $form_state['values']['question'];
-  $question->uid = 0;
+  $answers = vopros_answer_load_for_question($question->question_id);
   $question->question_status = 'in progress';
+  if (count($answers) == 0) {
+    $question->question_status = 'new';
+  }
+  if (count($answers) == 0) {
+    $answer = array_shift($answers);
+    if (empty($answer->answer_content)) {
+      $question->question_status = 'new';
+    }
+  }
+  $question->uid = 0;
+  
   vopros_question_save($question);
-  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
+  // Redirect to question overview page.
+  $form_state['redirect'] = 'admin/vopros/questions/';
 }
 
 /**
@@ -219,7 +231,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $answer->author_name = $GLOBALS['user']->name;
   field_attach_submit('vopros_answer', $answer, $form, $form_state);
   vopros_answer_save($answer);
-  drupal_set_message('Answer saved and question released for others to answer');
+  drupal_set_message('Answer saved and question released for others to answer.');
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
