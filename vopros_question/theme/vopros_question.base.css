@@ -90,3 +90,31 @@
   padding: 5px;
   cursor: pointer;
 }
+
+/**
+ * Subject checkboxes.
+ */
+#edit-subject-catagory {
+  margin-bottom: 10px;
+}
+
+#edit-subject-catagory:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* IE6 */
+* html #edit-subject-catagory {
+  height: 1%;
+}
+/* IE7 */
+*:first-child + html #edit-subject-catagory {
+  min-height: 1%;
+}
+
+#edit-subject-catagory .form-type-checkbox {
+  width: 150px;
+  float: left;
+}

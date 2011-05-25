@@ -590,7 +590,7 @@ function vopros_question_configure_question() {
 
   if (empty($field)) {
     $field = array(
-      'cardinality' => 1,
+      'cardinality' => -1,
       'entity_types' => array($type),
       'translatable' => FALSE,
       'locked' => TRUE,
@@ -617,7 +617,7 @@ function vopros_question_configure_question() {
       'field_name' => $field_name,
       'label' => t('Subject'),
       'widget' => array(
-        'type' => 'options_select',
+        'type' => 'options_buttons',
       ),
       'settings' => array(),
 
