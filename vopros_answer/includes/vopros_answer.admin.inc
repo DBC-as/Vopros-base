@@ -71,8 +71,24 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#suffix' => '</div>',
   );
 
-  $form['form']['question_view'] = array(
-    '#markup' => render(vopros_question_page_view($question, 'teaser')),
+  $question_build = vopros_question_page_view($question, 'teaser');
+  $question_intro = array(
+    $question_build['question_title'],
+    $question_build['question_content'],
+  );
+  $question_data = array(
+    $question_build['question_deadline'],
+    $question_build['question_usage'],
+    $question_build['question_note'],
+  );
+
+  $question_user_data = array(
+    $question_build['ask'],
+  );
+  
+
+  $form['form']['question_intro'] = array(
+    '#markup' => render($question_intro),
   );
 
   $form['question'] = array(
@@ -90,6 +106,29 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#title' => t('Answer'),
     '#default_value' => isset($answer->answer_content) ? $answer->answer_content : '',
   );
+
+  $form['form']['question_data'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Question data'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['form']['question_data']['content'] = array(
+    '#markup' => render($question_data),
+  );
+
+  $form['form']['question_user_data'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('User data'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['form']['question_user_data']['content'] = array(
+    '#markup' => render($question_user_data),
+  );
+  
 
   $form['form']['save'] = array(
     '#type' => 'submit',

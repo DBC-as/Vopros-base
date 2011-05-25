@@ -100,9 +100,12 @@ function theme_vopros_question_note($variables) {
  */
 function theme_vopros_question_user_data($variables) {
   $user_age_mapping = _vopros_question_user_age();
-
   $question = $variables['question']['#question'];
-  $output = '<h3 class="question-user-data">' . t('User data') . '</h3>';
+  $output = '';
+  if ($variables['question']['#view_mode'] !== 'teaser') {
+    $output .= '<h3 class="question-user-data">' . t('User data') . '</h3>';
+  }
+  
   $output .= '<div class="question-user-data-data">';
 
   $output .= '<div class="question-user-name vopros-question-extra">';
