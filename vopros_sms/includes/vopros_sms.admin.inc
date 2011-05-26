@@ -81,7 +81,7 @@ function vopros_sms_settings_form($form, &$form_state) {
     '#description' => t('Create macros inserted when sending an email.'),
   );
 
-  $form['macros']['vopros_email_answered_question_macro'] = array(
+  $form['macros']['vopros_sms_answered_question_macro'] = array(
     '#type' => 'textarea',
     '#title' => t('Answered question'),
     '#description' => t('Macro used when answering a question.'),
@@ -154,7 +154,11 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
      '#required' => TRUE,
    );
 
-  $content = isset($sms->content) ? $sms->content : '';
+  $content =  token_replace(variable_get('vopros_sms_answered_question_macro', ''), array(
+     'vopros_answer' => $answer,
+     'vopros_question' => $answer_wrapper->question->value(),
+   )),
+  
   if (strlen($content) <= 160) {
     $sms_count = 1;
   }
