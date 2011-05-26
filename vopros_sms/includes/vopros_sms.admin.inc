@@ -122,6 +122,11 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     '#suffix' => '</div>',
   );
 
+  $form['action']['publish'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Publish question and answer'),
+  );
+
   $form['action']['save_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
@@ -157,7 +162,7 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
   $content =  token_replace(variable_get('vopros_sms_answered_question_macro', ''), array(
      'vopros_answer' => $answer,
      'vopros_question' => $answer_wrapper->question->value(),
-   )),
+   ));
   
   if (strlen($content) <= 160) {
     $sms_count = 1;
