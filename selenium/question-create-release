@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/vopros/" />
+<title>Question create answer and release</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Question create answer and release</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>admin/vopros/config/question/add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-title</td>
+	<td>Selenium Test question</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-content</td>
+	<td>This question is created by Selenium</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-note</td>
+	<td>This is a test note</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-name</td>
+	<td>Jakob Torp</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-email</td>
+	<td>Jakob@revealit.dk</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-postal-code</td>
+	<td>4930</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>admin/vopros/questions</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/div[2]/div[3]/table/thead/tr/th[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Selenium Test question</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Selenium Test question</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>edit-question-title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='vopros-question-question-frontend-form']/div/div[2]/div[2]/div/div[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-content</td>
+	<td>This question is created by Selenium<br /><br />Which now has been edited</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-title</td>
+	<td>Selenium Question to be released</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-log</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-and-answer</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Warning message The question been locked for you, while you are answering it.</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//form[@id='vopros-answer-form']/div/div[1]/div/div[2]/p</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>edit-log</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Show User data</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Show Question data</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save--2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Status message Answer saved</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer<br /><br />We want</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer<br /><br />Please help</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer<br /><br />Please help, I don't know how to answer this question.</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-release</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is the first half of the answer Please help, I don't know how to answer this question.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Questions</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/div[2]/div[3]/table/thead/tr/th[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Selenium Question to be released</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-title</td>
+	<td>Selenium Question has been released</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Status message Question has been saved</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-answer-question</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>This is the first half of the answer Please help, I don't know how to answer this question.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

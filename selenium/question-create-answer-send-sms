@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/vopros/" />
+<title>Question create and answer (SMS)</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Question create and answer (SMS)</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>admin/vopros/config/question/add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-title</td>
+	<td>Selenium Test question</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-content</td>
+	<td>This question is created by Selenium</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-note</td>
+	<td>This is a test note</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-name</td>
+	<td>Jakob Torp</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-mobile-phone</td>
+	<td>28142149</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-user-postal-code</td>
+	<td>4930</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>edit-user-answer-preference</td>
+	<td>label=SMS</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>admin/vopros/questions</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/div[2]/div[3]/table/thead/tr/th[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Selenium Test question</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Selenium Test question</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>edit-question-title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='vopros-question-question-frontend-form']/div/div[2]/div[2]/div/div[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-content</td>
+	<td>This question is created by Selenium<br /><br />Which now has been edited</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-question-title</td>
+	<td>Selenium Question edited</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-log</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-and-answer</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Warning message The question been locked for you, while you are answering it.</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//form[@id='vopros-answer-form']/div/div[1]/div/div[2]/p</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>edit-log</td>
+	<td>Added test log note</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Show User data</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Show Question data</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save--2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Status message Answer saved</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer<br /><br />This is the second part of the answer</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-submit--2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Status message Answer saved and is ready to be submited to the user.</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>edit-phone-number</td>
+	<td>28142149</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit answer</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-answer-content</td>
+	<td>This is the first half of the answer<br /><br />This is the second part of the answer<br /><br />This is the third part of the answer</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-submit--2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-content</td>
+	<td>The content of the sms, should be auto generated.</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-save-submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='console']/div</td>
+	<td>Status message The answer has been sent to 28142149 and the question is marked as answered.</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
