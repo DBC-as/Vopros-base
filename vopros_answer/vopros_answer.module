@@ -397,6 +397,17 @@ function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_answer_form_vopros_question_question_frontend_form_alter(&$form, &$form_state) {
+  $form['buttons']['save_and_answer'] = array(
+    '#value' => t('Save and answer'),
+    '#type' => 'submit',
+    '#submit' => array('vopros_question_question_form_submit', 'vopros_answer_question_view_form_submit'),
+  );
+}
+
+/**
  * Form to answer questions
  */
 function vopros_answer_question_view_form($form, &$form_state, $question) {
@@ -424,6 +435,10 @@ function vopros_answer_question_view_form_validate($form, &$form_state) {
   $form_state['values']['question'] = $question;
 }
 
+/**
+ * Submit handler for vopros_answer_question_view_form().
+ * Handles locking a question to the user and adding an answer is none is created yet.
+ */
 function vopros_answer_question_view_form_submit($form, &$form_state) {
   drupal_set_message(t('The question been locked for you, while you are answering it.'), 'warning');
   $question = $form_state['values']['question'];

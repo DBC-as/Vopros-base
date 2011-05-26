@@ -17,7 +17,11 @@ function vopros_question_settings_form($form, &$form_state) {
  */
 function vopros_question_question_form($form, &$form_state, $question) {
   // Add the field related form elements.
-  $form_state['vopros_question'] = $question;
+  $form['question'] = array(
+    '#value' => $question,
+    '#type' => 'value',
+  );
+  
   field_attach_form('vopros_question', $question, $form, $form_state);
   
   $form['question_title'] = array(
@@ -141,10 +145,13 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => isset($question->log) ? $question->log : '',
   );
 
-  $form['save'] = array(
+  $form['buttons'] = array(
+    '#weight' => 100,
+  );
+
+  $form['buttons']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#weight' => 100,
   );
 
   return $form;
@@ -154,7 +161,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
  * Validate handler for vopros_question_question_form().
  */
 function vopros_question_question_form_validate(&$form, &$form_state) {
-  $question = $form_state['vopros_question'];
+  $question = $form_state['values']['question'];
   field_attach_validate('vopros_question', $question, $form, $form_state);
 }
 
@@ -162,7 +169,7 @@ function vopros_question_question_form_validate(&$form, &$form_state) {
  * Submit handler for vopros_question_question_form().
  */
 function vopros_question_question_form_submit(&$form, &$form_state) {
-  $question = &$form_state['vopros_question'];
+  $question = $form_state['values']['question'];
 
   $info = entity_get_property_info('vopros_question');
 
@@ -658,9 +665,12 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
   $form['right']['log'] = $form['log'];
   unset($form['log']);
 
+  $hidden = array(
+    'question_status',
+  );
+
   $click_to_edit = array(
     'question_content',
-    'question_status',
     'question_deadline',
     'question_usage',
     'question_note',
@@ -694,9 +704,18 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     }
   }
 
+  foreach ($hidden as $form_field) {
+    $form[$form_field]['#type'] = 'hidden';
+  }
+
   $form['end'] = array(
     '#suffix' => '</div>',
     '#weight' => 1000,
+  );
+
+  $form['buttons']['contact'] = array(
+    '#value' => t('Contact user'),
+    '#type' => 'submit',
   );
 
   return $form;

@@ -12,3 +12,24 @@
 #vopros-email-question-contact-form .form-item {
   width: 70%;
 }
+
+/**
+ * Answer email page
+ */
+#vopros-email-form .action {
+  width: 30%;
+  float: right;
+}
+
+#vopros-email-form .action .form-submit {
+  font-size: 3em;
+  background: #E5E5E5;
+  padding: 10px 30px;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+}
+
+#vopros-email-form .form {
+  width: 65%;
+}

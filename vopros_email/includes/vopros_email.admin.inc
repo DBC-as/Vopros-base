@@ -15,7 +15,7 @@ function vopros_email_settings_form($form, &$form_state) {
 
   $form['contact'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Contact user e-mail macros'),
+    '#title' => t('Contact user email macros'),
   );
 
   foreach (vopros_question_get_reasons('contact') as $key => $value) {
@@ -37,7 +37,7 @@ function vopros_email_settings_form($form, &$form_state) {
 
   $form['macros'] = array(
     '#type' => 'fieldset',
-    '#title' => t('E-mail macros'),
+    '#title' => t('Email macros'),
     '#description' => t('Create macros inserted when sending an email.'),
   );
 
@@ -62,20 +62,51 @@ function vopros_email_settings_form($form, &$form_state) {
  * Answer form
  */
 function vopros_email_form($form, &$form_state, $answer, $email) {
+  $form['action'] = array(
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+
+  $form['action']['publish'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Publish question and answer'),
+  );
+
+  $form['action']['send'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send'),
+    '#submit' => array('vopros_email_form_submit'),
+  );
+
   if (empty($answer) && isset($email->answer_id)) {
     $answer = vopros_question_load($email->answer_id);
   }
+
+  $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+
   $form['answer'] = array(
     '#type' => 'value',
     '#value' => $answer,
   );
 
-  $form['email'] = array(
+  $form['vopros_email'] = array(
     '#type' => 'value',
     '#value' => $email,
   );
 
-  $form['subject'] = array(
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['email'] = array(
+    '#title' => t('To'),
+    '#type' => 'textfield',
+    '#default_value' => $answer_wrapper->question->user_email->value(),
+    '#required' => TRUE,
+  );
+
+  $form['form']['subject'] = array(
     '#type' => 'textfield',
     '#title' => t('Subject'),
     '#description' => t('The subject for the email.'),
@@ -83,57 +114,26 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
     '#required' => TRUE,
   );
 
-  $form['content_field'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Content'),
-  );
-
-  $snippets = variable_get('vopros_email_snippets', array());
-  $options = array();
-
-  foreach ($snippets as $key => $snippet) {
-    $options[$key] = $snippet['name'];
-  }
-
-  if ($options) {
-    $form['content_field']['snippet']['snippet_option'] = array(
-      '#type' => 'select',
-      '#title' => t('Select snippet'),
-      '#options' => array('' => t('Select')) + $options,
-    );
-
-    $form['content_field']['snippet']['snippet_destination'] = array(
-      '#type' => 'select',
-      '#title' => t('Snippet destination'),
-      '#options' => array(
-        'beginning' => t('Beginning'),
-        'end' => t('End'),
-      ),
-    );
-
-    $form['content_field']['snippet']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Insert snippet'),
-      '#ajax' => array(
-        'callback' => 'vopros_email_form_insert_snippet_js',
-      ),
-    );
-  }
-
-  $form['content_field']['content'] = array(
+  $form['form']['content'] = array(
     '#type' => 'textarea',
     '#title' => t('Mail body'),
     '#description' => t('The main content of the email.'),
     '#default_value' => token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
       'vopros_answer' => $answer,
-      'vopros_question' => vopros_question_load($answer->question_id),
+      'vopros_question' => $answer_wrapper->question->value(),
     )),
     '#required' => TRUE,
   );
 
-  $form['send'] = array(
+  $form['form']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
+    '#submit' => array('vopros_email_form_submit'),
+  );
+
+  $form['form']['edit_answer'] = array(
+    '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
+    '#value' => t('Edit answer'),
     '#submit' => array('vopros_email_form_submit'),
   );
 
@@ -141,41 +141,30 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
 }
 
 /**
- *
- */
-function vopros_email_form_insert_snippet_js($form, &$form_state) {
-  $snippets = variable_get('vopros_email_snippets', array());
-  $key = $form_state['values']['snippet_option'];
-  $commands = array();
-  if (isset($snippets[$key]) && $snippets[$key]['snippet']) {
-    $snippet = $snippets[$key]['snippet'];
-    if ($form_state['values']['snippet_destination'] == 'end') {
-      $text = $form_state['values']['content'] . "\n" . $snippet;
-    }
-    else {
-      $text = $snippet . "\n" . $form_state['values']['content'];
-    }
-    $commands[] = ajax_command_invoke('#edit-content', 'val', array($text));
-  }
-  return array('#type' => 'ajax', '#commands' => $commands);
-}
-
-/**
  * Submit handler for saving questions
  */
 function vopros_email_form_submit(&$form, &$form_state) {
-  $email = $form_state['values']['email'];
+  // Update the email with submitted data.
+  $email = $form_state['values']['vopros_email'];
   $email->subject = $form_state['values']['subject'];
   $email->content = $form_state['values']['content'];
+  $email->email = $form_state['values']['email'];
+  // Create the needed relations for later.
   $email->uid = $GLOBALS['user']->uid;
   $email->answer_id = $form_state['values']['answer']->answer_id;
+  $email->question_id = $form_state['values']['answer']->question_id;
+  
   vopros_email_save($email);
   if ($email->status != 'sent') {
     vopros_email_send($email);
     $email->status = 'sent';
     vopros_email_save($email);
   }
-  $form_state['redirect'] = 'admin/vopros/email/' . $email->email_id;
+
+  $question->question_status = 'answered';
+  
+  $form_state['redirect'] = 'admin/vopros/questions';
+  drupal_set_message(t('The email has been sent and the question is marked as answered.'));
 }
 
 /**
@@ -244,7 +233,7 @@ function vopros_email_question_contact_form_macro($form, &$form_state) {
 function vopros_email_question_contact_form_validate(&$form, &$form_state) {
   $mail = $form_state['values']['email'];
   if (!valid_email_address($mail)) {
-    form_set_error('email', t('The e-mail address %mail is not valid.', array('%mail' => $mail)));
+    form_set_error('email', t('The email address %mail is not valid.', array('%mail' => $mail)));
   }
 }
 
@@ -270,4 +259,5 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
+  drupal_set_message(t('The email has been sent to the user and the question is closed until the user provides feedback'));
 }

@@ -333,7 +333,7 @@ function vopros_email_mail($key, &$message, $params) {
 function vopros_email_form_vopros_answer_form_alter(&$form, &$form_state) {
   // Hook into the form, if user wants an sms sent. 
   if ($form['question']['#value']->user_answer_preference == 'mail') {
-    $form['save_submit']['#submit'][] = 'vopros_email_form_vopros_answer_form_submit';
+    $form['form']['save_submit']['#submit'][] = 'vopros_email_form_vopros_answer_form_submit';
   }
 }
 

@@ -241,7 +241,6 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
 function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $form_state['values']['question'];
-  $question->question_status = 'answered';
   vopros_question_save($question);
   $answer = $v['answer'];
   $answer->question_id = $question->question_id;
@@ -250,7 +249,7 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $answer->status = 'complete';
   $form_state['answer'] = $answer;
   vopros_answer_save($answer);
-  drupal_set_message('Answer saved and question marked as answered');
+  drupal_set_message('Answer saved and is ready to be submited to the user.');
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 

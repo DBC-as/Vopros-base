@@ -209,4 +209,5 @@ function vopros_sms_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
+  drupal_set_message(t('The SMS has been sent to the user and the question is closed until the user provides feedback'));
 }
