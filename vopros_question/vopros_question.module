@@ -736,7 +736,7 @@ function _vopros_question_user_age() {
 function _vopros_question_status() {
   return array(
     'new' => t('New'),
-    'in_progress' => t('In progress'),
+    'in progress' => t('In progress'),
     'locked' => t('Locked'),
     'answered' => t('Answered'),
     'closed' => t('Closed without answer'),

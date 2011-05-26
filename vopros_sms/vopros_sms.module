@@ -376,3 +376,13 @@ function vopros_sms_form_vopros_question_handle_question_form_alter(&$form, &$fo
 function vopros_sms_form_vopros_question_contact_user_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/sms';
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function vopros_sms_form_vopros_question_question_frontend_form_alter(&$form, &$form_state) {
+  if ($form['question']['#value']->user_answer_preference == 'sms') {
+    $form['buttons']['contact']['#submit'][] = 'vopros_sms_form_vopros_question_contact_user_submit';
+  }
+}
+

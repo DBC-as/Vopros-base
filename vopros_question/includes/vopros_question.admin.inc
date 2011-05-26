@@ -640,6 +640,7 @@ function vopros_question_close_question_form_submit(&$form, &$form_state) {
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
   $form_state['redirect'] = 'admin/vopros/questions';
+  drupal_set_message(t('Question has been closed and wont be answered'), 'warning');
 }
 
 /**
@@ -660,7 +661,9 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     '#type' => 'submit',
     '#value' => t('Save'),
     '#weight' => -100,
+    '#submit' => array('vopros_question_frontend_save_submit'),
   );
+
 
   $form['right']['log'] = $form['log'];
   unset($form['log']);
@@ -713,10 +716,23 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     '#weight' => 1000,
   );
 
+  $form['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
+
   $form['buttons']['contact'] = array(
     '#value' => t('Contact user'),
     '#type' => 'submit',
   );
 
+  $form['buttons']['close'] = array(
+    '#value' => t('Close question'),
+    '#type' => 'submit',
+    '#submit' => array('vopros_question_handle_question_form_close_submit'),
+  );
+
   return $form;
+}
+
+function vopros_question_frontend_save_submit(&$form, &$form_state) {
+  drupal_set_message(t('Question has been saved'));
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id;
 }

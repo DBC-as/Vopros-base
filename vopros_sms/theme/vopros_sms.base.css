@@ -12,3 +12,25 @@
 #vopros-sms-question-contact-form .form-item {
   width: 70%;
 }
+
+/**
+ * Answer sms page
+ */
+#vopros-sms-form .action {
+  width: 30%;
+  float: right;
+}
+
+#vopros-sms-form .action .form-submit {
+  font-size: 3em;
+  background: #E5E5E5;
+  padding: 10px 30px;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+}
+
+#vopros-sms-form .form {
+  width: 65%;
+}
+

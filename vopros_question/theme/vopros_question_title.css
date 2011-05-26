@@ -5,3 +5,7 @@
 h2.question-title:hover {
   cursor: pointer;
 }
+
+#vopros-answer-form h2.question-title:hover {
+  cursor: auto;
+}

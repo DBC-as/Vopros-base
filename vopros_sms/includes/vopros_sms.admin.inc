@@ -53,6 +53,48 @@ function vopros_sms_settings_form($form, &$form_state) {
     '#element_validate' => array('vopros_sms_push_sender_validate'),
   );
 
+  $form['contact'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Contact user email macros'),
+  );
+
+  foreach (vopros_question_get_reasons('contact_sms') as $key => $value) {
+    $key = str_replace(' ', '_', $key);
+    $form['contact']['vopros_sms_macro_' . $key] = array(
+      '#type' => 'textarea',
+      '#title' => $value,
+      '#description' => t('Macro used when contacting a user.'),
+      '#default_value' => variable_get('vopros_sms_macro_' . $key, ''),
+    );
+  }
+
+  $form['contact']['tokens'] = array(
+    '#markup' => theme('token_tree', array(
+      'token_types' => array('vopros_question'),
+      'global_types' => FALSE,
+    )),
+  );
+
+  $form['macros'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Email macros'),
+    '#description' => t('Create macros inserted when sending an email.'),
+  );
+
+  $form['macros']['vopros_email_answered_question_macro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Answered question'),
+    '#description' => t('Macro used when answering a question.'),
+    '#default_value' => variable_get('vopros_sms_answered_question_macro', ''),
+  );
+
+  $form['macros']['tokens'] = array(
+    '#markup' => theme('token_tree', array(
+      'token_types' => array('vopros_answer', 'vopros_question'),
+      'global_types' => FALSE,
+    )),
+  );
+
   return system_settings_form($form);
 }
 
@@ -69,11 +111,26 @@ function vopros_sms_push_sender_validate(&$form, &$form_state) {
  * Answer form
  */
 function vopros_sms_form($form, &$form_state, $answer, $sms) {
-  $form['#after_build'] = array('vopros_sms_form_add_js');
-
   if (empty($answer) && isset($sms->answer_id)) {
     $answer = vopros_question_load($sms->answer_id);
   }
+
+  $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+
+  $form['action'] = array(
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+
+  $form['action']['save_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send'),
+    '#submit' => array('vopros_sms_form_submit'),
+  );
+  
+  $form['#after_build'] = array('vopros_sms_form_add_js');
+
+  
   
   $form['answer'] = array(
     '#type' => 'value',
@@ -85,6 +142,18 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     '#value' => $sms,
   );
 
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['phone_number'] = array(
+     '#title' => t('To'),
+     '#type' => 'textfield',
+     '#default_value' => $answer_wrapper->question->user_mobile_phone->value(),
+     '#required' => TRUE,
+   );
+
   $content = isset($sms->content) ? $sms->content : '';
   if (strlen($content) <= 160) {
     $sms_count = 1;
@@ -93,26 +162,35 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     $sms_count = strlen($content) / 153;
   }
 
-  $form['content_wrapper'] = array(
+  $form['form']['content_wrapper'] = array(
     '#type' => 'fieldset',
     '#title' => t('Content'),
   );
 
-  $form['content_wrapper']['chars'] = array(
+  $form['form']['content_wrapper']['chars'] = array(
     '#markup' => '<div id="sms-counter">' . t('SMS counter:'). ' <span class="counter">' . strlen($content) . '/' . $sms_count . '</span></div>',
   );
 
-  $form['content_wrapper']['content'] = array(
+  $form['form']['content_wrapper']['content'] = array(
     '#type' => 'textarea',
     '#title' => t('Content'),
     '#description' => t('The main content of the sms.'),
     '#default_value' => $content,
+    '#required' => TRUE,
   );
 
-  $form['send'] = array(
+  $form['form']['buttons'] = array(
+    '#weight' => 100
+  );
+
+  $form['form']['buttons']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
     '#submit' => array('vopros_sms_form_submit'),
+  );
+
+  $form['form']['buttons']['edit_answer'] = array(
+    '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
   );
 
   return $form;
@@ -132,14 +210,17 @@ function vopros_sms_form_add_js(&$form, &$form_state) {
 function vopros_sms_form_submit(&$form, &$form_state) {
   $sms = $form_state['values']['sms'];
   $sms->content = $form_state['values']['content'];
+  $sms->phone_number = $form_state['values']['phone_number'];
   $sms->uid = $GLOBALS['user']->uid;
   $sms->answer_id = $form_state['values']['answer']->answer_id;
+  $sms->question_id = $form_state['values']['answer']->question_id;
   $sms_wrapper = entity_metadata_wrapper('vopros_sms', $sms);
   vopros_sms_save($sms);
   if ($sms->status != 'sent') {
     vopros_sms_send($sms);
   }
-  $form_state['redirect'] = 'admin/vopros/questions/' . $sms_wrapper->answer->question->question_id->value();
+  drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $sms->phone_number)));
+  $form_state['redirect'] = 'admin/vopros/questions/';
 }
 
 /**
@@ -170,9 +251,9 @@ function vopros_sms_question_contact_form($form, &$form_state, $question) {
     '#title' => t('Answer type'),
     '#options' => vopros_question_get_reasons('contact_sms'),
     '#required' => TRUE,
-    /*'#ajax' => array(
-      'callback' => 'vopros_email_question_contact_form_macro',
-    ),*/
+    '#ajax' => array(
+      'callback' => 'vopros_sms_question_contact_form_macro',
+    ),
   );
 
   $form['content_wrapper']['chars'] = array(
@@ -187,6 +268,22 @@ function vopros_sms_question_contact_form($form, &$form_state, $question) {
 
   return $form;
 }
+
+
+/**
+ * AJAX callback for displaying macros.
+ */
+function vopros_sms_question_contact_form_macro($form, &$form_state) {
+  $key = str_replace(' ', '_', $form_state['values']['reason']);
+
+  $text = variable_get('vopros_sms_macro_' . $key, '');
+
+  $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']));
+  $commands = array();
+  $commands[] = ajax_command_invoke('#edit-content', 'val', array($processed_text));
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
 
 /**
  * Submit handler for vopros_sms_question_contact_form().
@@ -209,5 +306,6 @@ function vopros_sms_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
-  drupal_set_message(t('The SMS has been sent to the user and the question is closed until the user provides feedback'));
+  drupal_set_message(t('The SMS has been sent to @receiver and the question is closed until the user provides feedback', array('@receiver' => $sms->phone_number)), 'warning');
+  $form_state['redirect'] = 'admin/vopros/questions';
 }

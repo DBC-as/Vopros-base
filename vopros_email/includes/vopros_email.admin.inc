@@ -9,10 +9,6 @@
  * Answer settings form
  */
 function vopros_email_settings_form($form, &$form_state) {
-  if (!isset($form_state['new_snippets_count'])) {
-    $form_state['new_snippets_count'] = 1;
-  }
-
   $form['contact'] = array(
     '#type' => 'fieldset',
     '#title' => t('Contact user email macros'),
@@ -133,8 +129,6 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
 
   $form['form']['edit_answer'] = array(
     '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
-    '#value' => t('Edit answer'),
-    '#submit' => array('vopros_email_form_submit'),
   );
 
   return $form;
@@ -164,7 +158,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   $question->question_status = 'answered';
   
   $form_state['redirect'] = 'admin/vopros/questions';
-  drupal_set_message(t('The answer has been sent to @reciever and the question is marked as answered.', array('@reciever' => $email->email)));
+  drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $email->email)));
 }
 
 /**
@@ -259,6 +253,6 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
-  drupal_set_message(t('The email has been sent to the user and the question is closed until the user provides feedback'));
+  drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $email->email)));
   $form_state['redirect'] = 'admin/vopros/questions';
 }

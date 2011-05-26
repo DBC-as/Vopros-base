@@ -332,7 +332,7 @@ function vopros_migrate_question_status_mapping() {
   );
   return array(
     1 => 'new',
-    2 => 'in_progress',
+    2 => 'in progress',
     3 => 'answered',
     4 => 'closed',
     5 => 'closed',
