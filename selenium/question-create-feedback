@@ -113,13 +113,13 @@
 </tr>
 <tr>
 	<td>waitForNotValue</td>
-	<td>edit-body</td>
+	<td>edit-subject</td>
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>edit-subject</td>
-	<td>Subject</td>
+	<td>waitForNotValue</td>
+	<td>edit-body</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>

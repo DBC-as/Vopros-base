@@ -16,10 +16,21 @@ function vopros_email_settings_form($form, &$form_state) {
 
   foreach (vopros_question_get_reasons('contact') as $key => $value) {
     $key = str_replace(' ', '_', $key);
-    $form['contact']['vopros_email_macro_' . $key] = array(
-      '#type' => 'textarea',
+    $form['contact'][$key] = array(
+      '#type' => 'fieldset',
       '#title' => $value,
-      '#description' => t('Macro used when contacting a user.'),
+      '#description' => t('Setup macros used for sending email.'),
+    );
+    
+    $form['contact'][$key]['vopros_email_subject_macro_' . $key] = array(
+      '#type' => 'textfield',
+      '#title' => t('Subject.'),
+      '#default_value' => variable_get('vopros_email_subject_macro_' . $key, ''),
+    );
+    
+    $form['contact'][$key]['vopros_email_macro_' . $key] = array(
+      '#type' => 'textarea',
+      '#title' => t('Mail body.'),
       '#default_value' => variable_get('vopros_email_macro_' . $key, ''),
     );
   }
@@ -37,9 +48,16 @@ function vopros_email_settings_form($form, &$form_state) {
     '#description' => t('Create macros inserted when sending an email.'),
   );
 
+  $form['macros']['vopros_email_answered_question_subject_macro'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Answered question subject'),
+    '#description' => t('Macro used when answering a question.'),
+    '#default_value' => variable_get('vopros_email_answered_question_subject_macro', ''),
+  );
+
   $form['macros']['vopros_email_answered_question_macro'] = array(
     '#type' => 'textarea',
-    '#title' => t('Answered question'),
+    '#title' => t('Answered question mail body'),
     '#description' => t('Macro used when answering a question.'),
     '#default_value' => variable_get('vopros_email_answered_question_macro', ''),
   );
@@ -106,7 +124,10 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
     '#type' => 'textfield',
     '#title' => t('Subject'),
     '#description' => t('The subject for the email.'),
-    '#default_value' => isset($email->subject) ? $email->subject : '',
+    '#default_value' => token_replace(variable_get('vopros_email_answered_question_subject_macro', ''), array(
+      'vopros_answer' => $answer,
+      'vopros_question' => $answer_wrapper->question->value(),
+    )),
     '#required' => TRUE,
   );
 
@@ -213,11 +234,15 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
 function vopros_email_question_contact_form_macro($form, &$form_state) {
   $key = str_replace(' ', '_', $form_state['values']['reason']);
 
-  $text = variable_get('vopros_email_macro_' . $key, '');
+  $content = variable_get('vopros_email_macro_' . $key, '');
+  $processed_content = token_replace($content, array('vopros_question' => $form_state['values']['question']));
 
-  $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']));
+  $subject = variable_get('vopros_email_subject_macro_' . $key, '');
+  $processed_subject = token_replace($subject, array('vopros_question' => $form_state['values']['question']));
+  
   $commands = array();
-  $commands[] = ajax_command_invoke('#edit-body', 'val', array($processed_text));
+  $commands[] = ajax_command_invoke('#edit-subject', 'val', array($processed_subject));
+  $commands[] = ajax_command_invoke('#edit-body', 'val', array($processed_content));
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 

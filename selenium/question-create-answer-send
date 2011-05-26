@@ -184,7 +184,7 @@
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='console']/div</td>
-	<td>Status message The email has been sent and the question is marked as answered.</td>
+	<td>Status message The answer has been sent to Jakob@revealit.dk and the question is marked as answered.</td>
 </tr>
 </tbody></table>
 </body>
