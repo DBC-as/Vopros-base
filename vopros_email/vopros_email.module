@@ -356,3 +356,12 @@ function vopros_email_form_vopros_question_handle_question_form_alter(&$form, &$
 function vopros_email_form_vopros_question_contact_user_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/email';
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function vopros_email_form_vopros_question_question_frontend_form_alter(&$form, &$form_state) {
+  if ($form['question']['#value']->user_answer_preference == 'mail') {
+    $form['buttons']['contact']['#submit'][] = 'vopros_email_form_vopros_question_contact_user_submit';
+  }
+}

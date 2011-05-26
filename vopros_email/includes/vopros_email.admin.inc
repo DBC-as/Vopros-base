@@ -164,7 +164,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   $question->question_status = 'answered';
   
   $form_state['redirect'] = 'admin/vopros/questions';
-  drupal_set_message(t('The email has been sent and the question is marked as answered.'));
+  drupal_set_message(t('The answer has been sent to @reciever and the question is marked as answered.', array('@reciever' => $email->email)));
 }
 
 /**
@@ -260,4 +260,5 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
   drupal_set_message(t('The email has been sent to the user and the question is closed until the user provides feedback'));
+  $form_state['redirect'] = 'admin/vopros/questions';
 }
