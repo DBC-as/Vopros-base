@@ -164,7 +164,7 @@ function vopros_email_entity_property_info() {
 /**
  * Implements hook_views_data_alter().
  */
-function vopros_sms_views_data_alter(&$data) {
+function vopros_email_views_data_alter(&$data) {
   $data['vopros_email']['answer_id']['relationship'] = array(
     'handler' => 'views_handler_relationship',
     'base' => 'vopros_answer',
