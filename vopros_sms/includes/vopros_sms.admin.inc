@@ -55,7 +55,7 @@ function vopros_sms_settings_form($form, &$form_state) {
 
   $form['contact'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Contact user email macros'),
+    '#title' => t('Contact user SMS macros'),
   );
 
   foreach (vopros_question_get_reasons('contact_sms') as $key => $value) {
@@ -77,7 +77,7 @@ function vopros_sms_settings_form($form, &$form_state) {
 
   $form['macros'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Email macros'),
+    '#title' => t('SMS macros'),
     '#description' => t('Create macros inserted when sending an email.'),
   );
 
