@@ -147,7 +147,50 @@ function vopros_sms_entity_property_info() {
     'schema field' => 'vopros_answer',
   );
 
+  $properties['question'] = array(
+    'label' => t('Question'),
+    'type' => 'vopros_question',
+    'description' => t('The unique ID of the question the answer belongs to.'),
+    'getter callback' => 'vopros_base_get_properties',
+    'setter callback' => 'vopros_base_set_properties',
+    'clear' => array('question_id'),
+    'schema field' => 'vopros_question',
+  );
+
   return $info;
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function vopros_sms_views_data_alter(&$data) {
+  $data['vopros_sms']['answer_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_answer',
+    'field' => 'answer_id',
+    'label' => 'answer',
+  );
+
+  $data['vopros_sms']['question_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_question',
+    'field' => 'question_id',
+    'label' => 'question',
+  );
+
+  $data['vopros_sms']['uid']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'users',
+    'field' => 'uid',
+    'label' => 'user',
+  );
+
+  $data['vopros_sms']['revision_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_sms_revision',
+    'field' => 'revision_id',
+    'label' => 'SMS revision',
+  );
 }
 
 /**
