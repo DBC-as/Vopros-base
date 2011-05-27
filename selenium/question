@@ -10,6 +10,10 @@
 <tr><td><b>Test Suite</b></td></tr>
 <tr><td><a href="question-create-answer-send">Question create and answer</a></td></tr>
 <tr><td><a href="question-create-feedback">Question create and send feedback</a></td></tr>
+<tr><td><a href="question-create-close">Question create close</a></td></tr>
+<tr><td><a href="question-create-answer-send-sms">Question create and answer (SMS)</a></td></tr>
+<tr><td><a href="question-create-feedback-sms">Question create and feedback (SMS)</a></td></tr>
+<tr><td><a href="question-create-release">Question create answer and release</a></td></tr>
 </tbody></table>
 </body>
 </html>
