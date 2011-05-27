@@ -261,6 +261,14 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['arguments']['uid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['uid']['break_phrase'] = 0;
   $handler->display->display_options['arguments']['uid']['not'] = 0;
+  /* Filter criterion: Question: Question_status */
+  $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
+  $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
+  $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
+  $handler->display->display_options['filters']['question_status']['relationship'] = 'question_id';
+  $handler->display->display_options['filters']['question_status']['value'] = array(
+    'value' => 'locked',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
