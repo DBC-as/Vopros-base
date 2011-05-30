@@ -424,3 +424,14 @@ function vopros_email_entity_insert($entity, $type) {
     }
   }
 }
+
+/**
+ * Implements hook_views_api().
+ */
+function vopros_email_views_api() {
+
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_email') . '/includes/views',
+  );
+}
