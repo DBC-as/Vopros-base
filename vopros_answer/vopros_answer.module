@@ -266,9 +266,6 @@ function vopros_answer_new($values = array()) {
  */
 function vopros_answer_save($answer, $revision = 1) {
   $answer->revision = $revision;
-  if (empty($answer->uuid)) {
-    $answer->uuid = uuid_uuid();
-  }
   entity_save('vopros_answer', $answer);
 }
 

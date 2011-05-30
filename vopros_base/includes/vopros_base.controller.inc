@@ -20,6 +20,12 @@ class VoprosAPIEntityController extends EntityAPIController {
     if (empty($entity->created)) {
       $entity->created = time();
     }
+    if (empty($entity->uuid)) {
+      $entity->uuid = uuid_uuid();
+    }
+    if (!isset($entity->revision)) {
+      $entity->revision = 1;
+    }
     $transaction = isset($transaction) ? $transaction : db_transaction();
     try {
       $entity->changed = time();
@@ -38,7 +44,7 @@ class VoprosAPIEntityController extends EntityAPIController {
 
       if (!empty($entity->{$this->idKey}) && empty($entity->is_new)) {
         // Save a new revision
-        if (isset($entity->revision) && $entity->revision) {
+        if ($entity->revision) {
           unset($entity->{$this->entityInfo['entity keys']['revision']});
           $this->saveRevision($this->entityInfo['revision table'], $entity);
         }

@@ -4,8 +4,6 @@ package = Vopros
 core = 7.x
 
 dependencies[] = diff
-dependencies[] = entity
-dependencies[] = uuid
 dependencies[] = vopros_base
 dependencies[] = vopros_question
 

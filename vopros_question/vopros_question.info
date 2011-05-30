@@ -4,8 +4,7 @@ package = Vopros
 core = 7.x
 
 dependencies[] = diff
-dependencies[] = entity
-dependencies[] = uuid
+dependencies[] = taxonomy
 dependencies[] = vopros_base
 
 ; Entity controller include:

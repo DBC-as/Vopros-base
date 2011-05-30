@@ -4,6 +4,7 @@ package = Vopros
 core = 7.x
 
 dependencies[] = entity
+dependencies[] = uuid
 dependencies[] = views
 
 files[] = includes/vopros_base.controller.inc

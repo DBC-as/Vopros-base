@@ -176,7 +176,9 @@ function vopros_email_form_submit(&$form, &$form_state) {
     vopros_email_save($email);
   }
 
+  $question = vopros_question_load($email->question_id);
   $question->question_status = 'answered';
+  vopros_question_save($question);
   
   $form_state['redirect'] = 'admin/vopros/questions';
   drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $email->email)));

@@ -27,7 +27,6 @@ function vopros_question_entity_info() {
       'entity keys' => array(
         'id' => 'question_id',
         'revision' => 'revision_id',
-        'label' => 'question_title',
       ),
       'bundles' => array(
         'vopros_question' => array(
@@ -378,7 +377,7 @@ function vopros_question_access($op, $question = NULL, $account = NULL) {
   }
 
   if ($op == 'contact' && user_acccess('contact user about question')) {
-    if ($question && $question->status == 'locked' && $question->uid != $account->uid) {
+    if ($question && $question->question_status == 'locked' && $question->uid != $account->uid) {
       return FALSE;
     }
     return TRUE;
@@ -437,10 +436,6 @@ function vopros_question_entity_presave($entity, $type) {
  */
 function vopros_question_save($question, $revision = 1) {
   $question->revision = $revision;
-  $answer->revision = $revision;
-  if (empty($question->uuid)) {
-    $question->uuid = uuid_uuid();
-  }
   entity_save('vopros_question', $question);
 }
 

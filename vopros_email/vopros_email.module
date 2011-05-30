@@ -18,7 +18,6 @@ function vopros_email_entity_info() {
       'entity keys' => array(
         'id' => 'email_id',
         'revision' => 'revision_id',
-        'label' => 'subject',
       ),
       'bundles' => array(
         'vopros_email' => array(
@@ -290,6 +289,7 @@ function vopros_email_access($op, $email = NULL, $account = NULL) {
 function vopros_email_new($values = array()) {
   $default_values = array(
     'status' => 'unsent',
+    'type' => 'outgoing',
   );
   $values += $default_values;
   // During installation, the entity might not be available for menu item.
@@ -308,7 +308,7 @@ function vopros_email_new($values = array()) {
  * @param $revision
  *    Bolean indicator, if a new revision should be created.
  */
-function vopros_email_save($email, $revision = 1) {
+function vopros_email_save($email, $revision = 0) {
   $email->revision = $revision;
   entity_save('vopros_email', $email);
 }
@@ -365,6 +365,9 @@ function vopros_email_mail($key, &$message, $params) {
   switch ($key) {
     case 'vopros_email':
       $message['subject'] = $params['email']->subject;
+      if (isset($params['email']->question_id)) {
+        $message['subject'] .= ' [#' . $params['email']->question_id . ']';
+      }
       $message['body'][] = $params['email']->content;
       break;
   }
@@ -406,5 +409,18 @@ function vopros_email_form_vopros_question_contact_user_submit(&$form, &$form_st
 function vopros_email_form_vopros_question_question_frontend_form_alter(&$form, &$form_state) {
   if ($form['question']['#value']->user_answer_preference == 'mail') {
     $form['buttons']['contact']['#submit'][] = 'vopros_email_form_vopros_question_contact_user_submit';
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function vopros_email_entity_insert($entity, $type) {
+  if ($type == 'vopros_email' && $entity->type == 'ingoing' && $entity->question_id) {
+    $question = vopros_question_load($entity->question_id);
+    if ($question->question_status == 'closed' || $question->question_status == 'answered') {
+      $question->question_status = 'in progress';
+      vopros_question_save($question);
+    }
   }
 }

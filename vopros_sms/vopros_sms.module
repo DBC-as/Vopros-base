@@ -18,7 +18,6 @@ function vopros_sms_entity_info() {
       'entity keys' => array(
         'id' => 'sms_id',
         'revision' => 'revision_id',
-        'label' => 'subject',
       ),
       'bundles' => array(
         'vopros_sms' => array(
@@ -307,7 +306,7 @@ function vopros_sms_new($values = array()) {
  * @param $revision
  *    Bolean indicator, if a new revision should be created.
  */
-function vopros_sms_save($sms, $revision = 1) {
+function vopros_sms_save($sms, $revision = 0) {
   $sms->revision = $revision;
   entity_save('vopros_sms', $sms);
 }

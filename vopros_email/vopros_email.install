@@ -51,6 +51,12 @@ function vopros_email_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
+      'type' => array(
+        'description' => 'The type of mail, outgoing/ingoing',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
       'status' => array(
         'description' => 'The status of the email.',
         'type' => 'varchar',
@@ -80,6 +86,9 @@ function vopros_email_schema() {
     'primary key' => array('email_id'),
     'unique keys' => array(
       'revision_id' => array('revision_id'),
+    ),
+    'indexes' => array(
+      'type' => array('type'),
     ),
     'foreign keys' => array(
       'current_revision' => array(
@@ -151,6 +160,12 @@ function vopros_email_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
+      'type' => array(
+        'description' => 'The type of mail, outgoing/ingoing',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
       'log' => array(
         'description' => 'The log entry explaining the changes in this version.',
         'type' => 'text',
@@ -165,6 +180,9 @@ function vopros_email_schema() {
       ),
     ),
     'primary key' => array('revision_id'),
+    'indexes' => array(
+      'type' => array('type'),
+    ),
     'foreign keys' => array(
       'email' => array(
         'table' => 'vopros_email',

@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function vopros_mailhandler_feeds_plugins() {
+  return array(
+    'VorposMailhandlerParser' => array(
+      'name' => 'Vopris mailhandler IMAP stream parser',
+      'description' => 'Parses an IMAP stream.',
+      'handler' => array(
+        'parent' => 'MailhandlerParser',
+        'class' => 'VorposMailhandlerParser',
+        'file' => 'VorposMailhandlerParser.inc',
+        'path' => drupal_get_path('module', 'vopros_mailhandler') . '/plugins/mailhandler',
+      ),
+    ),
+    'VorposMailhandlerProcessor' => array(
+      'name' => 'Vopros email processor',
+      'description' => 'Create Email entities and update question status.',
+      'help' => '',
+      'handler' => array(
+        'parent' => 'FeedsProcessor',
+        'class' => 'VorposMailhandlerProcessor',
+        'file' => 'VorposMailhandlerProcessor.inc',
+        'path' => drupal_get_path('module', 'vopros_mailhandler') . '/plugins/mailhandler',
+      ),
+    ),
+  );
+}
