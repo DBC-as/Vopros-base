@@ -346,14 +346,13 @@ function vopros_answer_views_api() {
 }
 
 /**
- * Implements hook_vopros_question_view_alter().
+ * Implements hook_enyity_view_alter().
  */
 function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
   if ($type == 'vopros_question' && $view_mode == 'administrator') {
     $question = $entity;
-    $entity->content['action'] = array();
     if ($question->question_status == 'new') {
-      $entity->content['action'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+      $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
     elseif ($question->question_status == 'locked') {
       global $user;
@@ -361,10 +360,10 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
         $answers = vopros_answer_load_for_question($question->question_id);
         if ($answers) {
           $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
-          $entity->content['action'][] = array('#markup' => $output, '#weight' => 10);
+          $entity->content['right'][] = array('#markup' => $output, '#weight' => 10);
         }
         else {
-          $entity->content['action'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+          $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
         }
       }
     }
@@ -372,12 +371,11 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
       $answers = vopros_answer_load_for_question($question->question_id);
       if ($answers) {
         $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
-        $entity->content['action'][] = array('#markup' => $output);
+        $entity->content['right'][] = array('#markup' => $output);
       }
-      $entity->content['action'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+      $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
   }
-  
 }
 
 /**

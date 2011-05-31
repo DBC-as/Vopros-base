@@ -236,7 +236,7 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   drupal_add_js(array('vopros_quesiton_id' => $question->question_id), 'setting');
 
   // View mode is needed to sort the build array.
-  $build = array();
+  $build = array('right' => array());
 
   $build[] = array(
     '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
@@ -245,7 +245,7 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   // Populate $vopros_question->content with a render() array.
   vopros_question_build_content($question, $view_mode, $langcode);
 
-  $build += $question->content;
+  $build = $question->content + $build;
   unset($question->content);
 
   $build += array(
@@ -254,6 +254,7 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
     '#question' => $question,
     '#language' => $langcode,
   );
+
 
   $type = 'vopros_question';
   drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);

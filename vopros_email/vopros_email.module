@@ -191,6 +191,17 @@ function vopros_email_views_data_alter(&$data) {
     'field' => 'revision_id',
     'label' => 'Email revision',
   );
+
+  // Handle time stamps as dates.
+  $data['vopros_email']['created']['field']['handler'] =
+  $data['vopros_email']['changed']['field']['handler']  = 'views_handler_field_date';
+  $data['vopros_email']['created']['sort']['handler'] =
+  $data['vopros_email']['changed']['sort']['handler'] = 'views_handler_sort_date';
+  $data['vopros_email']['created']['filter']['handler'] =
+  $data['vopros_email']['changed']['filter']['handler'] = 'views_handler_filter_date';
+
+  // Handle the options possible for the type property.
+  $data['vopros_email']['type']['field']['handler'] = 'vopros_email_handler_field_vopros_email';
 }
 
 /**
@@ -429,9 +440,33 @@ function vopros_email_entity_insert($entity, $type) {
  * Implements hook_views_api().
  */
 function vopros_email_views_api() {
-
   return array(
     'api' => 3,
     'path' => drupal_get_path('module', 'vopros_email') . '/includes/views',
+  );
+}
+
+/**
+ * Implements hook_enyity_view_alter().
+ */
+function vopros_email_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'vopros_question' && $view_mode == 'administrator') {
+    $view = vopros_base_embed_view('vopros_email_question_cor', 'master', array(0 => $entity->question_id));
+    if ($view) {
+      $entity->content['right']['mail_correspondence'] = array(
+        '#weight' => 10,
+        '#markup' => '<h3>' . t('Mail correspondence') . '</h3>' . $view,
+      );
+    }
+  }
+}
+
+/**
+ * Utility function that defines the possible types an email can have.
+ */
+function _vopros_email_type() {
+  return array(
+    'ingoing' => t('Ingoing'),
+    'outgoing' => t('Outgoing'),
   );
 }

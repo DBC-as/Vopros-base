@@ -8,8 +8,10 @@ function template_preprocess_vopros_question(&$variables) {
   $variables['view_mode'] = $variables['elements']['#view_mode'];
   $question = $variables['question'] = $variables['elements']['#question'];
 
-  // Flatten the node object's member fields.
+  // Flatten the question object's member fields.
   $variables = array_merge((array) $question, $variables);
+  $variables['right'] = $variables['elements']['right'];
+  unset($variables['elements']['right']);
 
   // Helpful $content variable for templates.
   foreach (element_children($variables['elements']) as $key) {
