@@ -39,7 +39,7 @@ function vopros_email_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-      'content' => array(
+      'email_content' => array(
         'description' => 'The actual email that has been asked.',
         'type' => 'text',
         'not null' => TRUE,
@@ -142,7 +142,7 @@ function vopros_email_schema() {
         'unsigned' => TRUE,
         'default' => 0,
       ),
-      'content' => array(
+      'email_content' => array(
         'description' => 'The actual email that has been asked.',
         'type' => 'text',
         'not null' => TRUE,

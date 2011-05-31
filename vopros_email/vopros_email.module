@@ -81,12 +81,12 @@ function vopros_email_menu() {
     'admin/vopros/answers/%vopros_answer/new-email' => array(
       'title' => 'Answer question',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_email_form', 3, vopros_email_new()),
+      'page arguments' => array('vopros_email_form', vopros_email_new(), 3),
       'access callback' => 'vopros_answer_access',
       'access arguments' => array(3),
       'file' => 'includes/vopros_email.admin.inc',
     ),
-    'admin/vopros/email/%vopros_email' => array(
+    'admin/vopros/emails/%vopros_email' => array(
       'title callback' => 'vopros_email_title',
       'title arguments' => array(3),
        'page callback' => 'vopros_email_page_view',
@@ -95,12 +95,12 @@ function vopros_email_menu() {
        'access arguments' => array('view'),
        'file' => 'includes/vopros_email.admin.inc',
     ),
-    'admin/vopros/email/%vopros_email/view' => array(
+    'admin/vopros/emails/%vopros_email/view' => array(
       'title' => 'View',
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
     ),
-    'admin/vopros/email/%vopros_email/edit' => array(
+    'admin/vopros/emails/%vopros_email/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_email_form', 3),
@@ -125,7 +125,7 @@ function vopros_email_menu() {
  * Title callback for emails
  */
 function vopros_email_title($email) {
-  return isset($mail->subject) && !empty($mail->subject) ? $mail->subject : t('New email');
+  return isset($email->subject) && !empty($email->subject) ? $email->subject : t('New email');
 }
 
 /**
@@ -459,6 +459,128 @@ function vopros_email_entity_view($entity, $type, $view_mode, $langcode) {
       );
     }
   }
+}
+
+/**
+ * Builds a structured array representing the emails content.
+ */
+function vopros_email_build_content($email, $view_mode = 'administrator', $langcode = NULL) {
+  $email->content = array();
+  field_attach_prepare_view('vopros_email', array($email->email_id => $email), $view_mode);
+  entity_prepare_view('vopros_email', array($email->email_id => $email));
+  $email->content = field_attach_view('vopros_email', $email, $view_mode, $langcode);
+  // Add extra fields
+  $email->content['subject'] = array(
+    '#theme' => 'vopros_email_subject',
+    '#email' => $email,
+    '#view_mode' => $view_mode,
+  );
+  $email->content['email'] = array(
+    '#theme' => 'vopros_email_email',
+    '#email' => $email,
+    '#view_mode' => $view_mode,
+  );
+  $email->content['email_content'] = array(
+    '#theme' => 'vopros_email_content',
+    '#email' => $email,
+    '#view_mode' => $view_mode,
+  );
+  $email->content['type'] = array(
+    '#theme' => 'vopros_email_type',
+    '#email' => $email,
+    '#view_mode' => $view_mode,
+  );
+
+  module_invoke_all('entity_view', $email, 'vopros_email', $view_mode, $langcode);
+}
+
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function vopros_email_field_extra_fields() {
+  $extra = array();
+
+  $extra['vopros_email']['vopros_email'] = array(
+    'form' => array(
+      'subject' => array(
+        'label' => t('Subject'),
+        'description' => t('The subject of the question'),
+        'weight' => -5,
+      ),
+      'email' => array(
+        'label' => t('Email address'),
+        'description' => t('The email address that the email has been sent to or from'),
+        'weight' => -4,
+      ),
+      'email_content' => array(
+        'label' => t('Content'),
+        'description' => t('The content of the email'),
+        'weight' => -3,
+      ),
+    ),
+    'display' => array(
+      'subject' => array(
+        'label' => t('Subject'),
+        'description' => t('The subject of the question'),
+        'weight' => -5,
+      ),
+      'email' => array(
+        'label' => t('Email address'),
+        'description' => t('The email address that the email has been sent to or from'),
+        'weight' => -4,
+      ),
+      'email_content' => array(
+        'label' => t('Content'),
+        'description' => t('The content of the email'),
+        'weight' => -3,
+      ),
+      'type' => array(
+        'label' => t('Type'),
+        'description' => t('Type of email - inbound/outbound'),
+        'weight' => -2,
+      ),
+    ),
+  );
+
+  drupal_alter('vopros_question_field_extra_fields', $extra);
+
+  return $extra;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_email_theme() {
+  $path = drupal_get_path('module', 'vopros_email') . '/theme';
+  return array(
+    'vopros_email' => array(
+      'render element' => 'elements',
+      'template' => 'vopros-email',
+      'path' => $path,
+      'file' => 'vopros_email.theme.inc',
+    ),
+    'vopros_email_subject' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_email_content' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_email_email' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_email_type' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
+  );
 }
 
 /**

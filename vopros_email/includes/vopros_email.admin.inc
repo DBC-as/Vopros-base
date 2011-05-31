@@ -75,7 +75,11 @@ function vopros_email_settings_form($form, &$form_state) {
 /**
  * Answer form
  */
-function vopros_email_form($form, &$form_state, $answer, $email) {
+function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
+  if (empty($answer) && $email->$answer_id) {
+    $answer = vopros_answer_load($email->$answer_id);
+  }
+
   $form['action'] = array(
     '#prefix' => '<div class="action">',
     '#suffix' => '</div>',
@@ -131,7 +135,7 @@ function vopros_email_form($form, &$form_state, $answer, $email) {
     '#required' => TRUE,
   );
 
-  $form['form']['content'] = array(
+  $form['form']['email_content'] = array(
     '#type' => 'textarea',
     '#title' => t('Mail body'),
     '#description' => t('The main content of the email.'),
@@ -162,12 +166,14 @@ function vopros_email_form_submit(&$form, &$form_state) {
   // Update the email with submitted data.
   $email = $form_state['values']['vopros_email'];
   $email->subject = $form_state['values']['subject'];
-  $email->content = $form_state['values']['content'];
+  $email->email_content = $form_state['values']['email_content'];
   $email->email = $form_state['values']['email'];
   // Create the needed relations for later.
   $email->uid = $GLOBALS['user']->uid;
-  $email->answer_id = $form_state['values']['answer']->answer_id;
-  $email->question_id = $form_state['values']['answer']->question_id;
+  if (!isset($email->answer_id) && isset($form_state['values']['answer']->answer_id)) {
+    $email->answer_id = $form_state['values']['answer']->answer_id;
+    $email->question_id = $form_state['values']['answer']->question_id;
+  }
   
   vopros_email_save($email);
   if ($email->status != 'sent') {
@@ -176,9 +182,11 @@ function vopros_email_form_submit(&$form, &$form_state) {
     vopros_email_save($email);
   }
 
-  $question = vopros_question_load($email->question_id);
-  $question->question_status = 'answered';
-  vopros_question_save($question);
+  if (isset($email->question_id) && $email->question_id) {
+    $question = vopros_question_load($email->question_id);
+    $question->question_status = 'answered';
+    vopros_question_save($question);
+  }
   
   $form_state['redirect'] = 'admin/vopros/questions';
   drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $email->email)));
@@ -282,4 +290,29 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   vopros_question_save($question);
   drupal_set_message(t('The answer has been sent to @receiver and the question is marked as answered.', array('@receiver' => $email->email)));
   $form_state['redirect'] = 'admin/vopros/questions';
+}
+
+/**
+ * Handle the display of a question
+ */
+function vopros_email_page_view($email, $view_mode = 'administrator', $langcode = NULL) {
+  $build = array();
+
+  // Populate $email->content with a render() array.
+  vopros_email_build_content($email, $view_mode, $langcode);
+
+  $build = $email->content + $build;
+  unset($email->content);
+
+  $build += array(
+    '#view_mode' => $view_mode,
+    '#theme' => 'vopros_email',
+    '#email' => $email,
+    '#language' => $langcode,
+  );
+
+  $type = 'vopros_email';
+  drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
+
+  return $build;
 }

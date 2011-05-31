@@ -33,3 +33,19 @@
 #vopros-email-form .form {
   width: 65%;
 }
+
+.vopros-email-extra .label {
+  width: 125px;
+  display: block;
+  float: left;
+  font-weight: bold;
+}
+
+.vopros-email-extra div.label {
+  float: none;
+}
+
+.vopros-email-extra {
+  clear: left;
+  margin-bottom: 5px;
+}
