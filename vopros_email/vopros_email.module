@@ -379,7 +379,7 @@ function vopros_email_mail($key, &$message, $params) {
       if (isset($params['email']->question_id)) {
         $message['subject'] .= ' [#' . $params['email']->question_id . ']';
       }
-      $message['body'][] = $params['email']->content;
+      $message['body'][] = $params['email']->email_content;
       break;
   }
 }

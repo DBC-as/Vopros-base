@@ -80,6 +80,10 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     $answer = vopros_answer_load($email->$answer_id);
   }
 
+  if ($answer) {
+    $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+  }
+
   $form['action'] = array(
     '#prefix' => '<div class="action">',
     '#suffix' => '</div>',
@@ -95,12 +99,6 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#value' => t('Send'),
     '#submit' => array('vopros_email_form_submit'),
   );
-
-  if (empty($answer) && isset($email->answer_id)) {
-    $answer = vopros_question_load($email->answer_id);
-  }
-
-  $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
 
   $form['answer'] = array(
     '#type' => 'value',
@@ -120,9 +118,12 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['form']['email'] = array(
     '#title' => t('To'),
     '#type' => 'textfield',
-    '#default_value' => $answer_wrapper->question->user_email->value(),
+    // TODO get form email first.
+    '#default_value' => isset($answer_wrapper) ? $answer_wrapper->question->user_email->value() : '',
     '#required' => TRUE,
   );
+
+  // TODO handle emails that doesn't have an answer/question asociated.
 
   $form['form']['subject'] = array(
     '#type' => 'textfield',
