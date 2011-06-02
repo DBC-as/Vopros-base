@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_log_schema() {
+  $schema = array();
+
+  $schema['vopros_log'] = array(
+    'description' => 'The base table for logs.',
+    'fields' => array(
+      'log_id' => array(
+        'description' => 'The primary identifier for a log entry.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'question_id' => array(
+        'description' => 'Reference to the question this log belings to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'answer_id' => array(
+        'description' => 'Reference to the answer this log belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The uid of the user who created the log.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'log_content' => array(
+        'description' => 'The actual email that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the order was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('log_id'),
+    'indexes' => array(
+      'user' => array('uid'),
+      'relation' => array('question_id', 'answer_id'),
+      'created' => array('created'),
+      'changed' => array('changed'),
+    ),
+    'foreign keys' => array(
+      'answer' => array(
+        'table' => 'vopros_answer',
+        'columns'=> array('answer_id' => 'answer_id'),
+      ),
+      'question' => array(
+        'table' => 'vopros_question',
+        'columns'=> array('quesiton_id' => 'question_id'),
+      ),
+      'user' => array(
+        'table' => 'user',
+        'columns'=> array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

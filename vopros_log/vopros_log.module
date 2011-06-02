@@ -1,0 +1,96 @@
+<?php
+
+/**
+ * @file
+ * The vopros_log module creates a log entity that can be asociated to
+ * questions or answers. These logs are for internal use only.
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_log_entity_info() {
+  $return = array(
+    'vopros_log' => array(
+      'label' => t('Log', array(), array('context' => 'a vopros log')),
+      'controller class' => 'VoprosLogEntityController',
+      'base table' => 'vopros_log',
+      // No revision table needed for logs.
+      // Logs are simple and can't and shouldn't have fields.
+      'fieldable' => FALSE,
+      'entity keys' => array(
+        'id' => 'log_id',
+      ),
+      'bundles' => array(
+        'vopros_log' => array(
+          'label' => t('Log', array(), array('context' => 'a vopros log')),
+        ),
+      ),
+      'load hook' => 'vopros_log_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'access callback' => 'vopros_log_access',
+      'views controller class' => 'EntityDefaultViewsController',
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Create a new log object
+ */
+function vopros_log_new($values = array()) {
+  $default_values = array();
+  $values += $default_values;
+  return entity_create('vopros_log', $values);
+}
+
+/**
+ * Save a log.
+ *
+ * @param $log
+ *    The log object
+ */
+function vopros_question_save($log) {
+  entity_save('vopros_log', $log);
+}
+
+/**
+ * Loads an question by ID.
+ *
+ * @param $log_id
+ *    The log id
+ * @param $reset
+ *   Whether to reset the internal log loading cache.
+ *
+ * @return A vopros log object or FALSE if no log was found.
+ */
+function vopros_log_load($log_id, $reset = FALSE) {
+  $logs = vopros_log_load_multiple(array($log_id), array(), $reset);
+  return $logs ? reset($logs) : FALSE;
+}
+
+/**
+ * Loads multiple questions by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $log_ids
+ *   An array of log IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_log} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal log loading cache.
+ *
+ * @return
+ *   An array of log objects indexed by log_id.
+ */
+function vopros_log_load_multiple($log_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_log', $log_ids, $conditions, $reset);
+}
