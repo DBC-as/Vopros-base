@@ -206,7 +206,7 @@ function vopros_question_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
     ),
-    'admin/vopros/config/question/add' => array(
+    'admin/vopros/questions/add' => array(
       'title' => 'Add a question',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_question_question_form', vopros_question_new()),
@@ -302,8 +302,8 @@ function vopros_question_menu() {
  */
 function vopros_question_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   // Add action link 'admin/commerce/questions/add' on 'admin/commerce/questions'.
-  if ($root_path == 'admin/vopros/config/question') {
-    $item = menu_get_item('admin/vopros/config/question/add');
+  if ($root_path == 'admin/vopros/questions') {
+    $item = menu_get_item('admin/vopros/questions/add');
     if ($item['access']) {
       $data['actions']['output'][] = array(
         '#theme' => 'menu_local_action',
