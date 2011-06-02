@@ -134,7 +134,7 @@ function vopros_log_form_ajax_submit(&$form, &$form_state) {
     'log_content' => $form_state['values']['log_content'],
   );
   $log = vopros_log_new($values);
-  //vopros_log_save($log);
+  vopros_log_save($log);
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-log-content', 'val', array(''));
   // TODO: Show to the user somehow that the log was saved.
