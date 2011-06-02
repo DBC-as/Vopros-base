@@ -56,7 +56,7 @@ function vopros_log_new($values = array()) {
  * @param $log
  *    The log object
  */
-function vopros_question_save($log) {
+function vopros_log_save($log) {
   entity_save('vopros_log', $log);
 }
 
@@ -93,4 +93,60 @@ function vopros_log_load($log_id, $reset = FALSE) {
  */
 function vopros_log_load_multiple($log_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_log', $log_ids, $conditions, $reset);
+}
+
+function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL) {
+  $form['quesiton_id'] = array(
+    '#type' => 'value',
+    '#value' => $question_id,
+  );
+
+  $form['answer_id'] = array(
+    '#type' => 'value',
+    '#value' => $answer_id,
+  );
+
+  $form['log_content'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Internal log'),
+    '#required' => TRUE,
+    '#default_value' => $log ? $log->log_content : '',
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add log message'),
+    '#ajax' => array(
+      'callback' => 'vopros_log_form_ajax_submit',
+    )
+  );
+
+  return $form;
+}
+
+/**
+ * Handles saving the log.
+ */
+function vopros_log_form_ajax_submit(&$form, &$form_state) {
+  $values = array(
+    'question_id' => $form_state['values']['question_id'],
+    'answer_id' => $form_state['values']['answer_id'],
+    'log_content' => $form_state['values']['log_content'],
+  );
+  $log = vopros_log_new($values);
+  //vopros_log_save($log);
+  $commands = array();
+  $commands[] = ajax_command_invoke('#edit-log-content', 'val', array(''));
+  // TODO: Show to the user somehow that the log was saved.
+  // TODO: Add the actual log to the "activity stream".
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Implements hook_enyity_view_alter().
+ */
+function vopros_log_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'vopros_question' && $view_mode == 'administrator') {
+    $entity->content['right']['log_form'] = drupal_get_form('vopros_log_form', NULL, $entity->question_id);
+  }
 }

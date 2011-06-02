@@ -255,7 +255,6 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
     '#language' => $langcode,
   );
 
-
   $type = 'vopros_question';
   drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
 
