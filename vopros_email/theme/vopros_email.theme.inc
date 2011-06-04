@@ -69,3 +69,31 @@ function theme_vopros_email_type($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Theme function to render an email on the question activity feed.
+ */
+function theme_vopros_email_question_feed($variables) {
+  $email = $variables['email']['#email'];
+  if ($email->uid) {
+    $sender = theme('username', array('account' => user_load($email->uid)));
+    $receiver = check_plain($email->email);
+  }
+  else {
+    $sender = check_plain($email->email);
+    $receiver = variable_get('site_name', 'Drupal');
+  }
+  $date = format_date($email->created, 'short');
+  
+  $output = '<div class="email-feed-item feed-item">';
+  $output .= '<div class="email-header">';
+  $output .= '<div class="email-from"><span class="label">' . t('From:') . '</span><span class="data">' . $sender . '</span></div>';
+  $output .= '<div class="email-to"><span class="label">' . t('To:') . '</span><span class="data">' . $receiver . '</span></div>';
+  $output .= '<div class="email-date"><span class="label">' . t('Sent:') . '</span><span class="data">' . $date . '</span></div>';
+  $output .= '</div>';
+  $output .= '<div class="email-content">';
+  $output .= str_replace("\n", '<br />', check_plain($email->email_content));
+  $output .= '</div>';
+  $output .= '</div>';
+  return $output;
+}

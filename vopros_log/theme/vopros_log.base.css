@@ -1,0 +1,7 @@
+/**
+ * Log feed item
+ */
+.log-feed-item .log-header {
+  font-weight: bold;
+  margin-bottom: 3px;
+}

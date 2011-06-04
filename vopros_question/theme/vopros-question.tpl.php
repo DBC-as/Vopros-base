@@ -8,6 +8,11 @@
     <?php
       print render($content);
     ?>
+    <?php if (isset($feed) && $feed): ?>
+      <div class="feed">
+        <?php print render($feed); ?>
+      </div>
+    <?php endif; ?>
   </div>
   <?php if (isset($right) && !empty($right)): ?>
     <div class="action right">

@@ -580,7 +580,26 @@ function vopros_email_theme() {
       'file' => 'vopros_email.theme.inc',
       'path' => $path,
     ),
+    'vopros_email_question_feed' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
   );
+}
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_email_vopros_question_activity_feed($question, $feed) {
+  $emails = vopros_email_load_multiple(FALSE, array('question_id' => $question->question_id));
+  foreach ($emails as $email_id => $email) {
+    $feed['email_' . $email_id] = array(
+      '#weight' => $email->created,
+      '#email' => $email,
+      '#theme' => 'vopros_email_question_feed',
+    );
+  }
 }
 
 /**

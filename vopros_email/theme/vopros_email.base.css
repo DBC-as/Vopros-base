@@ -49,3 +49,25 @@
   clear: left;
   margin-bottom: 5px;
 }
+
+/**
+ * Email feed item
+ */
+.email-feed-item .email-header {
+  border: 1px solid black;
+  padding: 5px;
+  background-color: #ddd;
+}
+
+.email-feed-item .email-header .label {
+  width: 70px;
+  display: block;
+  float: left;
+  font-weight: bold;
+}
+
+.email-feed-item .email-content {
+  border: 1px solid black;
+  border-top: none;
+  padding: 5px;
+}

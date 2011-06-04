@@ -677,6 +677,21 @@ function vopros_question_build_content($question, $view_mode = 'administrator', 
     '#view_mode' => $view_mode,
   );
 
+  if ($view_mode == 'administrator') {
+    $cloned_question = clone($question);
+    unset($cloned_question->content);
+    $feed = array();
+    // Handle invoking the hook ourself, as we need to pass by reference.
+    $hook = 'vopros_question_activity_feed';
+    foreach (module_implements($hook) as $module) {
+      $function = $module . '_' . $hook;
+      if (function_exists($function)) {
+        $function($cloned_question, &$feed);
+      }
+    }
+    $question->content['feed'] = $feed;
+  }
+
   $question->content['buttons'] = drupal_get_form('vopros_question_handle_question_form', $question);
 
   module_invoke_all('entity_view', $question, 'vopros_question', $view_mode, $langcode);

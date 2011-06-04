@@ -42,6 +42,13 @@ function vopros_log_entity_info() {
 }
 
 /**
+ * Implementation of hook_init().
+ */
+function vopros_log_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_log') . '/theme/vopros_log.base.css');
+}
+
+/**
  * Create a new log object
  */
 function vopros_log_new($values = array()) {
@@ -96,7 +103,7 @@ function vopros_log_load_multiple($log_ids = array(), $conditions = array(), $re
 }
 
 function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL) {
-  $form['quesiton_id'] = array(
+  $form['question_id'] = array(
     '#type' => 'value',
     '#value' => $question_id,
   );
@@ -128,10 +135,12 @@ function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, 
  * Handles saving the log.
  */
 function vopros_log_form_ajax_submit(&$form, &$form_state) {
+  global $user;
   $values = array(
     'question_id' => $form_state['values']['question_id'],
     'answer_id' => $form_state['values']['answer_id'],
     'log_content' => $form_state['values']['log_content'],
+    'uid' => $user->uid,
   );
   $log = vopros_log_new($values);
   vopros_log_save($log);
@@ -149,4 +158,32 @@ function vopros_log_entity_view($entity, $type, $view_mode, $langcode) {
   if ($type == 'vopros_question' && $view_mode == 'administrator') {
     $entity->content['right']['log_form'] = drupal_get_form('vopros_log_form', NULL, $entity->question_id);
   }
+}
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_log_vopros_question_activity_feed($question, $feed) {
+  $logs = vopros_log_load_multiple(FALSE, array('question_id' => $question->question_id));
+  foreach ($logs as $log_id => $log) {
+    $feed['log_' . $log_id] = array(
+      '#weight' => $log->created,
+      '#log' => $log,
+      '#theme' => 'vopros_log_question_feed',
+    );
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_log_theme() {
+  $path = drupal_get_path('module', 'vopros_log') . '/theme';
+  return array(
+    'vopros_log_question_feed' => array(
+      'render element' => 'log',
+      'file' => 'vopros_log.theme.inc',
+      'path' => $path,
+    ),
+  );
 }

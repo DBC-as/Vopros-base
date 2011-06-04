@@ -4,6 +4,9 @@
  * @file
  */
 
+/**
+ * Preprocess function for theme_vopros_question().
+ */
 function template_preprocess_vopros_question(&$variables) {
   $variables['view_mode'] = $variables['elements']['#view_mode'];
   $question = $variables['question'] = $variables['elements']['#question'];
@@ -12,6 +15,10 @@ function template_preprocess_vopros_question(&$variables) {
   $variables = array_merge((array) $question, $variables);
   $variables['right'] = $variables['elements']['right'];
   unset($variables['elements']['right']);
+  if (isset($variables['elements']['feed'])) {
+    $variables['feed'] = $variables['elements']['feed'];
+    unset($variables['elements']['feed']);
+  }
 
   // Helpful $content variable for templates.
   foreach (element_children($variables['elements']) as $key) {
