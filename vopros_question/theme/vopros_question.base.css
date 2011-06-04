@@ -19,6 +19,10 @@
   margin-bottom: 10px;
 }
 
+.vopros-question .feed .status-feed-item {
+  font-weight: bold;
+}
+
 /**
  * Basic styles for question list
  */

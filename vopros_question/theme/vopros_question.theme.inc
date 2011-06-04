@@ -163,3 +163,22 @@ function theme_vopros_question_log($variables) {
   }
   return $output;
 }
+
+/**
+ * Theme function for the question status changes on activity feed.
+ */
+function theme_vopros_question_revision_question_feed($variables) {
+  $revision = $variables['question']['#revision'];
+  $username = t('System');
+  if ($revision->revision_uid) {
+    $username = theme('username', array('account' => user_load($revision->revision_uid)));
+  }
+  $date = format_date($revision->revision_timestamp, 'short');
+  $statuses = _vopros_question_status();
+  $status = isset($statuses[$revision->question_status]) ? $statuses[$revision->question_status] : t('Unknown');
+  
+  $output = '<div class="status-feed-item feed-item">';
+  $output .= t('Status changes to %status by !username the @date', array('@date' => $date, '!username' => $username, '%status' => $status));
+  $output .= '</div>';
+  return $output;
+}

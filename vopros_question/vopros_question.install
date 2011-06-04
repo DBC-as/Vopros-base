@@ -214,6 +214,12 @@ function vopros_question_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
+      'question_status_reason' => array(
+        'description' => 'The status reason of the question. Provides different types of the same status like closed (spam) and closed (bad question).',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
       'question_deadline' => array(
         'description' => 'The time limit for when the question should be answered by if any. Hours before it should be answered, -1 for unlimited.',
         'type' => 'int',

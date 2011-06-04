@@ -805,6 +805,11 @@ function vopros_question_theme() {
       'file' => 'vopros_question.theme.inc',
       'path' => $path,
     ),
+    'vopros_question_revision_question_feed' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
   );
 }
 
@@ -886,4 +891,29 @@ function vopros_question_get_reasons($type = 'contact_mail') {
       );
   }
   return $options;
+}
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_question_vopros_question_activity_feed($question, &$feed) {
+  $query = db_select('vopros_question_revision', 'v');
+  $revisions = $query
+    ->fields('v', array('revision_uid', 'question_status', 'question_status_reason', 'revision_timestamp', 'revision_id', 'question_id'))
+    ->condition('question_id', $question->question_id, '=')
+    ->orderBy('revision_timestamp', 'ASC')
+    ->execute()
+    ->fetchAll();
+  $changes = array();
+  $status = $revisions[0]->question_status;
+  foreach ($revisions as $revision) {
+    if ($revision->question_status != $status) {
+      $feed['question_revision_' . $revision->revision_id] = array(
+        '#theme' => 'vopros_question_revision_question_feed',
+        '#revision' => $revision,
+        '#weight' => $revision->revision_timestamp,
+      ) ;
+      $status = $revision->question_status;
+    }
+  }
 }
