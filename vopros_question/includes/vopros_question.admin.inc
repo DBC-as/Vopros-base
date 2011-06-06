@@ -735,6 +735,7 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
 }
 
 function vopros_question_frontend_save_submit(&$form, &$form_state) {
+  vopros_question_question_form_submit($form, $form_state);
   drupal_set_message(t('Question has been saved'));
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id;
 }
