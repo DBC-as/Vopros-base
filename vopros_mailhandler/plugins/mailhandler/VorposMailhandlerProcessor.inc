@@ -13,6 +13,8 @@ class VorposMailhandlerProcessor extends FeedsProcessor {
    * Entity type this processor operates on.
    */
   public function entityType() {
+    // The entity type is alsways vopros_email.
+    return 'vopros_email';
   }
 
   /**
@@ -79,14 +81,17 @@ class VorposMailhandlerProcessor extends FeedsProcessor {
   }
 
   public function getMappingTargets() {
-    $sources = parent::getMappingTargets();
+    $targets = parent::getMappingTargets();
     $properties = entity_get_property_info('vopros_email');
     $properties = $properties['properties'];
     foreach ($properties as $key => $property) {
       $properties[$key]['name'] = $property['label'];
     }
-    $sources += $properties;
-    return $sources;
+    $targets += $properties;
+    // Let other modules expose mapping targets.
+    self::loadMappers();
+    feeds_alter('feeds_processor_targets', $targets, 'vopros_email', 'vopros_email');
+    return $targets;
   }
 
   public function entityInfo() {
