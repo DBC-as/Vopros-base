@@ -8,7 +8,6 @@ function vopros_email_views_default_views() {
 
   // Email list of type inbound.
   $view = new view;
-  $view = new view;
   $view->name = 'vopros_mail_list';
   $view->description = '';
   $view->tag = 'default';
@@ -20,7 +19,7 @@ function vopros_email_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Mail list';
+  $handler->display->display_options['title'] = 'Ingoing mails not related to a question';
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -28,56 +27,57 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['style_plugin'] = 'table';
-  /* Relationship: Email: Question_id */
-  $handler->display->display_options['relationships']['question_id']['id'] = 'question_id';
-  $handler->display->display_options['relationships']['question_id']['table'] = 'vopros_email';
-  $handler->display->display_options['relationships']['question_id']['field'] = 'question_id';
-  $handler->display->display_options['relationships']['question_id']['required'] = 0;
-  /* Field: Question: Question_title */
-  $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
-  $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_title']['field'] = 'question_title';
-  $handler->display->display_options['fields']['question_title']['relationship'] = 'question_id';
-  $handler->display->display_options['fields']['question_title']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['question_title']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_title']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_title']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_title']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_title']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
-  /* Field: Email: Question_id */
-  $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
-  $handler->display->display_options['fields']['question_id']['table'] = 'vopros_email';
-  $handler->display->display_options['fields']['question_id']['field'] = 'question_id';
-  $handler->display->display_options['fields']['question_id']['label'] = 'Question';
-  $handler->display->display_options['fields']['question_id']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['question_id']['alter']['text'] = '[question_title]';
-  $handler->display->display_options['fields']['question_id']['alter']['make_link'] = 1;
-  $handler->display->display_options['fields']['question_id']['alter']['path'] = 'admin/vopros/question/[question_id]';
-  $handler->display->display_options['fields']['question_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_id']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['question_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['question_id']['separator'] = '';
-  $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
+  $handler->display->display_options['style_options']['columns'] = array(
+    'email' => 'email',
+    'subject' => 'subject',
+    'email_content' => 'email_content',
+    'email_id' => 'email_id',
+    'nothing' => 'nothing',
+    'nothing_2' => 'nothing',
+    'nothing_1' => 'nothing',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'email' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'subject' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'email_content' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'email_id' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'nothing' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+    'nothing_2' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+    'nothing_1' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['style_options']['empty_table'] = 0;
   /* Field: Email: Email */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'vopros_email';
@@ -127,8 +127,8 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['fields']['email_content']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['email_content']['alter']['external'] = 0;
   $handler->display->display_options['fields']['email_content']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['email_content']['alter']['trim'] = 1;
-  $handler->display->display_options['fields']['email_content']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['email_content']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['email_content']['alter']['nl2br'] = 1;
   $handler->display->display_options['fields']['email_content']['alter']['max_length'] = '200';
   $handler->display->display_options['fields']['email_content']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['email_content']['alter']['ellipsis'] = 1;
@@ -138,6 +138,101 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['fields']['email_content']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['email_content']['hide_empty'] = 0;
   $handler->display->display_options['fields']['email_content']['empty_zero'] = 0;
+  /* Field: Email: Email ID */
+  $handler->display->display_options['fields']['email_id']['id'] = 'email_id';
+  $handler->display->display_options['fields']['email_id']['table'] = 'vopros_email';
+  $handler->display->display_options['fields']['email_id']['field'] = 'email_id';
+  $handler->display->display_options['fields']['email_id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['email_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['email_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['email_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['email_id']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['email_id']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['email_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['email_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['email_id']['separator'] = '';
+  $handler->display->display_options['fields']['email_id']['format_plural'] = 0;
+  /* Field: Convert link */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['ui_name'] = 'Convert link';
+  $handler->display->display_options['fields']['nothing']['label'] = 'Action';
+  $handler->display->display_options['fields']['nothing']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = 'Convert';
+  $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'admin/vopros/emails/[email_id]/convert';
+  $handler->display->display_options['fields']['nothing']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
+  /* Field: Break */
+  $handler->display->display_options['fields']['nothing_2']['id'] = 'nothing_2';
+  $handler->display->display_options['fields']['nothing_2']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing_2']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing_2']['ui_name'] = 'Break';
+  $handler->display->display_options['fields']['nothing_2']['label'] = '';
+  $handler->display->display_options['fields']['nothing_2']['alter']['text'] = '<br />';
+  $handler->display->display_options['fields']['nothing_2']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing_2']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing_2']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing_2']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing_2']['empty_zero'] = 0;
+  /* Field: Delete link */
+  $handler->display->display_options['fields']['nothing_1']['id'] = 'nothing_1';
+  $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing_1']['ui_name'] = 'Delete link';
+  $handler->display->display_options['fields']['nothing_1']['label'] = '';
+  $handler->display->display_options['fields']['nothing_1']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = 'Delete';
+  $handler->display->display_options['fields']['nothing_1']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'admin/vopros/emails/[email_id]/delete';
+  $handler->display->display_options['fields']['nothing_1']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['empty_zero'] = 0;
+  /* Filter criterion: Email: Question_id */
+  $handler->display->display_options['filters']['question_id']['id'] = 'question_id';
+  $handler->display->display_options['filters']['question_id']['table'] = 'vopros_email';
+  $handler->display->display_options['filters']['question_id']['field'] = 'question_id';
+  $handler->display->display_options['filters']['question_id']['operator'] = '<';
+  $handler->display->display_options['filters']['question_id']['value']['value'] = '1';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -152,7 +247,7 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['tab_options']['name'] = 'management';
   $translatables['vopros_mail_list'] = array(
     t('Master'),
-    t('Mail list'),
+    t('Ingoing mails not related to a question'),
     t('more'),
     t('Apply'),
     t('Reset'),
@@ -162,15 +257,17 @@ function vopros_email_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('question'),
-    t('Question_title'),
-    t('Question'),
-    t('[question_title]'),
-    t('admin/vopros/question/[question_id]'),
-    t('.'),
     t('Email address'),
     t('Subject'),
     t('Email content'),
+    t('Email ID'),
+    t('.'),
+    t('Action'),
+    t('Convert'),
+    t('admin/vopros/emails/[email_id]/convert'),
+    t('<br />'),
+    t('Delete'),
+    t('admin/vopros/emails/[email_id]/delete'),
     t('Page'),
   );
 
