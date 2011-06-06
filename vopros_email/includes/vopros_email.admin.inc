@@ -118,34 +118,43 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['form']['email'] = array(
     '#title' => t('To'),
     '#type' => 'textfield',
-    // TODO get form email first.
-    '#default_value' => isset($answer_wrapper) ? $answer_wrapper->question->user_email->value() : '',
+    '#default_value' => $email->email,
     '#required' => TRUE,
   );
 
-  // TODO handle emails that doesn't have an answer/question asociated.
+  if (!$email->email && $answer && isset($answer_wrapper)) {
+    $form['form']['subject']['#default_value'] = $answer_wrapper->question->user_email->value();
+  }
 
   $form['form']['subject'] = array(
     '#type' => 'textfield',
     '#title' => t('Subject'),
     '#description' => t('The subject for the email.'),
-    '#default_value' => token_replace(variable_get('vopros_email_answered_question_subject_macro', ''), array(
-      'vopros_answer' => $answer,
-      'vopros_question' => isset($answer_wrapper) ? $answer_wrapper->question->value() : new stdClass(),
-    )),
+    '#default_value' => $email->subject,
     '#required' => TRUE,
   );
+
+  if (!$email->subject && $answer && isset($answer_wrapper)) {
+    $form['form']['subject']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_subject_macro', ''), array(
+      'vopros_answer' => $answer,
+      'vopros_question' => $answer_wrapper->question->value(),
+    ));
+  }
 
   $form['form']['email_content'] = array(
     '#type' => 'textarea',
     '#title' => t('Mail body'),
     '#description' => t('The main content of the email.'),
-    '#default_value' => token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
-      'vopros_answer' => $answer,
-      'vopros_question' => isset($answer_wrapper) ? $answer_wrapper->question->value() : new stdClass(),
-    )),
+    '#default_value' => $email->email_content,
     '#required' => TRUE,
   );
+
+  if (!$email->email_content && $answer && isset($answer_wrapper)) {
+    $form['form']['email_content']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
+      'vopros_answer' => $answer,
+      'vopros_question' => $answer_wrapper->question->value(),
+    ));
+  }
 
   $form['form']['send'] = array(
     '#type' => 'submit',
@@ -159,7 +168,15 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     );
   }
 
+  field_attach_form('vopros_email', $email, $form, $form_state);
+
   return $form;
+}
+
+function vopros_email_form_validate(&$form, &$form_state) {
+  $email = $form_state['values']['vopros_email'];
+  field_attach_validate('vopros_email', $email, $form, $form_state);
+  $form_state['values']['vopros_email'] = $email;
 }
 
 /**
@@ -171,6 +188,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   $email->subject = $form_state['values']['subject'];
   $email->email_content = $form_state['values']['email_content'];
   $email->email = $form_state['values']['email'];
+  field_attach_submit('vopros_email', $email, $form, $form_state);
   // Create the needed relations for later.
   $email->uid = $GLOBALS['user']->uid;
   if (!isset($email->answer_id) && isset($form_state['values']['answer']->answer_id)) {
