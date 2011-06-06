@@ -319,3 +319,71 @@ function vopros_email_page_view($email, $view_mode = 'administrator', $langcode 
 
   return $build;
 }
+
+/**
+ * Confirm form for deleting emails.
+ */
+function vopros_email_delete_confirm_form($form, &$form_state, $email) {
+  $form = array();
+  $form['email'] = array(
+    '#type' => 'value',
+    '#value' => $email,
+  );
+  $question = t('Are you sure you want to delete the email?');
+  $description = t('This action cannot be undone.');
+  $path = "admin/vopros/emails";
+  $yes = t('Delete');
+  $no = t('Cancel');
+  return confirm_form($form, $question, $path, "<p>$question</p><p>$description</p>", $yes, $no, 'confirm');
+}
+
+/**
+ * Submit handler for vopros_email_delete_confirm_form().
+ */
+function vopros_email_delete_confirm_form_submit(&$form, &$form_state) {
+  $email = $form_state['values']['email'];
+  vopros_email_delete($email->email_id);
+  $form_state['redirect'] = 'admin/vopros/emails';
+}
+
+/**
+ * A form for creating a new question from an email.
+ */
+function vopros_email_convert_to_question_form($form, &$form_state, $email) {
+  module_load_include('inc', 'vopros_question', 'includes/vopros_question.admin');
+  $question = vopros_question_new(array(
+    'question_title' => $email->subject,
+    'question_content' => $email->email_content,
+  ));
+  $form = vopros_question_question_form($form, $form_state, $question);
+
+  $form['email'] = array(
+    '#type' => 'value',
+    '#value' => $email,
+  );
+
+  $form['#validate'] = array('vopros_question_question_form_validate', 'vopros_email_convert_to_question_form_validate');
+  $form['#submit'] = array('vopros_question_question_form_submit', 'vopros_email_convert_to_question_form_submit');
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_email_convert_to_question_form().
+ */
+function vopros_email_convert_to_question_form_validate(&$form, &$form_state) {
+  if ($form_state['values']['email']->question_id) {
+    form_set_error('', t('Email is already attached to a question, cannot be converted to a question.'));
+  }
+}
+
+/**
+ * Submit handler for vopros_email_convert_to_question_form().
+ */
+function vopros_email_convert_to_question_form_submit(&$form, &$form_state) {
+  $question = $form_state['question'];
+  $email = $form_state['values']['email'];
+  $email->question_id = $question->question_id;
+  vopros_email_save($email);
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
+}

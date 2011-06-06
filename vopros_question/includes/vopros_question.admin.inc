@@ -186,6 +186,8 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
 
   // Save the product.
   vopros_question_save($question);
+  // Add the question to the $form_state for other modules to use.
+  $form_state['question'] = $question;
 }
 
 /**

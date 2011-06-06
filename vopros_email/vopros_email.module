@@ -110,6 +110,22 @@ function vopros_email_menu() {
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
+    'admin/vopros/emails/%vopros_email/delete' => array(
+      'title' => 'Delete',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_delete_confirm_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('delete'),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
+    'admin/vopros/emails/%vopros_email/convert' => array(
+      'title' => 'Convert',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_convert_to_question_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
     'admin/vopros/questions/%vopros_question/email' => array(
       'title' => 'Contact user',
       'page callback' => 'drupal_get_form',
@@ -330,6 +346,19 @@ function vopros_email_save($email, $revision = 0) {
 function vopros_email_load($email_id, $reset = FALSE) {
   $emails = vopros_email_load_multiple(array($email_id), array(), $reset);
   return $emails ? reset($emails) : FALSE;
+}
+
+/**
+ * Deletes an email by ID.
+ *
+ * @param $email_id
+ *   The ID of the email to delete.
+ *
+ * @return
+ *   TRUE on success, FALSE otherwise.
+ */
+function vopros_email_delete($email_id) {
+  return entity_delete('vopros_email', $email_id);
 }
 
 /**
