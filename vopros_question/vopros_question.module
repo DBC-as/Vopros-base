@@ -686,7 +686,7 @@ function vopros_question_build_content($question, $view_mode = 'administrator', 
     foreach (module_implements($hook) as $module) {
       $function = $module . '_' . $hook;
       if (function_exists($function)) {
-        $function($cloned_question, &$feed);
+        $function($cloned_question, $feed);
       }
     }
     $question->content['feed'] = $feed;

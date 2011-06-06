@@ -48,6 +48,7 @@ class VorposMailhandlerParser extends MailhandlerParser {
         $this->commands($message, $source);
         $subject = $message['subject'];
         preg_match('/\[#(?P<question_id>\d+){1,}\]/', $subject, $matches);
+        $message['subject_question'] = NULL;
         if ($matches['question_id']) {
           $message['subject_question'] = $matches['question_id'];
         }

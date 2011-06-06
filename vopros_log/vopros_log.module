@@ -163,7 +163,7 @@ function vopros_log_entity_view($entity, $type, $view_mode, $langcode) {
 /**
  * Implements hook_vopros_question_activity_feed().
  */
-function vopros_log_vopros_question_activity_feed($question, $feed) {
+function vopros_log_vopros_question_activity_feed($question, &$feed) {
   $logs = vopros_log_load_multiple(FALSE, array('question_id' => $question->question_id));
   foreach ($logs as $log_id => $log) {
     $feed['log_' . $log_id] = array(

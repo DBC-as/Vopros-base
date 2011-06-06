@@ -591,7 +591,7 @@ function vopros_email_theme() {
 /**
  * Implements hook_vopros_question_activity_feed().
  */
-function vopros_email_vopros_question_activity_feed($question, $feed) {
+function vopros_email_vopros_question_activity_feed($question, &$feed) {
   $emails = vopros_email_load_multiple(FALSE, array('question_id' => $question->question_id));
   foreach ($emails as $email_id => $email) {
     $feed['email_' . $email_id] = array(
