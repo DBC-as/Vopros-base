@@ -76,8 +76,8 @@ function vopros_email_settings_form($form, &$form_state) {
  * Answer form
  */
 function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
-  if (empty($answer) && $email->$answer_id) {
-    $answer = vopros_answer_load($email->$answer_id);
+  if (empty($answer) && $email->answer_id) {
+    $answer = vopros_answer_load($email->answer_id);
   }
 
   if ($answer) {
@@ -131,7 +131,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#description' => t('The subject for the email.'),
     '#default_value' => token_replace(variable_get('vopros_email_answered_question_subject_macro', ''), array(
       'vopros_answer' => $answer,
-      'vopros_question' => $answer_wrapper->question->value(),
+      'vopros_question' => isset($answer_wrapper) ? $answer_wrapper->question->value() : new stdClass(),
     )),
     '#required' => TRUE,
   );
@@ -142,7 +142,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#description' => t('The main content of the email.'),
     '#default_value' => token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
       'vopros_answer' => $answer,
-      'vopros_question' => $answer_wrapper->question->value(),
+      'vopros_question' => isset($answer_wrapper) ? $answer_wrapper->question->value() : new stdClass(),
     )),
     '#required' => TRUE,
   );
@@ -153,9 +153,11 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#submit' => array('vopros_email_form_submit'),
   );
 
-  $form['form']['edit_answer'] = array(
-    '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
-  );
+  if ($answer) {
+    $form['form']['edit_answer'] = array(
+      '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
+    );
+  }
 
   return $form;
 }
