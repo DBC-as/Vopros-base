@@ -175,6 +175,47 @@ function vopros_log_vopros_question_activity_feed($question, &$feed) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_log_form_vopros_answer_form_alter(&$form, &$form_state) {
+  $form['action']['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, $form['answer']['#value']->answer_id);
+  $form['action']['log']['log_content']['#required'] = FALSE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_log_form_vopros_email_question_contact_form_alter(&$form, &$form_state) {
+  $form['action']['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, NULL);
+  $form['action']['log']['log_content']['#required'] = FALSE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_log_form_vopros_question_close_question_form_alter(&$form, &$form_state) {
+  $form['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, NULL);
+  $form['log']['log_content']['#required'] = FALSE;
+  unset($form['log']['save']);
+  $form['#submit'] = array('vopros_log_form_vopros_question_close_question_form_submit', 'vopros_question_close_question_form_submit');
+}
+
+/**
+ * Submit handler for the log part of the vopros_question_close_question_form().
+ * @see vopros_log_form_vopros_question_close_question_form_alter().
+ */
+function vopros_log_form_vopros_question_close_question_form_submit(&$form, &$form_state) {
+  global $user;
+  $values = array(
+    'question_id' => $form_state['values']['question_id'],
+    'log_content' => $form_state['values']['log_content'],
+    'uid' => $user->uid,
+  );
+  $log = vopros_log_new($values);
+  vopros_log_save($log);
+}
+
+/**
  * Implements hook_theme().
  */
 function vopros_log_theme() {

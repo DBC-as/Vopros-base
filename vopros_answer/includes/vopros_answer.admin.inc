@@ -48,24 +48,6 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
 
-  $form['action']['display_internal_note'] = array(
-    '#markup' => theme('vopros_question_log', array('question' => array('#question' => $question, 'show' => TRUE))),
-  );
-
-  $form['action']['internal_note_wrapper'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Edit internal log'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-  $form['action']['internal_note_wrapper']['log'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Internal note'),
-    '#default_value' => $question->log,
-    '#resizable' => FALSE,
-  );
-
   $form['form'] = array(
     '#prefix' => '<div class="form">',
     '#suffix' => '</div>',

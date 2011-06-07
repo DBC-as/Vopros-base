@@ -623,11 +623,6 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
     '#required' => TRUE,
   );
 
-  $form['log'] = array(
-    '#type' => 'textarea',
-    '#default_value' => $question->log,
-  );
-
   return $form;
 }
 
@@ -637,7 +632,6 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
 function vopros_question_close_question_form_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $v['question'];
-  $question->log = $v['log'];
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);

@@ -352,7 +352,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
   if ($type == 'vopros_question' && $view_mode == 'administrator') {
     $question = $entity;
     if ($question->question_status == 'new') {
-      $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+      $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
     elseif ($question->question_status == 'locked') {
       global $user;
@@ -363,7 +363,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
           $entity->content['right'][] = array('#markup' => $output, '#weight' => 10);
         }
         else {
-          $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+          $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
         }
       }
     }
@@ -373,7 +373,10 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
         $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
         $entity->content['right'][] = array('#markup' => $output);
       }
-      $entity->content['right'][] = drupal_get_form('vopros_answer_question_view_form', $question);
+      $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
+    }
+    if (isset($entity->content['right']['answer_form'])) {
+      $entity->content['right']['answer_form']['#weight'] = -100;
     }
   }
 }

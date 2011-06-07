@@ -1,16 +1,20 @@
 /** Contact user email page **/
-#vopros-email-question-contact-form #edit-send-mail {
+#vopros-email-question-contact-form .action {
+  width: 30%;
   float: right;
+}
+
+#vopros-email-question-contact-formmadmin/vopros/questions/ .form {
+  width: 65%;
+}
+
+#vopros-email-question-contact-form #edit-send-mail {
   font-size: 3em;
   background: #E5E5E5;
   padding: 10px 30px;
   -moz-border-radius: 40px;
   -webkit-border-radius: 40px;
   border-radius: 40px;
-}
-
-#vopros-email-question-contact-form .form-item {
-  width: 70%;
 }
 
 /**

@@ -217,7 +217,11 @@ function vopros_email_form_submit(&$form, &$form_state) {
  * Form for answering a question.
  */
 function vopros_email_question_contact_form($form, &$form_state, $question) {
-  $form['send_mail'] = array(
+  $form['action'] = array(
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+  $form['action']['send_mail'] = array(
     '#type' => 'submit',
     '#value' => t('Send mail'),
   );
@@ -227,14 +231,19 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#type' => 'value',
   );
 
-  $form['email'] = array(
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['email'] = array(
     '#title' => t('To'),
     '#type' => 'textfield',
     '#default_value' => $question->user_email,
     '#required' => TRUE,
   );
 
-  $form['reason'] = array(
+  $form['form']['reason'] = array(
     '#type' => 'select',
     '#title' => t('Answer type'),
     '#options' => vopros_question_get_reasons(),
@@ -244,16 +253,21 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     ),
   );
 
-  $form['subject'] = array(
+  $form['form']['subject'] = array(
     '#title' => t('Subject'),
     '#type' => 'textfield',
     '#required' => TRUE,
   );
 
-  $form['body'] = array(
+  $form['form']['body'] = array(
     '#title' => t('Mail body'),
     '#type' => 'textarea',
     '#required' => TRUE,
+  );
+
+  $form['form']['send_mail'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send mail'),
   );
 
   return $form;
