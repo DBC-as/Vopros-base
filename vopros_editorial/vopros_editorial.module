@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * The vopros_editorial module allows to seperate questions into editorial
+ * groups, with their own type of macross etc.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function vopros_editorial_enable() {
+  // Create the question vopros_editorial vocabolary
+  if (!taxonomy_vocabulary_machine_name_load('vopros_editorial')) {
+    $vocabulary = (object) array(
+      'name' => t('Editorial'),
+      'machine_name' => 'vopros_editorial',
+      'module' => 'vopros_editorial',
+    );
+    taxonomy_vocabulary_save($vocabulary);
+  }
+  vopros_editorial_configure_question();
+}
+
+function vopros_editorial_configure_question() {
+  $type = 'vopros_question';
+  $bundle = 'vopros_question';
+
+  // Create a taxonomy term reference field
+  $field_name = 'vopros_editorial';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => 1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'locked' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          array(
+            'vocabulary' => 'vopros_editorial',
+            'parent' => 0,
+          ),
+        ),
+      ),
+      'field_name' => $field_name,
+      'type' => 'taxonomy_term_reference',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => TRUE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Editorial'),
+      'widget' => array(
+        'type' => 'options_select',
+      ),
+      'settings' => array(),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'taxonomy_term_reference_link',
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
+}
+
+function vopros_editorial_form_vopros_sms_settings_form_alter(&$form, &$form_state) {
+  
+  $form['contact']['#collapsible'] = TRUE;
+  $form['contact']['#collapsed'] = TRUE;
+  $form['contact']['#weight'] = 2;
+  $form['macros']['#collapsible'] = TRUE;
+  $form['macros']['#collapsed'] = TRUE;
+  $form['macros']['#weight'] = 1;
+  
+  $vocabolary = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+  $terms = taxonomy_term_load_multiple(NULL, array('vid' => $vocabolary->vid));
+
+  // Loop through all the terms and copy the existin form settings, but
+  // redefine the keys, so they can be used with variable_set/get.
+  foreach ($terms as $term) {
+    // Contact user form fields.
+    $form['contact_' . $term->tid] = $form['contact'];
+    $form['contact_' . $term->tid]['#title'] .= ' ' . $term->name;
+    $form['contact_' . $term->tid]['#weight'] = 2;
+    foreach ($form['contact_' . $term->tid] as $key => $form_field) {
+      if (is_array($form_field) && isset($form_field['#type'])) {
+        $new_key = $key . '_' . $term->tid;
+        $form_field['#default_value'] = variable_get($new_key, '');
+        $form['contact_' . $term->tid][$new_key] = $form_field;
+        unset($form['contact_' . $term->tid][$key]);
+      }
+    }
+
+    // Asnwer user form fields.
+    $form['macros_' . $term->tid] = $form['macros'];
+    $form['macros_' . $term->tid]['#title'] .= ' ' . $term->name;
+    $form['macros_' . $term->tid]['#weight'] = 1;
+    foreach ($form['macros_' . $term->tid] as $key => $form_field) {
+      if (is_array($form_field) && isset($form_field['#type'])) {
+        $new_key = $key . '_' . $term->tid;
+        $form_field['#default_value'] = variable_get($new_key, '');
+        $form['macros_' . $term->tid][$new_key] = $form_field;
+        unset($form['macros_' . $term->tid][$key]);
+      }
+    }
+  }
+
+  $form['contact']['#title'] .= t(' (no editorial)');
+  $form['macros']['#title'] .= t(' (no editorial)');
+}
+
+/**
+ * Implements hook_field_views_data_alter().
+ */
+function vopros_editorial_views_default_views_alter(&$views) {
+  /* Filter criterion: Fields: Editorial (vopros_editorial) - tid */  
+  $subject = $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'];
+  unset($views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid']);
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['field'] = 'vopros_editorial_tid';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['group'] = 0;
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['exposed'] = TRUE;
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator_id'] = 'vopros_editorial_tid_op';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'with the editorial';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator'] = 'vopros_editorial_tid_op';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['use_operator'] = FALSE;
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
+  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
+  $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'] = $subject;
+}
