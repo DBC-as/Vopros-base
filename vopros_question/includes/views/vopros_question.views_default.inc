@@ -261,7 +261,8 @@ function vopros_question_views_default_views() {
     'value' => '',
   );
   $handler->display->display_options['filters']['question_status']['group'] = 0;
-  $handler->display->display_options['filters']['question_status']['exposed'] = FALSE;
+  $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_status']['expose']['use_operator'] = FALSE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Show all';
   $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
@@ -277,7 +278,8 @@ function vopros_question_views_default_views() {
     'value' => '',
   );
   $handler->display->display_options['filters']['question_usage']['group'] = 0;
-  $handler->display->display_options['filters']['question_usage']['exposed'] = FASEL;
+  $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_usage']['expose']['use_operator'] = FALSE;
   $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
   $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'questions user for';
   $handler->display->display_options['filters']['question_usage']['expose']['operator'] = 'question_usage_op';
@@ -289,7 +291,8 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
   $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
   $handler->display->display_options['filters']['subject_catagory_tid']['group'] = 0;
-  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = FALSE;
+  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['use_operator'] = FALSE;
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
