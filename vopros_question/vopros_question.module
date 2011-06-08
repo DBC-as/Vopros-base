@@ -572,7 +572,7 @@ function vopros_question_views_data_alter(&$data) {
 
 
 /**
- * Ensures the line item field is present on the default order bundle.
+ * Configure the vopros email entity with fields.
  */
 function vopros_question_configure_question() {
   $type = 'vopros_question';

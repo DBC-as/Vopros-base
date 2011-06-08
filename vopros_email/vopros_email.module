@@ -57,7 +57,7 @@ function vopros_email_enable() {
   // When the module is enabled, we need to make sure that the
   // menu is buildt correctly with the entity info.
   menu_rebuild();
-  vopros_email_configure_question();
+  vopros_email_configure_email();
 }
 
 
@@ -674,7 +674,7 @@ function _vopros_email_type() {
 /**
  * Configure the vopros email entity with fields.
  */
-function vopros_email_configure_question() {
+function vopros_email_configure_email() {
   $type = 'vopros_email';
   $bundle = 'vopros_email';
 

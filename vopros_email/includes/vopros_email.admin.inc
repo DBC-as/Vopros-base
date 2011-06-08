@@ -123,7 +123,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   );
 
   if (!$email->email && $answer && isset($answer_wrapper)) {
-    $form['form']['subject']['#default_value'] = $answer_wrapper->question->user_email->value();
+    $form['form']['email']['#default_value'] = $answer_wrapper->question->user_email->value();
   }
 
   $form['form']['subject'] = array(
