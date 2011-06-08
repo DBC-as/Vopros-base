@@ -57,6 +57,7 @@ function vopros_email_enable() {
   // When the module is enabled, we need to make sure that the
   // menu is buildt correctly with the entity info.
   menu_rebuild();
+  vopros_email_configure_question();
 }
 
 
@@ -422,9 +423,8 @@ function vopros_email_mail($key, &$message, $params) {
       $body .= "\n\n";
       
       $email_wrapper = entity_metadata_wrapper('vopros_email', $email);
-      // TODO update file field.
-      /*
-      foreach ($email_wrapper->field_file as $file) {
+
+      foreach ($email_wrapper->vopros_email_attachment as $file) {
         // Get the actual file value array().
         $fv = $file->value();
         $filedata = file_get_contents(drupal_realpath($fv['uri']));
@@ -436,7 +436,7 @@ function vopros_email_mail($key, &$message, $params) {
         $body .= "Content-Transfer-Encoding: base64\n\n";
         $body .= chunk_split(base64_encode($filedata));
       }
-      */
+
       // Mark the end of the email.
       $body .= "--$trenner--";
       $message['body'][] = $body;
@@ -669,4 +669,62 @@ function _vopros_email_type() {
     'ingoing' => t('Ingoing'),
     'outgoing' => t('Outgoing'),
   );
+}
+
+/**
+ * Configure the vopros email entity with fields.
+ */
+function vopros_email_configure_question() {
+  $type = 'vopros_email';
+  $bundle = 'vopros_email';
+
+  // Create a taxonomy term reference field
+  $field_name = 'vopros_email_attachment';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => -1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'locked' => TRUE,
+      'field_name' => $field_name,
+      'type' => 'file',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'weight' => 0,
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Subject'),
+      'widget' => array(
+        'type' => 'file_generic',
+        'settings' => array(
+          'progress_indicator' => 'throbber',
+        ),
+      ),
+      'settings' => array(
+        'file_directory' => 'vopros_email',
+        'file_extensions' => 'txt gif png jpg jpeg pdf, doc, docx',
+      ),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'file_default',
+          'settings' => array(),
+          'module' => 'file',
+          'weight' => 0,
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
