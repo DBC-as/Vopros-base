@@ -115,8 +115,9 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_id']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_id']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_id']['separator'] = '';
   $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
-  /* Field: Question: Label */
+  /* Field: Question: Question_title */
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['question_title']['field'] = 'question_title';
@@ -259,7 +260,8 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_status']['value'] = array(
     'value' => '',
   );
-  $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_status']['group'] = 0;
+  $handler->display->display_options['filters']['question_status']['exposed'] = FALSE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Show all';
   $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
@@ -274,7 +276,8 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_usage']['value'] = array(
     'value' => '',
   );
-  $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['question_usage']['group'] = 0;
+  $handler->display->display_options['filters']['question_usage']['exposed'] = FASEL;
   $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
   $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'questions user for';
   $handler->display->display_options['filters']['question_usage']['expose']['operator'] = 'question_usage_op';
@@ -285,7 +288,8 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
   $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
   $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject_catagory_tid']['group'] = 0;
+  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = FALSE;
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
@@ -304,7 +308,6 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'Display a list of active questions';
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
-
   $translatables['vopros_question_list'] = array(
     t('Master'),
     t('Question list'),
@@ -318,7 +321,6 @@ function vopros_question_views_default_views() {
     t('- All -'),
     t('Offset'),
     t('.'),
-    t(','),
     t('Title'),
     t('admin/vopros/questions/[question_id]'),
     t('Subject'),
@@ -329,9 +331,9 @@ function vopros_question_views_default_views() {
     t('All'),
     t('Show all'),
     t('questions user for'),
+    t('with the editorial'),
     t('with the subject'),
     t('Page'),
-    t('Own questions'),
   );
 
   $views[$view->name] = $view;

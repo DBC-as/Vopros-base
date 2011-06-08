@@ -109,8 +109,9 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['question_id']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['question_id']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_id']['separator'] = '';
   $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
-  /* Field: Question: Label */
+  /* Field: Question: Question_title */
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['question_title']['field'] = 'question_title';
@@ -232,10 +233,10 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['answer_id']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['answer_id']['alter']['text'] = 'Edit answer';
   $handler->display->display_options['fields']['answer_id']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['answer_id']['alter']['path'] = 'admin/vopros/answers/[answer_id]/edit';
   $handler->display->display_options['fields']['answer_id']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['answer_id']['alter']['external'] = 0;
   $handler->display->display_options['fields']['answer_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['link_class'] = '[answer_id]/edit';
   $handler->display->display_options['fields']['answer_id']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['answer_id']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['answer_id']['alter']['word_boundary'] = 1;
@@ -273,7 +274,7 @@ function vopros_answer_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'user/%/vopros/questions';
-  $translatables['test'] = array(
+  $translatables['vopros_question_own_questions'] = array(
     t('Master'),
     t('Your questions'),
     t('more'),
@@ -288,7 +289,6 @@ function vopros_answer_views_default_views() {
     t('question'),
     t('Question ID'),
     t('.'),
-    t(','),
     t('Title'),
     t('admin/vopros/questions/[question_id]'),
     t('Subject'),
@@ -298,6 +298,7 @@ function vopros_answer_views_default_views() {
     t('Created'),
     t('Answer'),
     t('Edit answer'),
+    t('admin/vopros/answers/[answer_id]/edit'),
     t('All'),
     t('Page'),
   );

@@ -16,7 +16,6 @@ class vopros_question_handler_field_vopros_question extends views_handler_field 
       case 'user_age':
         $mapping = _vopros_question_user_age();
         return isset($mapping[$san]) ? $mapping[$san] : $mapping['no inform'];
-        return 'test';
         break;
     }
     return $san;
