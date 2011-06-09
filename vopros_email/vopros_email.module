@@ -703,7 +703,7 @@ function vopros_email_configure_email() {
       'required' => FALSE,
       'settings' => array(),
       'field_name' => $field_name,
-      'label' => t('Subject'),
+      'label' => t('File attachments'),
       'widget' => array(
         'type' => 'file_generic',
         'settings' => array(

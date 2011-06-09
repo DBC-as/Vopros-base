@@ -46,6 +46,17 @@ class VorposMailhandlerParser extends MailhandlerParser {
     if (!empty($fetched['messages'])) {
       foreach ($fetched['messages'] as $mid => &$message) {
         $this->commands($message, $source);
+        $subject = imap_mime_header_decode($message['subject']);
+        $subject_string = '';
+        foreach ($subject as $string) {
+          if ($string->charset == 'ISO-8859-1') {
+            $subject_string .= utf8_encode($string->text);
+          }
+          else {
+            $subject_string .= $string->text;
+          }
+        }
+        $message['subject'] = $subject_string;
         $subject = $message['subject'];
         preg_match('/\[#(?P<question_id>\d+){1,}\]/', $subject, $matches);
         $message['subject_question'] = NULL;
