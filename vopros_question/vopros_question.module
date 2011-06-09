@@ -906,14 +906,16 @@ function vopros_question_vopros_question_activity_feed($question, &$feed) {
     ->fetchAll();
   $changes = array();
   $status = $revisions[0]->question_status;
+  $reason = $revisions[0]->question_status_reason;
   foreach ($revisions as $revision) {
-    if ($revision->question_status != $status) {
+    if ($revision->question_status != $status || $revision->question_status_reason != $reason) {
       $feed['question_revision_' . $revision->revision_id] = array(
         '#theme' => 'vopros_question_revision_question_feed',
         '#revision' => $revision,
         '#weight' => $revision->revision_timestamp,
       ) ;
       $status = $revision->question_status;
+      $reason = $revision->question_status_reason;
     }
   }
 }

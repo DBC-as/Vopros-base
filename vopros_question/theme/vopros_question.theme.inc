@@ -178,7 +178,13 @@ function theme_vopros_question_revision_question_feed($variables) {
   $status = isset($statuses[$revision->question_status]) ? $statuses[$revision->question_status] : t('Unknown');
   
   $output = '<div class="status-feed-item feed-item">';
-  $output .= t('Status changes to %status by !username the @date', array('@date' => $date, '!username' => $username, '%status' => $status));
+  // Special case, question created from email.
+  if ($revision->question_status == 'new' && $revision->question_status_reason == 'created from email') {
+    $output .= t('Email converted to question by !username the @date', array('@date' => $date, '!username' => $username));
+  }
+  else {
+    $output .= t('Status changed to %status by !username the @date', array('@date' => $date, '!username' => $username, '%status' => $status));
+  }
   $output .= '</div>';
   return $output;
 }

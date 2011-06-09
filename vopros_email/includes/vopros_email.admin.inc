@@ -414,6 +414,8 @@ function vopros_email_convert_to_question_form_validate(&$form, &$form_state) {
  */
 function vopros_email_convert_to_question_form_submit(&$form, &$form_state) {
   $question = $form_state['question'];
+  $question->question_status_reason = 'created from email';
+  vopros_question_save($question);
   $email = $form_state['values']['email'];
   $email->question_id = $question->question_id;
   vopros_email_save($email);
