@@ -75,8 +75,11 @@ function vopros_editorial_configure_question() {
   }
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
 function vopros_editorial_form_vopros_sms_settings_form_alter(&$form, &$form_state) {
-  
+  // Adds editorial specific macros.
   $form['contact']['#collapsible'] = TRUE;
   $form['contact']['#collapsed'] = TRUE;
   $form['contact']['#weight'] = 2;
@@ -120,6 +123,96 @@ function vopros_editorial_form_vopros_sms_settings_form_alter(&$form, &$form_sta
   $form['contact']['#title'] .= t(' (no editorial)');
   $form['macros']['#title'] .= t(' (no editorial)');
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_editorial_form_vopros_sms_form_alter(&$form, &$form_state) {
+  // Change default value to match editorial selected macros.
+  $answer = $form['answer']['#value'];
+  if ($answer && $answer->question_id) {
+    $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+    $tid = $answer_wrapper->question->vopros_editorial->tid->value();
+    if ($tid) {
+      $form['form']['content_wrapper']['content']['#default_value'] = $content =  token_replace(variable_get('vopros_sms_answered_question_macro_' . $tid, ''), array(
+         'vopros_answer' => $answer,
+         'vopros_question' => $answer_wrapper->question->value(),
+       ));
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_editorial_form_vopros_email_settings_form_alter(&$form, &$form_state) {
+  // Adds editorial specific macros.
+  $form['contact']['#collapsible'] = TRUE;
+  $form['contact']['#collapsed'] = TRUE;
+  $form['contact']['#weight'] = 2;
+  $form['macros']['#collapsible'] = TRUE;
+  $form['macros']['#collapsed'] = TRUE;
+  $form['macros']['#weight'] = 1;
+  
+  $vocabolary = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+  $terms = taxonomy_term_load_multiple(NULL, array('vid' => $vocabolary->vid));
+
+  // Loop through all the terms and copy the existin form settings, but
+  // redefine the keys, so they can be used with variable_set/get.
+  foreach ($terms as $term) {
+    // Contact user form fields.
+    $form['contact_' . $term->tid] = $form['contact'];
+    $form['contact_' . $term->tid]['#title'] .= ' ' . $term->name;
+    $form['contact_' . $term->tid]['#weight'] = 2;
+    foreach ($form['contact_' . $term->tid] as $key => $form_field) {
+      if (is_array($form_field) && isset($form_field['#type'])) {
+        $new_key = $key . '_' . $term->tid;
+        $form_field['#default_value'] = variable_get($new_key, '');
+        $form['contact_' . $term->tid][$new_key] = $form_field;
+        unset($form['contact_' . $term->tid][$key]);
+      }
+    }
+
+    // Asnwer user form fields.
+    $form['macros_' . $term->tid] = $form['macros'];
+    $form['macros_' . $term->tid]['#title'] .= ' ' . $term->name;
+    $form['macros_' . $term->tid]['#weight'] = 1;
+    foreach ($form['macros_' . $term->tid] as $key => $form_field) {
+      if (is_array($form_field) && isset($form_field['#type'])) {
+        $new_key = $key . '_' . $term->tid;
+        $form_field['#default_value'] = variable_get($new_key, '');
+        $form['macros_' . $term->tid][$new_key] = $form_field;
+        unset($form['macros_' . $term->tid][$key]);
+      }
+    }
+  }
+
+  $form['contact']['#title'] .= t(' (no editorial)');
+  $form['macros']['#title'] .= t(' (no editorial)');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_editorial_form_vopros_email_form_alter(&$form, &$form_state) {
+  // Change default value to match editorial selected macros.
+  $answer = $form['answer']['#value'];
+  if ($answer && $answer->question_id) {
+    $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+    $tid = $answer_wrapper->question->vopros_editorial->tid->value();
+    if ($tid) {
+      $form['form']['subject']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_subject_macro_' . $tid, ''), array(
+        'vopros_answer' => $answer,
+        'vopros_question' => $answer_wrapper->question->value(),
+      ));
+      $form['form']['email_content']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_macro_' . $tid, ''), array(
+        'vopros_answer' => $answer,
+        'vopros_question' => $answer_wrapper->question->value(),
+      ));
+    }
+  }
+}
+
 
 /**
  * Implements hook_field_views_data_alter().
