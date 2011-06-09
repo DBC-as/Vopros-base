@@ -132,12 +132,27 @@ function vopros_editorial_form_vopros_sms_form_alter(&$form, &$form_state) {
   $answer = $form['answer']['#value'];
   if ($answer && $answer->question_id) {
     $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
-    $tid = $answer_wrapper->question->vopros_editorial->tid->value();
+    $tid = $answer_wrapper->question->vopros_editorial->value() ? $answer_wrapper->question->vopros_editorial->tid->value() : 0;
     if ($tid) {
       $form['form']['content_wrapper']['content']['#default_value'] = $content =  token_replace(variable_get('vopros_sms_answered_question_macro_' . $tid, ''), array(
          'vopros_answer' => $answer,
          'vopros_question' => $answer_wrapper->question->value(),
        ));
+    }
+  }
+}
+
+/**
+ * Implements hook_vopros_sms_question_contact_form_macro_alter().
+ */
+function vopros_editorial_vopros_sms_question_contact_form_macro_alter(&$text, $form, $key) {
+  $question = $form['question']['#value'];
+  $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+  $tid = $question_wrapper->vopros_editorial->value() ? $question_wrapper->vopros_editorial->tid->value() : 0;
+  if ($tid) {
+    $new_text = variable_get($key . '_' . $tid, '');
+    if ($new_text) {
+      $text = $new_text;
     }
   }
 }
@@ -164,12 +179,18 @@ function vopros_editorial_form_vopros_email_settings_form_alter(&$form, &$form_s
     $form['contact_' . $term->tid] = $form['contact'];
     $form['contact_' . $term->tid]['#title'] .= ' ' . $term->name;
     $form['contact_' . $term->tid]['#weight'] = 2;
-    foreach ($form['contact_' . $term->tid] as $key => $form_field) {
-      if (is_array($form_field) && isset($form_field['#type'])) {
-        $new_key = $key . '_' . $term->tid;
-        $form_field['#default_value'] = variable_get($new_key, '');
-        $form['contact_' . $term->tid][$new_key] = $form_field;
-        unset($form['contact_' . $term->tid][$key]);
+    // Since there is both email and subject, they are nested in a wrapper.
+    foreach ($form['contact_' . $term->tid] as $reason => $wrapper) {
+      if (is_array($wrapper) && isset($wrapper['#type'])) {
+        foreach ($wrapper as $key => $form_field) {
+          if (is_array($form_field) && isset($form_field['#type'])) {
+            $new_key = $key . '_' . $term->tid;
+            $form_field['#default_value'] = variable_get($new_key, '');
+            $form['contact_' . $term->tid][$reason][$new_key] = $form_field;
+            unset($form['contact_' . $term->tid][$reason][$key]);
+          }
+        }
+        
       }
     }
 
@@ -199,7 +220,7 @@ function vopros_editorial_form_vopros_email_form_alter(&$form, &$form_state) {
   $answer = $form['answer']['#value'];
   if ($answer && $answer->question_id) {
     $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
-    $tid = $answer_wrapper->question->vopros_editorial->tid->value();
+    $tid = $answer_wrapper->question->vopros_editorial->value() ? $answer_wrapper->question->vopros_editorial->tid->value() : 0;
     if ($tid) {
       $form['form']['subject']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_subject_macro_' . $tid, ''), array(
         'vopros_answer' => $answer,
@@ -209,6 +230,21 @@ function vopros_editorial_form_vopros_email_form_alter(&$form, &$form_state) {
         'vopros_answer' => $answer,
         'vopros_question' => $answer_wrapper->question->value(),
       ));
+    }
+  }
+}
+
+/**
+ * Implements hook_vopros_email_question_contact_form_macro_alter().
+ */
+function vopros_editorial_vopros_email_question_contact_form_macro_alter(&$text, $form, $key) {
+  $question = $form['question']['#value'];
+  $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+  $tid = $question_wrapper->vopros_editorial->value() ? $question_wrapper->vopros_editorial->tid->value() : 0;
+  if ($tid) {
+    $new_text = variable_get($key . '_' . $tid, '');
+    if ($new_text) {
+      $text = $new_text;
     }
   }
 }

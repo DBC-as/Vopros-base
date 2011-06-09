@@ -278,11 +278,14 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
  */
 function vopros_email_question_contact_form_macro($form, &$form_state) {
   $key = str_replace(' ', '_', $form_state['values']['reason']);
-
-  $content = variable_get('vopros_email_macro_' . $key, '');
+  $content_key = 'vopros_email_macro_' . $key;
+  $content = variable_get($content_key, '');
+  drupal_alter('vopros_email_question_contact_form_macro', $content, $form, $content_key);
   $processed_content = token_replace($content, array('vopros_question' => $form_state['values']['question']));
 
-  $subject = variable_get('vopros_email_subject_macro_' . $key, '');
+  $subject_key = 'vopros_email_subject_macro_' . $key;
+  $subject = variable_get($subject_key, '');
+  drupal_alter('vopros_email_question_contact_form_macro', $subject, $form, $subject_key);
   $processed_subject = token_replace($subject, array('vopros_question' => $form_state['values']['question']));
   
   $commands = array();

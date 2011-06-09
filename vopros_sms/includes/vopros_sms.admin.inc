@@ -284,10 +284,13 @@ function vopros_sms_question_contact_form($form, &$form_state, $question) {
  */
 function vopros_sms_question_contact_form_macro($form, &$form_state) {
   $key = str_replace(' ', '_', $form_state['values']['reason']);
+  $key = 'vopros_sms_macro_' . $key;
 
-  $text = variable_get('vopros_sms_macro_' . $key, '');
+  $text = variable_get($key, '');
+  drupal_alter('vopros_sms_question_contact_form_macro', $text, $form, $key);
 
   $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']));
+
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-content', 'val', array($processed_text));
   return array('#type' => 'ajax', '#commands' => $commands);
