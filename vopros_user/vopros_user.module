@@ -5,3 +5,27 @@
  */
 
 include_once('vopros_user.features.inc');
+
+function vopros_user_get_libraries() {
+  $cache = cache_get('vopros_user_libraries', 'cache_field');
+  // Return cache if possible.
+  if (!empty($cache) && isset($cache->data) && empty($cache->data)) {
+    return $cache->data;
+  }
+  // Get the libraries from openagency service if no cache was found.
+  $libraries = array();
+  $library_types = array('Folkebibliotek', 'Forskningsbibliotek');
+  foreach ($library_types as $library_type) {
+    $client = new NanoSOAPClient('http://openagency.addi.dk/1.0/', array('namespaces' => array('' => 'http://oss.dbc.dk/ns/openagency')));
+    $params = array('libraryType' => $library_type);
+    $xml = $client->call('nameListRequest', $params);
+    $result = DOMDocument::loadXML($xml);
+    foreach ($result->getElementsByTagName('agency') as $agency) {
+      $libraries[$agency->getElementsByTagName('agencyId')->item(0)->nodeValue] = $agency->getElementsByTagName('agencyName')->item(0)->nodeValue;
+    }
+  }
+  asort($libraries);
+  cache_set('vopros_user_libraries', $libraries, 'cache_field', time() + 86400);
+
+  return $libraries;
+}
