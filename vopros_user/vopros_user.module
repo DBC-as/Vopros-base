@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Vopros  user feature.
+ */
+
+include_once('vopros_user.features.inc');
