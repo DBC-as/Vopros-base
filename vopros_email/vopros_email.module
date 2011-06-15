@@ -427,6 +427,9 @@ function vopros_email_mail($key, &$message, $params) {
       foreach ($email_wrapper->vopros_email_attachment as $file) {
         // Get the actual file value array().
         $fv = $file->value();
+        if (!isset($fv['uri'])) {
+          $fv = (array) file_load($fv['fid']);
+        }
         $filedata = file_get_contents(drupal_realpath($fv['uri']));
         $filename = $fv['filename'];
         $filemime = $fv['filemime'];
@@ -712,7 +715,7 @@ function vopros_email_configure_email() {
       ),
       'settings' => array(
         'file_directory' => 'vopros_email',
-        'file_extensions' => 'txt gif png jpg jpeg pdf, doc, docx',
+        'file_extensions' => 'txt gif png jpg jpeg pdf doc docx',
       ),
 
       'display' => array(
