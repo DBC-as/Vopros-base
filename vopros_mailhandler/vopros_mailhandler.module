@@ -6,7 +6,7 @@
 function vopros_mailhandler_feeds_plugins() {
   return array(
     'VorposMailhandlerParser' => array(
-      'name' => 'Vopris mailhandler IMAP stream parser',
+      'name' => 'Vopros mailhandler IMAP stream parser',
       'description' => 'Parses an IMAP stream.',
       'handler' => array(
         'parent' => 'MailhandlerParser',
