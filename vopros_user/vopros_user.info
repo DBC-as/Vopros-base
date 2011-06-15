@@ -1,6 +1,7 @@
 core = "7.x"
 dependencies[] = "features"
 dependencies[] = "list"
+dependencies[] = "nanosoap"
 dependencies[] = "profile2"
 description = "Defines the user profile with fields for admins."
 features[field][] = "profile2-vopros_admin-vopros_user_library"

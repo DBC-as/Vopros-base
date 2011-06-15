@@ -254,20 +254,23 @@ function vopros_editorial_vopros_email_question_contact_form_macro_alter(&$text,
  * Implements hook_field_views_data_alter().
  */
 function vopros_editorial_views_default_views_alter(&$views) {
-  /* Filter criterion: Fields: Editorial (vopros_editorial) - tid */  
-  $subject = $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'];
-  unset($views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid']);
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['field'] = 'vopros_editorial_tid';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['group'] = 0;
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['exposed'] = TRUE;
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator_id'] = 'vopros_editorial_tid_op';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'with the editorial';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator'] = 'vopros_editorial_tid_op';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['use_operator'] = FALSE;
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
-  $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
-  $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'] = $subject;
+  /* Filter criterion: Fields: Editorial (vopros_editorial) - tid */
+  dpm($views);
+  if (isset($views['vopros_question_list'])) {
+    $subject = $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'];
+    unset($views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid']);
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['field'] = 'vopros_editorial_tid';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['group'] = 0;
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['exposed'] = TRUE;
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator_id'] = 'vopros_editorial_tid_op';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'with the editorial';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['operator'] = 'vopros_editorial_tid_op';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['use_operator'] = FALSE;
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
+    $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
+    $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'] = $subject;
+  }
 }
