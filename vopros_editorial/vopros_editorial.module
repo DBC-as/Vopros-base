@@ -255,7 +255,6 @@ function vopros_editorial_vopros_email_question_contact_form_macro_alter(&$text,
  */
 function vopros_editorial_views_default_views_alter(&$views) {
   /* Filter criterion: Fields: Editorial (vopros_editorial) - tid */
-  dpm($views);
   if (isset($views['vopros_question_list'])) {
     $subject = $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'];
     unset($views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid']);
