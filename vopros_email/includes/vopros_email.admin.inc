@@ -191,7 +191,8 @@ function vopros_email_form_submit(&$form, &$form_state) {
   field_attach_submit('vopros_email', $email, $form, $form_state);
   // Create the needed relations for later.
   $email->uid = $GLOBALS['user']->uid;
-  if (!isset($email->answer_id) && isset($form_state['values']['answer']->answer_id)) {
+
+  if (!$email->answer_id && isset($form_state['values']['answer']->answer_id)) {
     $email->answer_id = $form_state['values']['answer']->answer_id;
     $email->question_id = $form_state['values']['answer']->question_id;
   }
@@ -203,7 +204,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
     vopros_email_save($email);
   }
 
-  if (isset($email->question_id) && $email->question_id) {
+  if ($email->question_id) {
     $question = vopros_question_load($email->question_id);
     $question->question_status = 'answered';
     vopros_question_save($question);
