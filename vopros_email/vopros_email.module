@@ -411,10 +411,9 @@ function vopros_email_mail($key, &$message, $params) {
       $message['headers']['MIME-Version'] = '1.0';
 
       $message['subject'] = $email->subject;
-      if (isset($params['email']->question_id)) {
+      if ($email->question_id) {
         $message['subject'] .= ' [#' . $email->question_id . ']';
       }
-      $message['subject'] = $email->subject;
 
       $body  = "\n--$trenner\n";
       $body .= "Content-Type: text/plain; charset=UTF-8; format=flowed;"."\n\n"; // sets the mime type
