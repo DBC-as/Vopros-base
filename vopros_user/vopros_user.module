@@ -16,7 +16,7 @@ function vopros_user_get_libraries() {
   $libraries = array();
   $library_types = array('Folkebibliotek', 'Forskningsbibliotek');
   foreach ($library_types as $library_type) {
-    $client = new NanoSOAPClient('http://openagency.addi.dk/1.0/', array('namespaces' => array('' => 'http://oss.dbc.dk/ns/openagency')));
+    $client = new NanoSOAPClient('http://openagency.addi.dk/1.1/', array('namespaces' => array('' => 'http://oss.dbc.dk/ns/openagency')));
     $params = array('libraryType' => $library_type);
     $xml = $client->call('nameListRequest', $params);
     $result = DOMDocument::loadXML($xml);
