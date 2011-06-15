@@ -55,7 +55,7 @@ function vopros_editorial_configure_question() {
     $instance = array(
       'entity_type' => $type,
       'bundle' => $bundle,
-      'required' => TRUE,
+      'required' => FALSE,
       'settings' => array(),
       'field_name' => $field_name,
       'label' => t('Editorial'),
