@@ -205,7 +205,6 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $question = $v['question'];
   $question->uid = 0;
   $question->question_status = 'in progress';
-  $question->log = $form_state['values']['log'];
   $answer = $v['answer'];
   vopros_question_save($question);
   $answer->question_id = $question->question_id;
