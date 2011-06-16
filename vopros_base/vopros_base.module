@@ -39,6 +39,9 @@ function vopros_base_menu() {
  * Callback for getting entity properties
  */
 function vopros_base_get_properties($entity, array $options, $name) {
+  if ($name == 'user') {
+    return $entity->uid;
+  }
   return $entity->{$name.'_id'};
 }
 
@@ -46,6 +49,9 @@ function vopros_base_get_properties($entity, array $options, $name) {
  * Callback for setting line item properties.
  */
 function vopros_base_set_properties($entity, $name, $value) {
+  if ($name == 'user') {
+    return $entity->uid = $value;
+  }
   return $entity->{$name.'_id'} = $value;
 }
 

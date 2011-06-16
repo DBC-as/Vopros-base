@@ -512,6 +512,43 @@ function vopros_question_views_api() {
 }
 
 /**
+ * Implements hook_entity_property_info().
+ */
+function vopros_question_entity_property_info() {
+  $info = array();
+
+  // Add meta-data about the basic commerce_line_item properties.
+  $properties = &$info['vopros_question']['properties'];
+
+  $properties['user'] = array(
+    'label' => t('Question answere'),
+    'type' => 'user',
+    'description' => t('The uid of the user answering the question.'),
+    'getter callback' => 'vopros_base_get_properties',
+    'setter callback' => 'vopros_base_set_properties',
+    'clear' => array('uid'),
+    'schema field' => 'users',
+  );
+
+  $properties['url'] = array(
+    'label' => t('Question URL'),
+    'type' => 'uri',
+    'description' => t("The URL of the question page."),
+    'getter callback' => 'vopros_quesiton_get_properties',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function vopros_question_entity_property_info_alter(&$info) {
+  // Need to clear the quesiton cache when the question_id is altered.
+  $info['vopros_question']['properties']['uid']['clear'] = array('user');
+}
+
+/**
  * Implements hook_views_data_alter().
  */
 function vopros_question_views_data_alter(&$data) {
@@ -567,7 +604,6 @@ function vopros_question_views_data_alter(&$data) {
     'field' => 'question_id',
     'label' => 'Question',
   );
-
 }
 
 
@@ -917,5 +953,17 @@ function vopros_question_vopros_question_activity_feed($question, &$feed) {
       $status = $revision->question_status;
       $reason = $revision->question_status_reason;
     }
+  }
+}
+
+function vopros_quesiton_get_properties($question, array $options, $name, $entity_type) {
+  switch ($name) {
+    case 'url':
+      if (empty($question->question_id)) {
+        return NULL;
+      }
+      $return = entity_uri('vopros_question', $question);
+      return $return ? url($return['path'], $return['options'] + $options) : '';
+      break;
   }
 }

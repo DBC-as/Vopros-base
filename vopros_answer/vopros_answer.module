@@ -74,6 +74,16 @@ function vopros_answer_entity_property_info() {
     'schema field' => 'vopros_question',
   );
 
+  $properties['user'] = array(
+    'label' => t('Answer owner'),
+    'type' => 'user',
+    'description' => t('The uid of the user creating the answer.'),
+    'getter callback' => 'vopros_base_get_properties',
+    'setter callback' => 'vopros_base_set_properties',
+    'clear' => array('uid'),
+    'schema field' => 'users',
+  );
+
   return $info;
 }
 
@@ -92,6 +102,7 @@ function vopros_answer_enable() {
 function vopros_answer_entity_property_info_alter(&$info) {
   // Need to clear the quesiton cache when the question_id is altered.
   $info['vopros_answer']['properties']['question_id']['clear'] = array('question');
+  $info['vopros_answer']['properties']['uid']['clear'] = array('user');
 }
 
 /**
