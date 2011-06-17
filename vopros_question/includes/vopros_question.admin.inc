@@ -16,15 +16,31 @@ function vopros_question_settings_form($form, &$form_state) {
  * Form to edit or create a question
  */
 function vopros_question_question_form($form, &$form_state, $question) {
+  $form['action'] = array(
+    '#weight' => -1000,
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+
+  $form['action']['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
   // Add the field related form elements.
   $form['question'] = array(
     '#value' => $question,
     '#type' => 'value',
   );
+
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  field_attach_form('vopros_question', $question, $form['form'], $form_state);
   
-  field_attach_form('vopros_question', $question, $form, $form_state);
-  
-  $form['question_title'] = array(
+  $form['form']['question_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#required' => TRUE,
@@ -32,7 +48,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#weight' => -12,
   );
 
-  $form['question_content'] = array(
+  $form['form']['question_content'] = array(
     '#type' => 'textarea',
     '#title' => t('Question content'),
     '#required' => TRUE,
@@ -40,7 +56,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#weight' => -11,
   );
 
-  $form['question_status'] = array(
+  $form['form']['question_status'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
     '#options' => _vopros_question_status(),
@@ -48,65 +64,65 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#weight' => -10,
   );
 
-  $form['question_deadline'] = array(
+  $form['form']['question_deadline'] = array(
     '#type' => 'select',
     '#title' => t('Deadline'),
     '#options' => _vopros_question_deadline(),
     '#default_value' => isset($question->question_deadline) ? $question->question_deadline : -1,
   );
 
-  $form['question_usage'] = array(
+  $form['form']['question_usage'] = array(
     '#type' => 'select',
     '#title' => t('Usage'),
     '#options' => _vopros_question_usage(),
     '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
   );
 
-  $form['question_note'] = array(
+  $form['form']['question_note'] = array(
     '#type' => 'textarea',
     '#title' => t('Note about the question'),
     '#default_value' => isset($question->question_note) ? $question->question_note : '',
   );
 
-  $form['ask'] = array(
+  $form['form']['ask'] = array(
     '#type' => 'fieldset',
     '#title' => t('Info about person who asked the question'),
     '#collapsible' => TRUE,
   );
   
 
-  $form['ask']['user_name'] = array(
+  $form['form']['ask']['user_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
     '#default_value' => isset($question->user_name) ? $question->user_name : '',
   );
 
-  $form['ask']['user_email'] = array(
+  $form['form']['ask']['user_email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email'),
     '#default_value' => isset($question->user_email) ? $question->user_email : '',
   );
 
-  $form['ask']['user_postal_code'] = array(
+  $form['form']['ask']['user_postal_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Postal code'),
     '#default_value' => isset($question->user_postal_code) ? $question->user_postal_code : '',
   );
 
-  $form['ask']['user_mobile_phone'] = array(
+  $form['form']['ask']['user_mobile_phone'] = array(
     '#type' => 'textfield',
     '#title' => t('Mobile phone'),
     '#default_value' => isset($question->user_mobile_phone) ? $question->user_mobile_phone : '',
   );
 
-  $form['ask']['user_age'] = array(
+  $form['form']['ask']['user_age'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
     '#default_value' => isset($question->user_age) ? $question->user_age : '',
     '#options' => _vopros_question_user_age(),
   );
 
-  $form['ask']['user_gender'] = array(
+  $form['form']['ask']['user_gender'] = array(
     '#type' => 'select',
     '#title' => t('Gender'),
     '#options' => array(
@@ -116,19 +132,19 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => isset($question->user_gender) ? $question->user_gender : '',
   );
 
-  $form['ask']['user_field_of_study'] = array(
+  $form['form']['ask']['user_field_of_study'] = array(
     '#type' => 'textfield',
     '#title' => t('Field of study'),
     '#default_value' => isset($question->user_field_of_study) ? $question->user_field_of_study : '',
   );
 
-  $form['ask']['user_library'] = array(
+  $form['form']['ask']['user_library'] = array(
     '#type' => 'textfield',
     '#title' => t('Library'),
     '#default_value' => isset($question->user_library) ? $question->user_library : '',
   );
 
-  $form['ask']['user_answer_preference'] = array(
+  $form['form']['ask']['user_answer_preference'] = array(
     '#type' => 'select',
     '#title' => t('How to recieve answer'),
     '#options' => array(
@@ -136,13 +152,6 @@ function vopros_question_question_form($form, &$form_state, $question) {
       'sms' => t('SMS'),
     ),
     '#default_value' => isset($question->user_answer_preference) ? $question->user_answer_preference : '',
-  );
-
-  $form['log'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Internal log'),
-    '#description' => t('Write notes about the question, is not displayed publicly.'),
-    '#default_value' => isset($question->log) ? $question->log : '',
   );
 
   $form['buttons'] = array(
@@ -162,7 +171,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
  */
 function vopros_question_question_form_validate(&$form, &$form_state) {
   $question = $form_state['values']['question'];
-  field_attach_validate('vopros_question', $question, $form, $form_state);
+  field_attach_validate('vopros_question', $question, $form['form'], $form_state);
 }
 
 /**
@@ -179,10 +188,8 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
     }
   }
 
-  $question->log = $form_state['values']['log'];
-
   // Notify field widgets.
-  field_attach_submit('vopros_question', $question, $form, $form_state);
+  field_attach_submit('vopros_question', $question, $form['form'], $form_state);
 
   // Save the product.
   vopros_question_save($question);
@@ -643,26 +650,22 @@ function vopros_question_close_question_form_submit(&$form, &$form_state) {
  * Front form that create a form with click to edit fields.
  */
 function vopros_question_question_frontend_form($form, &$form_state, $question) {
-  $form['right'] = array(
+  $form['action'] = array(
     '#weight' => -1000,
     '#prefix' => '<div class="action">',
-    '#suffix' => '</div><div class="content">',
+    '#suffix' => '</div>',
   );
   $form += vopros_question_question_form($form, $form_state, $question);
 
   $form['#validate'] = array('vopros_question_question_form_validate');
   $form['#submit'] = array('vopros_question_question_form_submit');
 
-  $form['right']['submit'] = array(
+  $form['action']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#weight' => -100,
     '#submit' => array('vopros_question_frontend_save_submit'),
   );
-
-
-  $form['right']['log'] = $form['log'];
-  unset($form['log']);
 
   $hidden = array(
     'question_status',
@@ -684,33 +687,30 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     'user_answer_preference',
   );
 
-  foreach ($form['ask'] as $key => $value) {
-    $form[$key] = $value;
+  foreach ($form['form']['ask'] as $key => $value) {
+    if (is_array($value)) {
+      $form['form'][$key] = $value;
+    }
   }
-  unset($form['ask']);
+  unset($form['form']['ask']);
 
   foreach ($click_to_edit as $form_field) {
-    if (isset($form[$form_field])) {
-      $form[$form_field]['#prefix'] = '<div class="hidden">';
-      $form[$form_field]['#suffix'] = '</div>';
-      $default_value = $form[$form_field]['#default_value'];
-      if (isset($form[$form_field]['#options']) && isset($form[$form_field]['#options'][$default_value])) {
-        $default_value = $form[$form_field]['#options'][$default_value];
+    if (isset($form['form'][$form_field])) {
+      $form['form'][$form_field]['#prefix'] = '<div class="hidden">';
+      $form['form'][$form_field]['#suffix'] = '</div>';
+      $default_value = $form['form'][$form_field]['#default_value'];
+      if (isset($form['form'][$form_field]['#options']) && isset($form['form'][$form_field]['#options'][$default_value])) {
+        $default_value = $form['form'][$form_field]['#options'][$default_value];
       }
       if ($default_value) {
-        $form[$form_field]['#prefix'] = '<div class="form-wrapper fake-wrapper"><div class="form-item fake-wrapper"><label>' . $form[$form_field]['#title'] . '</label><div class="fake-form-item">' . $default_value . '</div><div class="tooltip">' . t('Click to edit') .'</div></div></div>' . $form[$form_field]['#prefix'];
+        $form['form'][$form_field]['#prefix'] = '<div class="form-wrapper fake-wrapper"><div class="form-item fake-wrapper"><label>' . $form['form'][$form_field]['#title'] . '</label><div class="fake-form-item">' . $default_value . '</div><div class="tooltip">' . t('Click to edit') .'</div></div></div>' . $form['form'][$form_field]['#prefix'];
       }
     }
   }
 
   foreach ($hidden as $form_field) {
-    $form[$form_field]['#type'] = 'hidden';
+    $form['form'][$form_field]['#type'] = 'hidden';
   }
-
-  $form['end'] = array(
-    '#suffix' => '</div>',
-    '#weight' => 1000,
-  );
 
   $form['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
 
