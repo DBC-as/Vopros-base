@@ -58,8 +58,6 @@ function vopros_question_views_default_views() {
       'separator' => '',
     ),
     'subject_catagory' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
     ),
@@ -83,14 +81,15 @@ function vopros_question_views_default_views() {
     ),
     'created' => array(
       'sortable' => 1,
-      'default_sort_order' => 'desc',
+      'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
     ),
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
-  $handler->display->display_options['style_options']['empty_table'] = 0;
+  $handler->display->display_options['style_options']['order'] = 'desc';
+  $handler->display->display_options['style_options']['empty_table'] = 1;
   /* Header: Question: Own questions */
   $handler->display->display_options['header']['own_questions']['id'] = 'own_questions';
   $handler->display->display_options['header']['own_questions']['table'] = 'vopros_question';

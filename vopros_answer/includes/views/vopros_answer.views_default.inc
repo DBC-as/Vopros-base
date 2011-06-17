@@ -226,30 +226,6 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['created']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['created']['field'] = 'created';
   $handler->display->display_options['fields']['created']['relationship'] = 'question_id';
-  /* Field: Answer: Answer ID */
-  $handler->display->display_options['fields']['answer_id']['id'] = 'answer_id';
-  $handler->display->display_options['fields']['answer_id']['table'] = 'vopros_answer';
-  $handler->display->display_options['fields']['answer_id']['field'] = 'answer_id';
-  $handler->display->display_options['fields']['answer_id']['label'] = 'Answer';
-  $handler->display->display_options['fields']['answer_id']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['answer_id']['alter']['text'] = 'Edit answer';
-  $handler->display->display_options['fields']['answer_id']['alter']['make_link'] = 1;
-  $handler->display->display_options['fields']['answer_id']['alter']['path'] = 'admin/vopros/answers/[answer_id]/edit';
-  $handler->display->display_options['fields']['answer_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['answer_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['answer_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['answer_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['answer_id']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['answer_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['answer_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['answer_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['answer_id']['separator'] = '';
-  $handler->display->display_options['fields']['answer_id']['format_plural'] = 0;
   /* Contextual filter: Question: Uid */
   $handler->display->display_options['arguments']['uid']['id'] = 'uid';
   $handler->display->display_options['arguments']['uid']['table'] = 'vopros_question';
@@ -297,9 +273,6 @@ function vopros_answer_views_default_views() {
     t('Status'),
     t('Deadline'),
     t('Created'),
-    t('Answer'),
-    t('Edit answer'),
-    t('admin/vopros/answers/[answer_id]/edit'),
     t('All'),
     t('Page'),
   );
