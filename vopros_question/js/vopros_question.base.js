@@ -7,4 +7,13 @@
       });
     }
   };
+  Drupal.behaviors.voprosQuestionList = {
+    attach: function(context, settings) {
+      $("#views-exposed-form-vopros-question-list-page input.form-submit").hide();
+      $("#views-exposed-form-vopros-question-list-page select").change(function() {
+        $("#views-exposed-form-vopros-question-list-page input.form-submit").click();
+        $("#views-exposed-form-vopros-question-list-page select").attr("disabled","disabled");
+      });
+    }
+  };
 })(jQuery);
