@@ -508,21 +508,6 @@ function vopros_email_views_api() {
 }
 
 /**
- * Implements hook_enyity_view_alter().
- */
-function vopros_email_entity_view($entity, $type, $view_mode, $langcode) {
-  if ($type == 'vopros_question' && $view_mode == 'administrator') {
-    $view = vopros_base_embed_view('vopros_email_question_cor', 'master', array(0 => $entity->question_id));
-    if ($view) {
-      $entity->content['right']['mail_correspondence'] = array(
-        '#weight' => 10,
-        '#markup' => '<h3>' . t('Mail correspondence') . '</h3>' . $view,
-      );
-    }
-  }
-}
-
-/**
  * Builds a structured array representing the emails content.
  */
 function vopros_email_build_content($email, $view_mode = 'administrator', $langcode = NULL) {
