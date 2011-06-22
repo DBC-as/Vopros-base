@@ -195,6 +195,12 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
     }
   }
 
+  if (!isset($question->created) || empty($question->created)) {
+    // Set the created and changed to something different to skip first time view page.
+    $question->created = time();
+    $quesiton->changed = $question->created + 1;
+  }
+
   // Notify field widgets.
   field_attach_submit('vopros_question', $question, $form['form'], $form_state);
 
@@ -202,6 +208,7 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
   vopros_question_save($question);
   // Add the question to the $form_state for other modules to use.
   $form_state['question'] = $question;
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
 /**
