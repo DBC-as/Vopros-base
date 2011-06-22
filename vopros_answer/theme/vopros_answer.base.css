@@ -21,3 +21,10 @@
   float: none;
   width: 100%;
 }
+
+.vopros-question .feed .vopros-answer {
+  padding: 5px 0;
+  margin: 5px 0 10px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}

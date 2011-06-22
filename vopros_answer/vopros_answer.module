@@ -370,8 +370,6 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
       if ($question->uid == $user->uid || user_access('administer answers')) {
         $answers = vopros_answer_load_for_question($question->question_id);
         if ($answers) {
-          $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => TRUE));
-          $entity->content['right'][] = array('#markup' => $output, '#weight' => 10);
         }
         else {
           $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
@@ -379,11 +377,6 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
       }
     }
     elseif ($question->question_status == 'in progress') {
-      $answers = vopros_answer_load_for_question($question->question_id);
-      if ($answers) {
-        $output = theme('vopros_answer_answers_pl_content', array('answers' => $answers, 'edit' => FALSE, 'title' => t('Answer in progress')));
-        $entity->content['right'][] = array('#markup' => $output);
-      }
       $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
     if (isset($entity->content['right']['answer_form'])) {
@@ -391,6 +384,23 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
     }
   }
 }
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_answer_vopros_question_activity_feed($question, &$feed) {
+  $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+  foreach ($answers as $answer_id => $answer) {
+    $feed['answer' . $answer_id] = array(
+      '#prefix' => '<div class="vopros-answer">',
+      '#suffix' => '</div>',
+      '#markup' => str_replace("\n", '<br />', check_plain($answer->answer_content)),
+      // Make answers float to the top.
+      '#weight' => '0.' . $answer->created,
+    );
+  }
+}
+
 
 /**
  * Implements hook_form_FORM_ID_alter().

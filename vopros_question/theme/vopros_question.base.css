@@ -15,6 +15,12 @@
   margin-top: 5px;
 }
 
+.vopros-question .feed {
+  border-top: 2px solid black;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
 .vopros-question .feed .feed-item {
   margin-bottom: 10px;
 }
