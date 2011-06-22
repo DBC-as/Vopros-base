@@ -601,8 +601,13 @@ function vopros_question_views_data_alter(&$data) {
   $data['vopros_question']['question_status']['field']['handler'] =
   $data['vopros_question']['question_usage']['field']['handler'] = 'vopros_question_handler_field_vopros_question';
   $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'vopros_question_handler_field_date';
-  $data['vopros_question']['question_status']['filter']['handler'] = 'vopros_question_status_views_handler_filter_string';
-  $data['vopros_question']['question_usage']['filter']['handler'] = 'vopros_question_usage_views_handler_filter_string';
+
+  $data['vopros_question']['question_usage']['argument']['handler'] =
+  $data['vopros_question']['question_usage']['filter']['handler'] = 'vopros_question_usage_views_handler_filter_in_operator';
+
+  $data['vopros_question']['question_status']['argument']['handler'] =
+  $data['vopros_question']['question_status']['filter']['handler'] = 'vopros_question_status_views_handler_filter_in_operator';
+
 
   // Add revision table.
   $data['vopros_question_revision'] = $data['vopros_question'];
@@ -866,18 +871,6 @@ function vopros_question_theme() {
       'path' => $path,
     ),
   );
-}
-
-function vopros_question_views_query_alter(&$view, &$query) {
-  if ($view->name == 'vopros_question_list' && $view->current_display == 'page') {
-    foreach ($query->where as $w_key => $where) {
-      foreach ($where['conditions'] as $c_key => $condition) {
-        if (empty($condition['value']['value'])) {
-          unset($query->where[$w_key]['conditions'][$c_key]);
-        }
-      }
-    }
-  }
 }
 
 /**
