@@ -202,8 +202,10 @@ function vopros_log_form_vopros_question_question_frontend_form_alter(&$form, &$
  * Implements hook_form_FORM_ID_alter().
  */
 function vopros_log_form_vopros_question_question_form_alter(&$form, &$form_state) {
-  $form['action']['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, NULL);
-  $form['action']['log']['log_content']['#required'] = FALSE;
+  if ($form['question']['#value']->question_status != 'new') {
+    $form['action']['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, NULL);
+    $form['action']['log']['log_content']['#required'] = FALSE;
+  }
 }
 
 /**

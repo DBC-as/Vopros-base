@@ -39,6 +39,13 @@ function vopros_question_question_form($form, &$form_state, $question) {
   );
 
   field_attach_form('vopros_question', $question, $form['form'], $form_state);
+  if (!$form['form']['vopros_editorial']['und']['#default_value']) {
+    $options = $form['form']['vopros_editorial']['und']['#options'];
+    if (isset($options['_none'])) {
+      unset($options['_none']);
+    }
+    $form['form']['vopros_editorial']['und']['#default_value'] = array_shift(array_keys($options));
+  }
   
   $form['form']['question_title'] = array(
     '#type' => 'textfield',
@@ -154,11 +161,11 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => isset($question->user_answer_preference) ? $question->user_answer_preference : '',
   );
 
-  $form['buttons'] = array(
+  $form['form']['buttons'] = array(
     '#weight' => 100,
   );
 
-  $form['buttons']['save'] = array(
+  $form['form']['buttons']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
   );
