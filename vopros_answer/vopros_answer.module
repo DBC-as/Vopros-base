@@ -406,9 +406,16 @@ function vopros_answer_vopros_question_activity_feed($question, &$feed) {
  * Implements hook_form_FORM_ID_alter().
  */
 function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
+  $answers = vopros_answer_load_for_question($form['question']['#value']->question_id);
+  $label = t('Answer question');
+  foreach ($answers as $answer) {
+    if (trim($answer->answer_content)) {
+      $label = t('Edit question');
+    }
+  }
   $form['answer_question'] = array(
      '#type' => 'submit',
-     '#value' => t('Answer question'),
+     '#value' => $label,
      '#validate' => array('vopros_answer_question_view_form_validate'),
      '#submit' => array('vopros_answer_question_view_form_submit'),
      '#weight' => -10,
@@ -435,9 +442,17 @@ function vopros_answer_question_view_form($form, &$form_state, $question) {
     '#value' => $question
   );
 
+  $answers = vopros_answer_load_for_question($question->question_id);
+  $label = t('Answer question');
+  foreach ($answers as $answer) {
+    if (trim($answer->answer_content)) {
+      $label = t('Edit question');
+    }
+  }
+
   $form['answer_question'] = array(
     '#type' => 'submit',
-    '#value' => t('Answer question'),
+    '#value' => $label,
   );
 
   return $form;
