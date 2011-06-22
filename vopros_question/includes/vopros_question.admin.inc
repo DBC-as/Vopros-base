@@ -196,9 +196,9 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
   }
 
   if (!isset($question->created) || empty($question->created)) {
-    // Set the created and changed to something different to skip first time view page.
-    $question->created = time();
-    $quesiton->changed = $question->created + 1;
+    // Set the created time 1 second in the past to make it different from the changed.
+    // This is to make sure that we don't hit the edit page on first view.
+    $question->created = time() - 1;
   }
 
   // Notify field widgets.
