@@ -4,6 +4,9 @@
  * @file
  */
 
+/**
+ * Implements hook_init().
+ */
 function vopros_question_init() {
   if (arg(0) == 'vopros' || arg(1) == 'vopros') {
     drupal_add_css(drupal_get_path('module', 'vopros_question') . '/theme/vopros_question.base.css');
@@ -512,6 +515,23 @@ function vopros_question_views_api() {
 }
 
 /**
+ * Implement hook_form_alter().
+ */
+function vopros_question_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'user_login':
+    case 'user_login_block':
+      $form['#action'] = '';
+      $form['#submit'][] = 'vopros_question_user_login_submit';
+      break;
+  }
+}
+
+function vopros_question_user_login_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/list';
+}
+
+/**
  * Implements hook_entity_property_info().
  */
 function vopros_question_entity_property_info() {
@@ -605,7 +625,6 @@ function vopros_question_views_data_alter(&$data) {
     'label' => 'Question',
   );
 }
-
 
 /**
  * Configure the vopros email entity with fields.
@@ -910,6 +929,7 @@ function vopros_question_get_reasons($type = 'contact_mail') {
      $options = array(
       'spam' => t('Spam'),
       'problem question' => t('Problem question'),
+      'answered' => t('Already answered'),
      );
      break;
     case 'contact_sms':

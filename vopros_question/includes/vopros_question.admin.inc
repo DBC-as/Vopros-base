@@ -628,9 +628,27 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
     '#title' => t('Reason to close the question'),
     '#options' => vopros_question_get_reasons('close'),
     '#required' => TRUE,
+    '#ajax' => array(
+      'callback' => 'vopros_question_close_question_form_ajax',
+    ),
   );
 
   return $form;
+}
+
+/**
+ * JS effect when changing reasons.
+ */
+function vopros_question_close_question_form_ajax(&$form, &$form_state) {
+  $commands = array();
+  if ($form_state['values']['reason'] == 'answered') {
+    $commands[] = ajax_command_invoke('.form-item-log-content', 'hide', array());
+  }
+  else {
+    $commands[] = ajax_command_invoke('.form-item-log-content', 'show', array());
+  }
+  
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 /**
@@ -639,11 +657,20 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
 function vopros_question_close_question_form_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $v['question'];
-  $question->question_status = 'closed';
-  $question->question_status_reason = $v['reason'];
+  if ($v['reason'] == 'answered') {
+    $question->question_status = 'answered';
+    $question->question_status_reason = 'already answered';
+    drupal_set_message(t('Question has been marked as answered'), 'warning');
+  }
+  else {
+    $question->question_status = 'closed';
+    $question->question_status_reason = $v['reason'];
+    drupal_set_message(t('Question has been closed and wont be answered'), 'warning');
+  }
+  
   vopros_question_save($question);
   $form_state['redirect'] = 'admin/vopros/questions';
-  drupal_set_message(t('Question has been closed and wont be answered'), 'warning');
+  
 }
 
 /**

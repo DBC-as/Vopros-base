@@ -222,13 +222,15 @@ function vopros_log_form_vopros_question_close_question_form_alter(&$form, &$for
  */
 function vopros_log_form_vopros_question_close_question_form_submit(&$form, &$form_state) {
   global $user;
-  $values = array(
-    'question_id' => $form_state['values']['question_id'],
-    'log_content' => $form_state['values']['log_content'],
-    'uid' => $user->uid,
-  );
-  $log = vopros_log_new($values);
-  vopros_log_save($log);
+  if (trim($form_state['values']['log_content']) && $form_state['values']['reason'] != 'answered') {
+    $values = array(
+      'question_id' => $form_state['values']['question_id'],
+      'log_content' => $form_state['values']['log_content'],
+      'uid' => $user->uid,
+    );
+    $log = vopros_log_new($values);
+    vopros_log_save($log);
+  }
 }
 
 /**
