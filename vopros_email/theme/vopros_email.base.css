@@ -1,3 +1,33 @@
+/** Display Email **/
+.vopros-email-display .header {
+  border: 1px solid black;
+  background-color: #ddd;
+  padding: 5px;
+}
+
+.vopros-email-display .body {
+  border: 1px solid black;
+  border-top: none;
+  padding: 5px;
+}
+
+.vopros-email-display .body .field-name-vopros-email-attachment .field-item {
+  margin: 10px 0;
+}
+
+.vopros-email-display .body img.preview {
+  border: 1px solid black;
+}
+
+.vopros-email-display .body .email-content .label {
+  display: none;
+}
+
+.vopros-email-display .body .email-content .value {
+  clear: left;
+  display: block;
+}
+
 /** Contact user email page **/
 #vopros-email-question-contact-form .action {
   width: 30%;

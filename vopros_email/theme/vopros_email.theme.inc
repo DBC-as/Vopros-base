@@ -39,7 +39,7 @@ function theme_vopros_email_content($variables) {
   $email = $variables['email']['#email'];
   $output = '<div class="email-content vopros-email-extra">';
   $output .= '<span class="label">' . t('Content:') .  '</span>';
-  $output .= '<span class="value">' . check_plain($email->email_content) .  '</span>';
+  $output .= '<span class="value">' . str_replace("\n", '<br />', check_plain($email->email_content)) .  '</span>';
   $output .= '</div>';
   return $output;
 }
@@ -52,6 +52,45 @@ function theme_vopros_email_email($variables) {
   $output = '<div class="email-email vopros-email-extra">';
   $output .= '<span class="label">' . t('Email address:') .  '</span>';
   $output .= '<span class="value">' . check_plain($email->email) .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
+function theme_vopros_email_from_email($variables) {
+  $email = $variables['email']['#email'];
+  if ($email->type == 'outgoing') {
+    $from = theme('username', array('account' => user_load($email->uid)));
+  }
+  else {
+    $from = check_plain($email->email);
+  }
+  $output = '<div class="email-from vopros-email-extra">';
+  $output .= '<span class="label">' . t('From:') .  '</span>';
+  $output .= '<span class="value">' . $from .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
+function theme_vopros_email_to_email($variables) {
+  $email = $variables['email']['#email'];
+  if ($email->type == 'ingoing') {
+    $to = check_plain(variable_get('site_name', 'Drupal'));
+  }
+  else {
+    $to = check_plain($email->email);
+  }
+  $output = '<div class="email-to vopros-email-extra">';
+  $output .= '<span class="label">' . t('To:') .  '</span>';
+  $output .= '<span class="value">' . $to .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
+function theme_vopros_email_sent($variables) {
+  $email = $variables['email']['#email'];
+  $output = '<div class="email-sent vopros-email-extra">';
+  $output .= '<span class="label">' . t('Sent:') .  '</span>';
+  $output .= '<span class="value">' . format_date($email->created, 'short') .  '</span>';
   $output .= '</div>';
   return $output;
 }

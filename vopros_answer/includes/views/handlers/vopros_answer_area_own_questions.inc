@@ -16,15 +16,12 @@ class vopros_answer_area_own_questions extends views_handler_area {
   }
 
   function render($empty = FALSE) {
-    if (!$empty) {
-      if ($GLOBALS['user']->uid) {
-        $output = vopros_base_embed_view('vopros_question_own_questions', 'page', array(0 => $GLOBALS['user']->uid));
-        if ($output) {
-          $output = '<h2>' . t('Your active questions') . '</h2>' . $output;
-        }
-        return $output;
+    if ($GLOBALS['user']->uid) {
+      $output = vopros_base_embed_view('vopros_question_own_questions', 'page', array(0 => $GLOBALS['user']->uid));
+      if ($output) {
+        $output = '<h2>' . t('Your active questions') . '</h2>' . $output;
       }
+      return $output;
     }
   }
-
 }

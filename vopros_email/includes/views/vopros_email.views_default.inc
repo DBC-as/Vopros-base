@@ -32,6 +32,8 @@ function vopros_email_views_default_views() {
     'subject' => 'subject',
     'email_content' => 'email_content',
     'email_id' => 'email_id',
+    'nothing_4' => 'nothing',
+    'nothing_3' => 'nothing',
     'nothing' => 'nothing',
     'nothing_2' => 'nothing',
     'nothing_1' => 'nothing',
@@ -62,6 +64,14 @@ function vopros_email_views_default_views() {
       'align' => '',
       'separator' => '',
     ),
+    'nothing_4' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+    'nothing_3' => array(
+      'align' => '',
+      'separator' => '',
+    ),
     'nothing' => array(
       'align' => '',
       'separator' => '',
@@ -78,6 +88,28 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
+  /* Field: Email: Email ID */
+  $handler->display->display_options['fields']['email_id']['id'] = 'email_id';
+  $handler->display->display_options['fields']['email_id']['table'] = 'vopros_email';
+  $handler->display->display_options['fields']['email_id']['field'] = 'email_id';
+  $handler->display->display_options['fields']['email_id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['email_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['email_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['email_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['email_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['email_id']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['email_id']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['email_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['email_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['email_id']['separator'] = '';
+  $handler->display->display_options['fields']['email_id']['format_plural'] = 0;
   /* Field: Email: Email */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'vopros_email';
@@ -103,7 +135,8 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['fields']['subject']['table'] = 'vopros_email';
   $handler->display->display_options['fields']['subject']['field'] = 'subject';
   $handler->display->display_options['fields']['subject']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['subject']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['subject']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['subject']['alter']['path'] = 'admin/vopros/emails/[email_id]';
   $handler->display->display_options['fields']['subject']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['subject']['alter']['external'] = 0;
   $handler->display->display_options['fields']['subject']['alter']['replace_spaces'] = 0;
@@ -127,9 +160,9 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['fields']['email_content']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['email_content']['alter']['external'] = 0;
   $handler->display->display_options['fields']['email_content']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['email_content']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['email_content']['alter']['trim'] = 1;
   $handler->display->display_options['fields']['email_content']['alter']['nl2br'] = 1;
-  $handler->display->display_options['fields']['email_content']['alter']['max_length'] = '200';
+  $handler->display->display_options['fields']['email_content']['alter']['max_length'] = '100';
   $handler->display->display_options['fields']['email_content']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['email_content']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['email_content']['alter']['strip_tags'] = 0;
@@ -138,28 +171,49 @@ function vopros_email_views_default_views() {
   $handler->display->display_options['fields']['email_content']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['email_content']['hide_empty'] = 0;
   $handler->display->display_options['fields']['email_content']['empty_zero'] = 0;
-  /* Field: Email: Email ID */
-  $handler->display->display_options['fields']['email_id']['id'] = 'email_id';
-  $handler->display->display_options['fields']['email_id']['table'] = 'vopros_email';
-  $handler->display->display_options['fields']['email_id']['field'] = 'email_id';
-  $handler->display->display_options['fields']['email_id']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['email_id']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['email_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['email_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['email_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['email_id']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['email_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['email_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['email_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['email_id']['separator'] = '';
-  $handler->display->display_options['fields']['email_id']['format_plural'] = 0;
+  /* Field: View link */
+  $handler->display->display_options['fields']['nothing_4']['id'] = 'nothing_4';
+  $handler->display->display_options['fields']['nothing_4']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing_4']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing_4']['ui_name'] = 'View link';
+  $handler->display->display_options['fields']['nothing_4']['label'] = '';
+  $handler->display->display_options['fields']['nothing_4']['alter']['text'] = 'View';
+  $handler->display->display_options['fields']['nothing_4']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['nothing_4']['alter']['path'] = 'admin/vopros/emails/[email_id]';
+  $handler->display->display_options['fields']['nothing_4']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing_4']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing_4']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing_4']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing_4']['empty_zero'] = 0;
+  /* Field: Break */
+  $handler->display->display_options['fields']['nothing_3']['id'] = 'nothing_3';
+  $handler->display->display_options['fields']['nothing_3']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing_3']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing_3']['ui_name'] = 'Break';
+  $handler->display->display_options['fields']['nothing_3']['label'] = '';
+  $handler->display->display_options['fields']['nothing_3']['alter']['text'] = '<br />';
+  $handler->display->display_options['fields']['nothing_3']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['nl2br'] = 1;
+  $handler->display->display_options['fields']['nothing_3']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing_3']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing_3']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing_3']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing_3']['empty_zero'] = 0;
   /* Field: Convert link */
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
@@ -257,15 +311,17 @@ function vopros_email_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('Email address'),
-    t('Subject'),
-    t('Email content'),
     t('Email ID'),
     t('.'),
+    t('Email address'),
+    t('Subject'),
+    t('admin/vopros/emails/[email_id]'),
+    t('Email content'),
+    t('View'),
+    t('<br />'),
     t('Action'),
     t('Convert'),
     t('admin/vopros/emails/[email_id]/convert'),
-    t('<br />'),
     t('Delete'),
     t('admin/vopros/emails/[email_id]/delete'),
     t('Page'),
