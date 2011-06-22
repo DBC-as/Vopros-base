@@ -753,14 +753,14 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     $form['form'][$form_field]['#type'] = 'hidden';
   }
 
-  $form['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
+  $form['form']['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
 
-  $form['buttons']['contact'] = array(
+  $form['form']['buttons']['contact'] = array(
     '#value' => t('Contact user'),
     '#type' => 'submit',
   );
 
-  $form['buttons']['close'] = array(
+  $form['form']['buttons']['close'] = array(
     '#value' => t('Close question'),
     '#type' => 'submit',
     '#submit' => array('vopros_question_handle_question_form_close_submit'),
@@ -771,6 +771,13 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
 
 function vopros_question_frontend_save_submit(&$form, &$form_state) {
   vopros_question_question_form_submit($form, $form_state);
+  if ($form['question']['#value']->created == $form['question']['#value']->changed) {
+    $form_state['redirect'] = 'admin/vopros/questions/list';
+  }
+  else {
+    $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id;
+  }
+  $form_state['redirect'] = 'admin/vopros/questions/list';
   drupal_set_message(t('Question has been saved'));
-  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id;
+  
 }
