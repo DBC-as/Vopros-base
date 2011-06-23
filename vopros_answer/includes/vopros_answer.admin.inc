@@ -184,7 +184,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   if (count($answers) == 0) {
     $question->question_status = 'new';
   }
-  if (count($answers) == 0) {
+  if (count($answers) != 0) {
     $answer = array_shift($answers);
     if (empty($answer->answer_content)) {
       $question->question_status = 'new';

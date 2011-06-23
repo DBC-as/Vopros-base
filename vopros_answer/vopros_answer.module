@@ -251,12 +251,6 @@ function vopros_answer_permission() {
  * Initialize a new answer.
  */
 function vopros_answer_new($values = array()) {
-  $default_values = array(
-    'status' => 'in progress',
-    'answer_text' => '',
-    'author_name' => ''
-  );
-  $values += $default_values;
   if (isset($values['question_id'])) {
     $values['question'] = $values['question_id'];
   }
@@ -300,7 +294,16 @@ function vopros_answer_revision_load($revision_id) {
   return $answers ? reset($answers) : FALSE;
 }
 
-
+/**
+ * Implements hook_entity_insert().
+ */
+function vopros_answer_entity_insert($entity, $type) {
+  // Create an empty answer for every question created.
+  if ($type == 'vopros_question') {
+    $answer = vopros_answer_new(array('question_id' => $entity->question_id));
+    vopros_answer_save($answer);
+  }
+}
 
 /**
  * Loads multiple answers by ID or based on a set of matching conditions.

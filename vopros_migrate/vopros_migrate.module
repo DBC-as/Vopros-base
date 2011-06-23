@@ -246,12 +246,23 @@ function _vopros_migrate_create_answer($row, $question) {
     ->execute()
     ->fetch();
 
-  $answer = vopros_answer_new(array(
-    'question_id' => $question->question_id,
-    'uid' => $uid ? $uid->entity_id : 0,
-    'answer_content' => $row->Answer,
-    'status' => 'complete',
-  ));
+  $answers = vopros_answer_load_for_question($question->question_id);
+
+  if ($answers) {
+    $answer = array_shift($answers);
+    $answer->uid = $uid;
+    $answer->answer_content = $row->Answer;
+    $answer->status = 'complete';
+  }
+  else {
+    $answer = vopros_answer_new(array(
+      'question_id' => $question->question_id,
+      'uid' => $uid ? $uid->entity_id : 0,
+      'answer_content' => $row->Answer,
+      'status' => 'complete',
+    ));
+  }
+
   vopros_answer_save($answer);
 }
 
