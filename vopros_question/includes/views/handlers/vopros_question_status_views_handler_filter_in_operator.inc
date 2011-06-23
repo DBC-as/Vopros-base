@@ -4,7 +4,7 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
   // Used to convert fake options to real ones.
   function init(&$view, &$options) {
     parent::init($view, $options);
-    if (isset($this->value) && is_array(this->$this->value)) {
+    if (isset($this->value) && is_array($this->value)) {
       foreach ($this->value as $key => $value) {
         if ($value == 'active') {
           unset($this->value[$key]);
