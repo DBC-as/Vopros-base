@@ -836,6 +836,7 @@ function _vopros_question_status_reason() {
     'no time for deadline' => t('Not enough time for deadline'),
     'created from email' => t('Created from received email'),
     'reactivated by email' => t('Reactivated by email'),
+    'reopened by user' => t('Reopened by user'),
   );
 }
 
@@ -919,11 +920,22 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
     '#value' => t('Contact user'),
   );
 
-  $form['close'] = array(
-    '#type' => 'submit',
-    '#value' => t('Close question'),
-    '#submit' => array('vopros_question_handle_question_form_close_submit'),
-  );
+  // The question is closed, make it possible to open
+  if (in_array($question->question_status, array('answered', 'closed'))) {
+    $form['open'] = array(
+      '#type' => 'submit',
+      '#value' => t('Open question'),
+      '#submit' => array('vopros_question_handle_question_form_open_submit'),
+    );
+  }
+  // The question is open, make it possible to close it
+  else {
+    $form['close'] = array(
+      '#type' => 'submit',
+      '#value' => t('Close question'),
+      '#submit' => array('vopros_question_handle_question_form_close_submit'),
+    );
+  }
 
   $form['edit'] = array(
     '#type' => 'submit',
@@ -942,10 +954,21 @@ function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) 
 }
 
 /**
- * Submit handler for vopros_question_handle_quesiton_form cancel action.
+ * Submit handler for vopros_question_handle_quesiton_form close action.
  */
 function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/close';
+}
+
+/**
+ * Submit handler for vopros_question_handle_quesiton_form open action.
+ */
+function vopros_question_handle_question_form_open_submit(&$form, &$form_state) {
+  $question = $form['question']['#value'];
+  $question->question_status = 'in progress';
+  $question->question_status_reason = 'reopened by user';
+  vopros_question_save($question);
+  drupal_set_message(t("Question has been reopened"));
 }
 
 function vopros_question_get_reasons($type = 'contact_mail') {

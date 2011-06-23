@@ -415,7 +415,7 @@ function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &
   $label = t('Answer question');
   foreach ($answers as $answer) {
     if (trim($answer->answer_content)) {
-      $label = t('Edit question');
+      $label = t('Edit answer');
     }
   }
   $form['answer_question'] = array(
@@ -451,7 +451,7 @@ function vopros_answer_question_view_form($form, &$form_state, $question) {
   $label = t('Answer question');
   foreach ($answers as $answer) {
     if (trim($answer->answer_content)) {
-      $label = t('Edit question');
+      $label = t('Edit answer');
     }
   }
 
