@@ -728,12 +728,32 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
     'user_answer_preference',
   );
 
+  $new_hidden = array(
+    'question_deadline',
+    'question_usage',
+    'question_note',
+    'user_name',
+    'user_email',
+    'user_postal_code',
+    'user_mobile_phone',
+    'user_age',
+    'user_gender',
+    'user_field_of_study',
+    'user_library',
+    'user_answer_preference',
+  );
+
   foreach ($form['form']['ask'] as $key => $value) {
     if (is_array($value)) {
       $form['form'][$key] = $value;
     }
   }
   unset($form['form']['ask']);
+
+  $extra_class = '';
+  if ($question->created == $question->changed) {
+    $extra_class = 'hidden';
+  }
 
   foreach ($click_to_edit as $form_field) {
     if (isset($form['form'][$form_field])) {
@@ -744,13 +764,27 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
         $default_value = $form['form'][$form_field]['#options'][$default_value];
       }
       if ($default_value) {
-        $form['form'][$form_field]['#prefix'] = '<div class="form-wrapper fake-wrapper"><div class="form-item fake-wrapper"><label>' . $form['form'][$form_field]['#title'] . '</label><div class="fake-form-item">' . $default_value . '</div><div class="tooltip">' . t('Click to edit') .'</div></div></div>' . $form['form'][$form_field]['#prefix'];
+        $class = in_array($form_field, $new_hidden) ? $extra_class : '';
+        $form['form'][$form_field]['#prefix'] = '<div class="form-wrapper fake-wrapper ' . $class . '"><div class="form-item fake-wrapper"><label>' . $form['form'][$form_field]['#title'] . '</label><div class="fake-form-item">' . $default_value . '</div><div class="tooltip">' . t('Click to edit') .'</div></div></div>' . $form['form'][$form_field]['#prefix'];
       }
     }
   }
 
   foreach ($hidden as $form_field) {
     $form['form'][$form_field]['#type'] = 'hidden';
+  }
+
+  if ($question->created == $question->changed) {
+    $form['form']['show_all'] = array(
+      '#type' => 'button',
+      '#value' => t('Show complete form'),
+      '#weight' => 99,
+      '#prefix' => '<div class="show-all">',
+      '#suffix' => '</div>',
+      '#ajax' => array(
+        'callback' => 'vopros_question_question_frontend_form_show_all_ajax',
+      ),
+    );
   }
 
   $form['form']['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
@@ -767,6 +801,13 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
   );
 
   return $form;
+}
+
+function vopros_question_question_frontend_form_show_all_ajax(&$form, &$form_state) {
+  $commands = array();
+  $commands[] = ajax_command_invoke('.fake-wrapper.hidden', 'show', array());
+  $commands[] = ajax_command_invoke('.show-all', 'hide', array());
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 function vopros_question_frontend_save_submit(&$form, &$form_state) {
