@@ -37,6 +37,26 @@ function theme_vopros_question_title($variables) {
   return '<h2 class="question-title">' . check_plain($question->question_title) . '</h2>';
 }
 
+function theme_vopros_question_status($variables) {
+  $question = $variables['question']['#question'];
+  $mapping = _vopros_question_status();
+  $status = (isset($mapping[$question->question_status]) ? $mapping[$question->question_status] : t('Unknown'));
+  $reason = '';
+  if ($question->question_status_reason) {
+    $reason_mapping = _vopros_question_status_reason();
+    if (isset($reason_mapping[$question->question_status_reason])) {
+      $reason = ' <span class="reason">' . $reason_mapping[$question->question_status_reason] . '</span>';
+      $status .= ':';
+    }
+     
+  }
+  $output = '<div class="question-status vopros-question-extra">';
+  $output .= '<span class="label">' . t('Status:') .  '</span>';
+  $output .= '<span class="value"><strong>' . $status . '</strong>' . $reason . '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
 /**
  * Theme function for question content
  */

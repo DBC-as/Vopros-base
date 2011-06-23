@@ -394,13 +394,15 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
 function vopros_answer_vopros_question_activity_feed($question, &$feed) {
   $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
   foreach ($answers as $answer_id => $answer) {
-    $feed['answer' . $answer_id] = array(
-      '#prefix' => '<div class="vopros-answer">',
-      '#suffix' => '</div>',
-      '#markup' => str_replace("\n", '<br />', check_plain($answer->answer_content)),
-      // Make answers float to the top.
-      '#weight' => '0.' . $answer->created,
-    );
+    if (trim($answer->answer_content)) {
+      $feed['answer' . $answer_id] = array(
+        '#prefix' => '<div class="vopros-answer">',
+        '#suffix' => '</div>',
+        '#markup' => str_replace("\n", '<br />', check_plain($answer->answer_content)),
+        // Make answers float to the top.
+        '#weight' => '0.' . $answer->created,
+      );
+    }
   }
 }
 
