@@ -285,13 +285,6 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
-  $handler->display->display_options['filters']['question_status']['value'] = array(
-    'new' => 'new',
-    'active' => 'active',
-    'assigned' => 'assigned',
-    'answered' => 'answered',
-    'closed' => 'closed',
-  );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Show all';
@@ -303,15 +296,6 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_usage']['id'] = 'question_usage';
   $handler->display->display_options['filters']['question_usage']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_usage']['field'] = 'question_usage';
-  $handler->display->display_options['filters']['question_usage']['value'] = array(
-    'business' => 'business',
-    'other' => 'other',
-    'personal' => 'personal',
-    'school1' => 'school1',
-    'school2' => 'school2',
-    'school3' => 'school3',
-    'school4' => 'school4',
-  );
   $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
   $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'questions used for';
@@ -355,6 +339,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'Display a list of active questions';
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
+  
   $translatables['vopros_question_list'] = array(
     t('Master'),
     t('Question list'),
