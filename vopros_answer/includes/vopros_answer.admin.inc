@@ -43,7 +43,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $form['action']['save_submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save and submit'),
+    '#value' => t('Save and send'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
@@ -128,7 +128,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $form['form']['save_submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save and submit'),
+    '#value' => t('Save and send'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
@@ -216,7 +216,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
 }
 
 /**
- * Submit handler to save and submit the answer
+ * Submit handler to Save and send the answer
  */
 function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $v = $form_state['values'];
