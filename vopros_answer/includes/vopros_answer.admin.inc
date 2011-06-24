@@ -179,7 +179,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   drupal_set_message(t('The question has been unlocked for others to answer.'), 'warning');
   $question = $form_state['values']['question'];
   $answers = vopros_answer_load_for_question($question->question_id);
-  $question->question_status = 'in progress';
+  $question->question_status = 'active';
   if (count($answers) == 0) {
     $question->question_status = 'new';
   }
@@ -203,7 +203,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $v['question'];
   $question->uid = 0;
-  $question->question_status = 'in progress';
+  $question->question_status = 'active';
   $answer = $v['answer'];
   vopros_question_save($question);
   $answer->question_id = $question->question_id;

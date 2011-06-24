@@ -6,9 +6,9 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
     parent::init($view, $options);
     if (isset($this->value) && is_array($this->value)) {
       foreach ($this->value as $key => $value) {
-        if ($value == 'active') {
+        if ($value == 'open') {
           unset($this->value[$key]);
-          $this->value += array('new', 'in_progress');
+          $this->value += array('new', 'active');
         }
         elseif ($value == 'all_closed') {
           unset($this->value[$key]);
@@ -21,9 +21,9 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
   function accept_exposed_input($input) {
     $value = parent::accept_exposed_input($input);
     foreach ($this->value as $key => $value) {
-      if ($value == 'active') {
+      if ($value == 'open') {
         unset($this->value[$key]);
-        $this->value += array('new', 'in_progress');
+        $this->value += array('new', 'active');
       }
       elseif ($value == 'all_closed') {
         unset($this->value[$key]);
@@ -47,10 +47,10 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
     }
     else {
       $options = array(
-        t('Active') => array(
-          'active' => t('All active'),
+        t('Open') => array(
+          'open' => t('All open'),
           'new' => $mapping['new'],
-          'in progress' => $mapping['in progress'],
+          'active' => $mapping['active'],
         ),
         'locked' => $mapping['locked'],
         t('Closed') => array(

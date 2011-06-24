@@ -491,7 +491,7 @@ function vopros_email_entity_insert($entity, $type) {
   if ($type == 'vopros_email' && $entity->type == 'ingoing' && $entity->question_id) {
     $question = vopros_question_load($entity->question_id);
     if ($question->question_status == 'closed' || $question->question_status == 'answered') {
-      $question->question_status = 'in progress';
+      $question->question_status = 'active';
       $question->question_status_reason = 'reactivated by email';
       vopros_question_save($question);
     }

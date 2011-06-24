@@ -12,7 +12,7 @@ class VoprosAnswerEntityController extends VoprosAPIEntityController {
       'question_id' => 0,
       'uid' => 0,
       'answer_content' => '',
-      'status' => 'in progress',
+      'status' => 'active',
       'author_name' => '',
       'is_new' => TRUE,
       'created' => NULL,

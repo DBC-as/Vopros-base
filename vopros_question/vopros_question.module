@@ -816,7 +816,7 @@ function _vopros_question_user_age() {
 function _vopros_question_status() {
   return array(
     'new' => t('New'),
-    'in progress' => t('In progress'),
+    'active' => t('Active'),
     'locked' => t('Locked'),
     'answered' => t('Answered'),
     'closed' => t('Closed without answer'),
@@ -965,7 +965,7 @@ function vopros_question_handle_question_form_close_submit(&$form, &$form_state)
  */
 function vopros_question_handle_question_form_open_submit(&$form, &$form_state) {
   $question = $form['question']['#value'];
-  $question->question_status = 'in progress';
+  $question->question_status = 'active';
   $question->question_status_reason = 'reopened by user';
   vopros_question_save($question);
   drupal_set_message(t("Question has been reopened"));

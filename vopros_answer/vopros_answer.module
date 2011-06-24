@@ -379,7 +379,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
         }
       }
     }
-    elseif ($question->question_status == 'in progress') {
+    elseif ($question->question_status == 'active') {
       $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
     if (isset($entity->content['right']['answer_form'])) {
@@ -468,7 +468,7 @@ function vopros_answer_question_view_form($form, &$form_state, $question) {
  */
 function vopros_answer_question_view_form_validate($form, &$form_state) {
   $question = vopros_question_load($form_state['values']['question']->question_id, NULL, TRUE);
-  if ($question->question_status != 'new' && $question->question_status != 'in progress' && $question->uid != $GLOBALS['user']->uid) {
+  if ($question->question_status != 'new' && $question->question_status != 'active' && $question->uid != $GLOBALS['user']->uid) {
     form_set_error('', t("You can't answer the question, the question is already being answered"));
   }
   $form_state['values']['question'] = $question;

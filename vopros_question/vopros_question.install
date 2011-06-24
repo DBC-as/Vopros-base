@@ -341,3 +341,26 @@ function vopros_question_schema() {
 
   return $schema;
 }
+
+/**
+ * Change question status from "in progres" to "active".
+ */
+function vopros_question_update_7000(&$sandbox) {
+  // Update base table.
+  db_update('vopros_question')
+    ->fields(array(
+      'question_status' => 'active',
+    ))
+    ->condition('question_status', 'in progress', '=')
+    ->execute();
+
+  // Update revisions.
+  db_update('vopros_question_revision')
+    ->fields(array(
+      'question_status' => 'active',
+    ))
+    ->condition('question_status', 'in progress', '=')
+    ->execute();
+
+  return t('All questions has had their status updated.');
+}
