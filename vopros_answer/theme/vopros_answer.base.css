@@ -23,8 +23,7 @@
 }
 
 .vopros-question .feed .vopros-answer {
-  padding: 5px 0;
+  padding: 5px;
   margin: 5px 0 10px;
-  border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
+  background-color: #E0E9F1;
 }

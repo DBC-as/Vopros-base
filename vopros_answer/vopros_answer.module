@@ -395,6 +395,10 @@ function vopros_answer_vopros_question_activity_feed($question, &$feed) {
   $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
   foreach ($answers as $answer_id => $answer) {
     if (trim($answer->answer_content)) {
+      $feed['answer_header'] = array(
+        '#weight' => 0,
+        '#markup' => '<h2 class="answer-header">' . t('Answers:') . '</h2>',
+      );
       $feed['answer' . $answer_id] = array(
         '#prefix' => '<div class="vopros-answer">',
         '#suffix' => '</div>',
