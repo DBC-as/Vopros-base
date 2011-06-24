@@ -915,11 +915,6 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
     '#value' => $question,
   );
 
-  $form['contact'] = array(
-    '#type' => 'submit',
-    '#value' => t('Contact user'),
-  );
-
   // The question is closed, make it possible to open
   if (in_array($question->question_status, array('answered', 'closed'))) {
     $form['open'] = array(
@@ -930,6 +925,11 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   }
   // The question is open, make it possible to close it
   else {
+    $form['contact'] = array(
+      '#type' => 'submit',
+      '#value' => t('Contact user'),
+    );
+
     $form['close'] = array(
       '#type' => 'submit',
       '#value' => t('Close question'),
