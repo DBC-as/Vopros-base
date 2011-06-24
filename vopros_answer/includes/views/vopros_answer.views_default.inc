@@ -245,7 +245,7 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['relationship'] = 'question_id';
   $handler->display->display_options['filters']['question_status']['value'] = array(
-    'value' => 'locked',
+    'value' => 'assigned',
   );
 
   /* Display: Page */

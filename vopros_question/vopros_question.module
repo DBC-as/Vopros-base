@@ -385,7 +385,7 @@ function vopros_question_access($op, $question = NULL, $account = NULL) {
   }
 
   if ($op == 'contact' && user_acccess('contact user about question')) {
-    if ($question && $question->question_status == 'locked' && $question->uid != $account->uid) {
+    if ($question && $question->question_status == 'assigned' && $question->uid != $account->uid) {
       return FALSE;
     }
     return TRUE;
@@ -653,7 +653,7 @@ function vopros_question_configure_question() {
       'cardinality' => -1,
       'entity_types' => array($type),
       'translatable' => FALSE,
-      'locked' => TRUE,
+      'assigned' => TRUE,
       'settings' => array(
         'allowed_values' => array(
           array(
@@ -817,7 +817,7 @@ function _vopros_question_status() {
   return array(
     'new' => t('New'),
     'active' => t('Active'),
-    'locked' => t('Locked'),
+    'assigned' => t('Assigned'),
     'answered' => t('Answered'),
     'closed' => t('Closed without answer'),
   );

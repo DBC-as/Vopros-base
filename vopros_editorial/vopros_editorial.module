@@ -36,7 +36,7 @@ function vopros_editorial_configure_question() {
       'cardinality' => 1,
       'entity_types' => array($type),
       'translatable' => FALSE,
-      'locked' => TRUE,
+      'assigned' => TRUE,
       'settings' => array(
         'allowed_values' => array(
           array(

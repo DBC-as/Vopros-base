@@ -364,3 +364,26 @@ function vopros_question_update_7000(&$sandbox) {
 
   return t('All questions has had their status updated.');
 }
+
+/**
+ * Change question status from "locked" to "'assigned'".
+ */
+function vopros_question_update_7001(&$sandbox) {
+  // Update base table.
+  db_update('vopros_question')
+    ->fields(array(
+      'question_status' => 'assigned',
+    ))
+    ->condition('question_status', 'locked', '=')
+    ->execute();
+
+  // Update revisions.
+  db_update('vopros_question_revision')
+    ->fields(array(
+      'question_status' => 'assigned',
+    ))
+    ->condition('question_status', 'locked', '=')
+    ->execute();
+
+  return t('All questions has had their status updated.');
+}

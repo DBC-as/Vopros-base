@@ -368,7 +368,7 @@ function vopros_answer_entity_view($entity, $type, $view_mode, $langcode) {
     if ($question->question_status == 'new') {
       $entity->content['right']['answer_form'] = drupal_get_form('vopros_answer_question_view_form', $question);
     }
-    elseif ($question->question_status == 'locked') {
+    elseif ($question->question_status == 'assigned') {
       global $user;
       if ($question->uid == $user->uid || user_access('administer answers')) {
         $answers = vopros_answer_load_for_question($question->question_id);
@@ -484,7 +484,7 @@ function vopros_answer_question_view_form_validate($form, &$form_state) {
 function vopros_answer_question_view_form_submit($form, &$form_state) {
   drupal_set_message(t('The question been locked for you, while you are answering it.'), 'warning');
   $question = $form_state['values']['question'];
-  $question->question_status = 'locked';
+  $question->question_status = 'assigned';
   $question->uid = $GLOBALS['user']->uid;
   vopros_question_save($question);
   $answers = vopros_answer_load_for_question($question->question_id);
@@ -557,7 +557,7 @@ function vopros_answer_access($op, $answer = NULL, $account = NULL) {
 function vopros_answer_question_access($question, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
-  if ($question->question_status == 'locked' && ($question->uid == $account->uid || user_access('administer answers', $account))) {
+  if ($question->question_status == 'assigned' && ($question->uid == $account->uid || user_access('administer answers', $account))) {
     $query = new EntityFieldQuery();
     $query
       ->entityCondition('entity_type', 'vopros_answer', '=')

@@ -695,7 +695,7 @@ function vopros_email_configure_email() {
       'cardinality' => -1,
       'entity_types' => array($type),
       'translatable' => FALSE,
-      'locked' => TRUE,
+      'assigned' => TRUE,
       'field_name' => $field_name,
       'type' => 'file',
     );

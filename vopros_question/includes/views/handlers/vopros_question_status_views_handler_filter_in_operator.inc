@@ -52,7 +52,7 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
           'new' => $mapping['new'],
           'active' => $mapping['active'],
         ),
-        'locked' => $mapping['locked'],
+        'assigned' => $mapping['assigned'],
         t('Closed') => array(
           'all_closed' => t('All closed'),
           'answered' => $mapping['answered'],
