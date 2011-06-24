@@ -202,10 +202,10 @@ function theme_vopros_question_revision_question_feed($variables) {
   $mapping = _vopros_question_status_reason();
   $reason = (isset($mapping[$revision->question_status_reason])) ? $mapping[$revision->question_status_reason] : '';
   if ($reason) {
-    $output .= t('Status changed to %status (%reason) by !username the @date', array('%reason' => $reason, '@date' => $date, '!username' => $username, '%status' => $status));
+    $output .= t('%status (%reason) by !username the @date', array('%reason' => $reason, '@date' => $date, '!username' => $username, '%status' => $status));
   }
   else {
-    $output .= t('Status changed to %status by !username the @date', array('@date' => $date, '!username' => $username, '%status' => $status));
+    $output .= t('%status by !username the @date', array('@date' => $date, '!username' => $username, '%status' => $status));
   }
   $output .= '</div>';
   return $output;
