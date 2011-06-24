@@ -11,3 +11,11 @@
   margin-bottom: 3px;
   border-bottom: 1px solid #ddd;
 }
+
+body form .action #edit-save-log-message.form-submit {
+  padding: 4px 17px;
+  font-size: 1em;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+}

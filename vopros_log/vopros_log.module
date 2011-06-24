@@ -120,7 +120,7 @@ function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, 
     '#default_value' => $log ? $log->log_content : '',
   );
 
-  $form['save'] = array(
+  $form['save_log_message'] = array(
     '#type' => 'submit',
     '#value' => t('Add log message'),
     '#ajax' => array(
