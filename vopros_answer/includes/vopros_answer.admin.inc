@@ -160,7 +160,6 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $answer = $v['answer'];
   $question = $v['question'];
-  $question->log = $v['log'];
   vopros_question_save($question);
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];

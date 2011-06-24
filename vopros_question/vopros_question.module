@@ -939,7 +939,7 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
 
   $form['edit'] = array(
     '#type' => 'submit',
-    '#value' => t('Edit'),
+    '#value' => t('Edit question'),
     '#submit' => array('vopros_question_handle_question_form_edit_submit'),
   );
 
