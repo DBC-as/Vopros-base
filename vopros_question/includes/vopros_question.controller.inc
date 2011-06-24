@@ -7,6 +7,14 @@ module_load_include('inc', 'vopros_base', 'includes/vopros.controller');
  * Entity controller class for vopros question.
  */
 class VoprosQuestionEntityController extends VoprosAPIEntityController {
+  public function save($entity, DatabaseTransaction $transaction = NULL) {
+    if (in_array($entity->question_status, array('answered', 'closed'))) {
+      $entity->uid = 0;
+    }
+    parent::save($entity, $transaction);
+  }
+
+
   public function validateData($question) {
     $errors = array();
     if (!isset($question->qanda_service_name) || empty($question->qanda_service_name)) {
