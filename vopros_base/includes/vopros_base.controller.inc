@@ -93,8 +93,8 @@ class VoprosAPIEntityController extends EntityAPIController {
    *   TRUE or FALSE indicating whether or not the existing revision should be
    *     updated instead of a new one created.
    */
-  function saveRevision($table, $entity, $update = FALSE, $uid = 0, $log = '') {
-    if (empty($uid)) {
+  function saveRevision($table, $entity, $update = FALSE, $uid = FALSE, $log = '') {
+    if ($uid === FALSE) {
       $uid = $GLOBALS['user']->uid;
     }
     $entity->revision_uid = $uid;
