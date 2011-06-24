@@ -37,6 +37,30 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
     if (isset($this->value_options)) {
       return;
     }
-    $this->value_options = array('active' => t('Active'), 'all_closed' => t('Closed')) + _vopros_question_status();
+    // Notice options are not automatically synced.
+    // @see _vopros_question_status().
+    $mapping = _vopros_question_status();
+    // Small hack, use $this->query to determine if we are on the admin
+    // interface or on an exposed filter.
+    if ($this->query == NULL) {
+      $this->value_options = $mapping;
+    }
+    else {
+      $options = array(
+        t('Active') => array(
+          'active' => t('All active'),
+          'new' => $mapping['new'],
+          'in progress' => $mapping['in progress'],
+        ),
+        'locked' => $mapping['locked'],
+        t('Closed') => array(
+          'all_closed' => t('All closed'),
+          'answered' => $mapping['answered'],
+          'closed' => $mapping['closed'],
+        ),
+      );
+      $this->value_options = $options;
+    }
+    
   }
 }
