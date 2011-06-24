@@ -92,9 +92,18 @@ function vopros_base_permission() {
     'administer vopros' => array(
       'title' => t('Access to various vopros administration'),
     ),
+    'access advances admin pages' => array(
+      'title' => t('Access advances admin pages (Structure, Config and Help)'),
+    ),
   );
 
   return $permissions;
+}
+
+function vopros_base_menu_alter(&$items) {
+  $items['admin/structure']['access arguments'] = array('access advances admin pages');
+  $items['admin/config']['access arguments'] = array('access advances admin pages');
+  $items['admin/help']['access arguments'] = array('access advances admin pages');
 }
 
 /**
