@@ -163,7 +163,7 @@ function theme_vopros_base_file_link($variables) {
 
   $url = file_create_url($file->uri);
 
-  if (isset($file->filemime) && strpos($file->filemime, 'image') !== FALSE) {
+  if (isset($file->filemime) && strpos(strtolower($file->filemime), 'image') !== FALSE) {
     $icon = theme('image_style', array('path' => $file->uri, 'style_name' => 'thumbnail', 'attributes' => array('class' => 'preview')));
   }
   else {
