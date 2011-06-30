@@ -1,0 +1,10 @@
+name = Vopros Public Questions
+description = Defines the public quesiton entity and associated features.
+package = Vopros
+core = 7.x
+
+dependencies[] = vopros_base
+dependencies[] = vopros_question
+
+; Entity controller include:
+files[] = includes/vopros_public_question.controller.inc

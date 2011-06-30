@@ -1,0 +1,180 @@
+<?php
+
+/**
+ * Install file for vopros public question.
+ * Create the needed schemas for the public question entity.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_public_question_schema() {
+  $schema = array();
+
+  $schema['vopros_public_question'] = array(
+    'description' => 'The base table for public questions.',
+    'fields' => array(
+      'public_question_id' => array(
+        'description' => 'The primary identifier for an question.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_id' => array(
+        'description' => 'The current {vopros_question_revision}.revision_id version identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The question that is being published.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The owner of the public question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The question title.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'description' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'subject' => array(
+        'description' => 'The subject of the public question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'The status of the public question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the question was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the question was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('public_question_id'),
+    'unique keys' => array(
+      'revision_id' => array('revision_id'),
+      'question_id' => array('question_id'),
+    ),
+    'indexes' => array(
+      'user' => array('uid'),
+    ),
+    'foreign keys' => array(
+      'current_revision' => array(
+        'table' => 'vopros_question_revision',
+        'columns'=> array('revision_id' => 'revision_id'),
+      ),
+    ),
+  );
+
+  $schema['vopros_public_question_revision'] = array(
+    'description' => 'Saves information about each saved revision of a {vopros_question}.',
+    'fields' => array(
+      'revision_id' => array(
+        'description' => 'The primary identifier for this revision.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_uid' => array(
+        'description' => 'The {users}.uid that created this revision.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'public_question_id' => array(
+        'description' => 'The {vopros_public_question}.public_question_id of the public question this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'question_id' => array(
+        'description' => 'The question that is being published.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The owner of the public question.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The question title.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'description' => array(
+        'description' => 'The actual question that has been asked.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'subject' => array(
+        'description' => 'The subject of the public question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'The status of the public question.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'log' => array(
+        'description' => 'The log entry explaining the changes in this version.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_timestamp' => array(
+        'description' => 'The Unix timestamp when this revision was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'foreign keys' => array(
+      'question' => array(
+        'table' => 'vopros_question',
+        'columns'=> array('question_id' => 'question_id'),
+      ),
+    ),
+  );
+
+  module_load_include('inc', 'uuid', 'uuid.schema');
+  uuid_schema_generate($schema, 'vopros_public_question');
+  uuid_schema_generate($schema, 'vopros_public_question_revision');
+
+  return $schema;
+}
