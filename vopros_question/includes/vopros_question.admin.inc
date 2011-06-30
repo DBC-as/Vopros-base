@@ -638,7 +638,7 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
   );
 
   $form['reason'] = array(
-    '#type' => 'select',
+    '#type' => 'radios',
     '#title' => t('Reason to close the question'),
     '#options' => vopros_question_get_reasons('close'),
     '#required' => TRUE,

@@ -251,7 +251,7 @@ function vopros_sms_question_contact_form($form, &$form_state, $question) {
   );
 
   $form['reason'] = array(
-    '#type' => 'select',
+    '#type' => 'radios',
     '#title' => t('Answer type'),
     '#options' => vopros_question_get_reasons('contact_sms'),
     '#required' => TRUE,

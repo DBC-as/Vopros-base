@@ -242,7 +242,7 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
   );
 
   $form['form']['reason'] = array(
-    '#type' => 'select',
+    '#type' => 'radios',
     '#title' => t('Answer type'),
     '#options' => vopros_question_get_reasons(),
     '#required' => TRUE,
