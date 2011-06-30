@@ -5,27 +5,31 @@
  */
 function vopros_migrate_menu() {
   return array(
-    'admin/vopros/migrate' => array(
-      'title' => 'Migration',
-      'description' => 'Migration of old Q & A content to Vopros.',
+    'admin/vopros/config/migrate' => array(
+      'title' => 'Migration settings',
+      'description' => 'Configure external database used for migration.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_setting_form'),
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
-    'admin/vopros/migrate/settings' => array(
+    'admin/vopros/config/migrate/settings' => array(
       'title' => 'Settings',
       'type' => MENU_DEFAULT_LOCAL_TASK,
     ),
-    'admin/vopros/migrate/migrate_questions' => array(
-      'title' => 'Migrate questions',
-      'type' => MENU_LOCAL_TASK,
+    'admin/vopros/migrate' => array(
+      'title' => 'Migrate',
+      'description' => 'Migration of old Q & A content to Vopros.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_questions'),
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
-    'admin/vopros/migrate/migrate_users' => array(
+    'admin/vopros/migrate/migrate-questions' => array(
+      'title' => 'Migrate questions',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+    ),
+    'admin/vopros/migrate/migrate-users' => array(
       'title' => 'Migrate users',
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
@@ -33,7 +37,7 @@ function vopros_migrate_menu() {
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
-    'admin/vopros/migrate/migrate_vocabolary' => array(
+    'admin/vopros/migrate/migrate-vocabolary' => array(
       'title' => 'Migrate vocabolary',
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
