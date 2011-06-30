@@ -64,11 +64,13 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
     '#submit' => array('vopros_public_question_form_save_submit'),
   );
 
-  $form['publish'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save and publish'),
-    '#submit' => array('vopros_public_question_form_publish_submit'),
-  );
+  if ($public_question->status === 'unpublished') {
+    $form['publish'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save and publish'),
+      '#submit' => array('vopros_public_question_form_publish_submit'),
+    );
+  }
 
   $form_state['public_question'] = $public_question;
   $form_state['question'] = $question;
