@@ -48,9 +48,9 @@ function vopros_public_question_entity_info() {
 /**
  * Entity uri callback.
  */
-function vopros_public_question_uri($question) {
+function vopros_public_question_uri($public_question) {
   return array(
-    'path' => 'admin/vopros/public-questions/' . $question->question_id,
+    'path' => 'admin/vopros/public-questions/' . $public_question->public_question_id,
   );
 }
 
@@ -128,7 +128,7 @@ function vopros_public_question_permission() {
  * @param $account
  *   The user to check for. Leave it to NULL to check for the current user.
  */
-function vopros_public_question_access($op, $question = NULL, $account = NULL) {
+function vopros_public_question_access($op, $public_question = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
@@ -166,34 +166,34 @@ function vopros_public_question_new($values = array()) {
 /**
  * Save a question
  *
- * @param $question
- *    The question object
+ * @param $public_question
+ *    The public question object
  * @param $revision
  *    Bolean indicator, if a new revision should be created.
  */
-function vopros_public_question_save($question, $revision = 1) {
-  $question->revision = $revision;
-  entity_save('vopros_public_question', $question);
+function vopros_public_question_save($public_question, $revision = 1) {
+  $public_question->revision = $revision;
+  entity_save('vopros_public_question', $public_question);
 }
 
 /**
  * Loads an question by ID.
  */
-function vopros_public_question_load($question_id, $revision_id = NULL, $reset = FALSE) {
+function vopros_public_question_load($public_question_id, $revision_id = NULL, $reset = FALSE) {
   $conditions = array();
   if ($revision_id) {
     $conditions['revision_id'] = $revision_id;
   }
-  $questions = vopros_public_question_load_multiple(array($question_id), $conditions, $reset);
-  return $questions ? reset($questions) : FALSE;
+  $public_questions = vopros_public_question_load_multiple(array($public_question_id), $conditions, $reset);
+  return $public_questions ? reset($public_questions) : FALSE;
 }
 
 /**
  * Loads an revision of a question.
  */
 function vopros_public_question_revision_load($revision_id) {
-  $questions = vopros_public_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
-  return $questions ? reset($questions) : FALSE;
+  $public_questions = vopros_public_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
+  return $public_questions ? reset($public_questions) : FALSE;
 }
 
 /**
@@ -201,7 +201,7 @@ function vopros_public_question_revision_load($revision_id) {
  *
  * @see entity_load()
  *
- * @param $question_ids
+ * @param $public_question_ids
  *   An array of question IDs.
  * @param $conditions
  *   An array of conditions on the {vopros_public_question} table in the form
@@ -212,6 +212,6 @@ function vopros_public_question_revision_load($revision_id) {
  * @return
  *   An array of question objects indexed by question_id.
  */
-function vopros_public_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
-  return entity_load('vopros_public_question', $question_ids, $conditions, $reset);
+function vopros_public_question_load_multiple($public_question_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_public_question', $public_question_ids, $conditions, $reset);
 }
