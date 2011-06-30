@@ -74,20 +74,28 @@ function vopros_public_question_menu() {
     ),
     'admin/vopros/public-questions/%vopros_public_question' => array(
     ),
-    'admin/vopros/questions/%vopros_public_question/view' => array(
+    'admin/vopros/public-questions/%vopros_public_question/view' => array(
       'title' => 'View',
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
     ),
-    'admin/vopros/questions/%vopros_public_question/edit' => array(
+    'admin/vopros/public-questions/%vopros_public_question/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
-      //'page arguments' => array('vopros_question_question_frontend_form', 3),
+      'page arguments' => array('vopros_public_question_form', NULL, 3),
       'access callback' => 'vopros_public_question_access',
       'access arguments' => array('update'),
       'file' => 'includes/vopros_public_question.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    ),
+    'admin/vopros/public-questions/new/%vopros_question' => array(
+      'title' => 'Publish question',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_public_question_form', 4),
+      'access callback' => 'vopros_public_question_access',
+      'access arguments' => array('create'),
+      'file' => 'includes/vopros_public_question.admin.inc',
     ),
   );
 }
@@ -214,4 +222,29 @@ function vopros_public_question_revision_load($revision_id) {
  */
 function vopros_public_question_load_multiple($public_question_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_public_question', $public_question_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function vopros_public_question_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'vopros_email_form':
+    case 'vopros_sms_form':
+      $form['action']['publish'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Publish question and answer'),
+      );
+      $form['#submit'][] = 'vopros_public_question_publish_submit';
+      break;
+  }
+}
+
+/**
+ * Submit handler for sending out questions that may need to be published.
+ */
+function vopros_public_question_publish_submit(&$form, &$form_state) {
+  if ($form_state['values']['publish']) {
+    $form_state['redirect'] = 'admin/vopros/public-questions/new/' . $form['answer']['#value']->question_id;
+  }
 }

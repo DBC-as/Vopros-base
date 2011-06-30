@@ -89,15 +89,9 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#suffix' => '</div>',
   );
 
-  $form['action']['publish'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Publish question and answer'),
-  );
-
   $form['action']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
-    '#submit' => array('vopros_email_form_submit'),
   );
 
   $form['answer'] = array(
@@ -163,7 +157,6 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['form']['buttons']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
-    '#submit' => array('vopros_email_form_submit'),
   );
 
   if ($answer) {

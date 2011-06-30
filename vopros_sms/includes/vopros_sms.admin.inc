@@ -122,11 +122,6 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     '#suffix' => '</div>',
   );
 
-  $form['action']['publish'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Publish question and answer'),
-  );
-
   $form['action']['save_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
