@@ -3,6 +3,8 @@ description = Handles the migration and mapping of content
 package = Vopros
 core = 7.x
 
+configure = admin/vopros/config/migrate
+
 dependencies[] = vopros_answer
 dependencies[] = vopros_base
 dependencies[] = vopros_question

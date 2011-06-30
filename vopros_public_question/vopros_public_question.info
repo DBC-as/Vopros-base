@@ -3,6 +3,8 @@ description = Defines the public quesiton entity and associated features.
 package = Vopros
 core = 7.x
 
+configure = admin/vopros/config/public-question
+
 dependencies[] = vopros_base
 dependencies[] = vopros_question
 

@@ -7,6 +7,8 @@ dependencies[] = diff
 dependencies[] = taxonomy
 dependencies[] = vopros_base
 
+configure = admin/vopros/config/question
+
 ; Entity controller include:
 files[] = includes/vopros_question.controller.inc
 

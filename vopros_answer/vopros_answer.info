@@ -3,6 +3,8 @@ description = Defines the Answer entity and associated features.
 package = Vopros
 core = 7.x
 
+configure = admin/vopros/config/answer
+
 dependencies[] = diff
 dependencies[] = vopros_base
 dependencies[] = vopros_question
