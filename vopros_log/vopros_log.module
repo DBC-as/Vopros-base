@@ -116,7 +116,6 @@ function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, 
   $form['log_content'] = array(
     '#type' => 'textarea',
     '#title' => t('Internal log'),
-    '#required' => TRUE,
     '#default_value' => $log ? $log->log_content : '',
   );
 
@@ -135,19 +134,26 @@ function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, 
  * Handles saving the log.
  */
 function vopros_log_form_ajax_submit(&$form, &$form_state) {
-  global $user;
-  $values = array(
-    'question_id' => $form_state['values']['question_id'],
-    'answer_id' => $form_state['values']['answer_id'],
-    'log_content' => $form_state['values']['log_content'],
-    'uid' => $user->uid,
-  );
-  $log = vopros_log_new($values);
-  vopros_log_save($log);
   $commands = array();
-  $commands[] = ajax_command_invoke('#edit-log-content', 'val', array(''));
-  // TODO: Show to the user somehow that the log was saved.
-  // TODO: Add the actual log to the "activity stream".
+  if (!empty($form_state['values']['log_content'])) {
+    global $user;
+    $values = array(
+      'question_id' => $form_state['values']['question_id'],
+      'answer_id' => $form_state['values']['answer_id'],
+      'log_content' => $form_state['values']['log_content'],
+      'uid' => $user->uid,
+    );
+    $log = vopros_log_new($values);
+    vopros_log_save($log);
+
+    $commands[] = ajax_command_invoke('#edit-log-content', 'val', array(''));
+    $commands[] = ajax_command_invoke('#log-status-message', 'remove', array(''));
+    $commands[] = ajax_command_invoke('#edit-save-log-message', 'before', array('<div id="log-status-message"><div class="messages status">' . t('Log message created') . '</div></div>'));
+  }
+  else {
+    $commands[] = ajax_command_invoke('#edit-save-log-message', 'before', array('<div id="log-status-message"><div class="messages error">' . t('Log message not created, cannot create an empty log message') . '</div></div>'));
+  }
+  
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
