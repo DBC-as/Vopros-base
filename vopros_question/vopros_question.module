@@ -138,6 +138,10 @@ function vopros_question_field_extra_fields() {
         'description' => t('The usage of the question'),
         'weight' => -2,
       ),
+      'user_answer_preference' => array(
+        'label' => t('Prefered answer method'),
+        'weight' => -2,
+      ),
       'question_note' => array(
         'label' => t('Question note'),
         'description' => t('Internal note regarding the question'),
@@ -721,6 +725,12 @@ function vopros_question_build_content($question, $view_mode = 'administrator', 
     '#question' => $question,
     '#view_mode' => $view_mode,
   );
+  $question->content['user_answer_preference'] = array(
+    '#theme' => 'vopros_question_user_answer_preference',
+    '#question' => $question,
+    '#view_mode' => $view_mode,
+  );
+  
   $question->content['question_note'] = array(
     '#theme' => 'vopros_question_note',
     '#question' => $question,
@@ -780,6 +790,13 @@ function _vopros_question_usage() {
     'school2' => t('Assignment for highschool'),
     'school3' => t('Assignment for college education'),
     'school4' => t('Assignment for university education or research'),
+  );
+}
+
+function _vopros_question_user_answer_preference() {
+  return array(
+    'mail' => t('Email'),
+    'sms' => t('SMS'),
   );
 }
 
@@ -899,6 +916,11 @@ function vopros_question_theme() {
       'path' => $path,
     ),
     'vopros_question_revision_question_feed' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_user_answer_preference' => array(
       'render element' => 'question',
       'file' => 'vopros_question.theme.inc',
       'path' => $path,

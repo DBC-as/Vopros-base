@@ -124,6 +124,17 @@ function theme_vopros_question_note($variables) {
   return $output;
 }
 
+function theme_vopros_question_user_answer_preference($variables) {
+  $user_answer_preference_mapping = _vopros_question_user_answer_preference();
+  $question = $variables['question']['#question'];
+  $output = '';
+  $output .= '<div class="question-user-age vopros-question-extra clearfix">';
+  $output .= '<span class="label">' . t('Prefered answer method:') .  '</span>';
+  $output .= '<span class="value">' . (isset($user_answer_preference_mapping[$question->user_answer_preference]) ? $user_answer_preference_mapping[$question->user_answer_preference] : $user_answer_preference_mapping['mail'] ) .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
 /**
  * Theme function for question user data
  */

@@ -89,6 +89,11 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#default_value' => isset($answer->answer_content) ? $answer->answer_content : '',
   );
 
+  $form['form']['user_answer_preference'] = array(
+    '#question' => $question,
+    '#theme' => 'vopros_question_user_answer_preference',
+  );
+
   $form['form']['question_data'] = array(
     '#type' => 'fieldset',
     '#title' => t('Question data'),
