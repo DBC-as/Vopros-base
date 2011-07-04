@@ -48,11 +48,15 @@ function theme_vopros_question_status($variables) {
       $reason = ' <span class="reason">(' . $reason_mapping[$question->question_status_reason] . ')</span>';
       $status .= ':';
     }
-     
   }
   $output = '<div class="question-status vopros-question-extra">';
   $output .= '<span class="label">' . t('Status') .  '</span>';
   $output .= '<span class="value"><strong>' . $status . '</strong>' . $reason . '</span>';
+  if ($question->question_status == 'assigned') {
+    $output .= '<div><span class="label">' . t('Assigned to:') .  '</span>';
+    $output .= '<span class="value">' . theme('username', array('account' => user_load($question->uid))) . '</span></div>';
+    
+  }
   $output .= '</div>';
   return $output;
 }
