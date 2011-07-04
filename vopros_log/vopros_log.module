@@ -220,7 +220,7 @@ function vopros_log_form_vopros_question_question_form_alter(&$form, &$form_stat
 function vopros_log_form_vopros_question_close_question_form_alter(&$form, &$form_state) {
   $form['log'] = vopros_log_form(array(), $form_state, NULL, $form['question']['#value']->question_id, NULL);
   $form['log']['log_content']['#required'] = FALSE;
-  unset($form['log']['save']);
+  $form['log']['save_log_message']['#access'] = FALSE;
   $form['#submit'] = array('vopros_log_form_vopros_question_close_question_form_submit', 'vopros_question_close_question_form_submit');
 }
 
