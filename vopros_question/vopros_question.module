@@ -582,12 +582,33 @@ function vopros_question_entity_property_info_alter(&$info) {
  */
 function vopros_question_views_data_alter(&$data) {
   // Add relationships to other tables.
-  $data['vopros_question']['uid']['relationship'] = array(
-    'handler' => 'views_handler_relationship',
-    'base' => 'users',
-    'field' => 'uid',
-    'label' => 'user',
+  $data['vopros_question']['uid'] = array(
+    'title' => 'Question owner',
+    'help' => 'Question uid',
+    'field' => array(
+      'field' => 'uid',
+      'handler' => 'views_handler_field_user',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_user_uid',
+      'name field' => 'name', // display this field in the summary
+    ),
+    'filter' => array(
+      'title' => t('Question owner'),
+      'handler' => 'views_handler_filter_user_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'handler' => 'views_handler_relationship',
+      'base' => 'users',
+      'field' => 'uid',
+      'label' => 'user',
+    ),
   );
+
   $data['vopros_question']['revision_id']['relationship'] = array(
     'handler' => 'views_handler_relationship',
     'base' => 'vopros_question_revision',

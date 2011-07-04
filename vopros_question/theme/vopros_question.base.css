@@ -2,16 +2,16 @@
  * Basic styles needed for Vopros question
  */
 
-.view-vopros-question-list form label {
+.view-vopros-question-list.view-display-id-page form label {
   float: left;
   margin: 10px 10px 0 0;
 }
 
-.view-vopros-question-list form .views-widget {
+.view-vopros-question-list.view-display-id-page form .views-widget {
   float: left;
 }
 
-.view-vopros-question-list form .views-submit-button .form-submit {
+.view-vopros-question-list.view-display-id-page  form .views-submit-button .form-submit {
   margin-top: 5px;
 }
 
