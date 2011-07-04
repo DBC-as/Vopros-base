@@ -45,13 +45,13 @@ function theme_vopros_question_status($variables) {
   if ($question->question_status_reason) {
     $reason_mapping = _vopros_question_status_reason();
     if (isset($reason_mapping[$question->question_status_reason])) {
-      $reason = ' <span class="reason">' . $reason_mapping[$question->question_status_reason] . '</span>';
+      $reason = ' <span class="reason">(' . $reason_mapping[$question->question_status_reason] . ')</span>';
       $status .= ':';
     }
      
   }
   $output = '<div class="question-status vopros-question-extra">';
-  $output .= '<span class="label">' . t('Status:') .  '</span>';
+  $output .= '<span class="label">' . t('Status') .  '</span>';
   $output .= '<span class="value"><strong>' . $status . '</strong>' . $reason . '</span>';
   $output .= '</div>';
   return $output;
