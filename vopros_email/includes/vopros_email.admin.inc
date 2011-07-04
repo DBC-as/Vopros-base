@@ -257,8 +257,8 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#required' => TRUE,
   );
 
-  $form['form']['body'] = array(
-    '#title' => t('Mail body'),
+  $form['form']['email_content'] = array(
+    '#title' => t('Email content'),
     '#type' => 'textarea',
     '#required' => TRUE,
   );
@@ -288,7 +288,7 @@ function vopros_email_question_contact_form_macro($form, &$form_state) {
   
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-subject', 'val', array($processed_subject));
-  $commands[] = ajax_command_invoke('#edit-body', 'val', array($processed_content));
+  $commands[] = ajax_command_invoke('#edit-email-content', 'val', array($processed_content));
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -311,7 +311,7 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   $email = vopros_email_new(array(
     'question_id' => $question->question_id,
     'uid' => $GLOBALS['user']->uid,
-    'content' => $v['body'],
+    'email_content' => $v['email_content'],
     'subject' => $v['subject'],
     'email' => $v['email'],
   ));
