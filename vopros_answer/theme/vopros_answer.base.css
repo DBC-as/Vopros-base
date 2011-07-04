@@ -22,8 +22,22 @@
   width: 100%;
 }
 
+#vopros-answer-form h2.question-title {
+  float: left;
+}
+
+#vopros-answer-form .back-to-question {
+  line-height: 40px;
+  margin-left: 10px;
+}
+
+#vopros-answer-form p.question-content {
+  clear: left;
+}
+
 .vopros-question .feed .vopros-answer {
   padding: 5px;
   margin: 5px 0 10px;
   background-color: #E0E9F1;
 }
+
