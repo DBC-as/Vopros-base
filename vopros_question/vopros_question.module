@@ -855,6 +855,7 @@ function _vopros_question_status_reason() {
     'reactivated by email' => t('Reactivated by email'),
     'reopened by user' => t('Reopened by user'),
     'locked for answering' => t('Locked for answering'),
+    'released' => t('Released'),
   );
 }
 
