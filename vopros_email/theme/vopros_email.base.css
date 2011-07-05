@@ -28,6 +28,10 @@
   display: block;
 }
 
+.feed .vopros-email-display {
+  margin: 10px 0;
+}
+
 /** Contact user email page **/
 #vopros-email-question-contact-form .action {
   width: 30%;

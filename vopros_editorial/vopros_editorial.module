@@ -7,6 +7,15 @@
  */
 
 /**
+ * Implementation of hook_init().
+ */
+function vopros_editorial_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_editorial') . '/theme/vopros_editorial.base.css');
+}
+
+
+
+/**
  * Implements hook_enable().
  */
 function vopros_editorial_enable() {
@@ -74,6 +83,57 @@ function vopros_editorial_configure_question() {
     field_create_instance($instance);
   }
 }
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_editorial_vopros_question_activity_feed($question, &$feed) {
+  $field_info = field_info_field('vopros_editorial');
+  // If we can get info on the field SQL we try to fetch the revisions
+  if (isset($field_info['storage']['details']['sql']['FIELD_LOAD_REVISION'])) {
+    $sql_info = $field_info['storage']['details']['sql']['FIELD_LOAD_REVISION'];
+    $table = array_shift(array_keys($sql_info));
+    $column = array_shift($sql_info[$table]);
+    // Perform the actual query
+    try {
+      $query = db_select($table, 'r');
+      $query->join('vopros_question_revision', 'v', 'r.revision_id = v.revision_id');
+      $query->addField('r', $column, 'tid');
+      $editorial_revisions = $query
+        ->fields('r', array('revision_id'))
+        ->fields('v', array('revision_timestamp', 'revision_uid'))
+        ->condition('v.question_id', $question->question_id, '=')
+        ->execute()
+        ->fetchAll();
+    } catch (PDOException $e) {
+      // Log error, and silently fail
+      watchdog(
+        'vopros_editorial',
+        'SQL error trying to get activity stream for question: @question_id with error message: @message',
+        array('@question_id' => $question->question_id, '@message' => $e->errorInfo[2]),
+        WATCHDOG_ERROR
+      );
+    }
+    if (isset($editorial_revisions) && !empty($editorial_revisions)) {
+      $tid = $editorial_revisions[0]->tid;
+      foreach ($editorial_revisions as $editorial_revision) {
+        // Detect any change:
+        if ($editorial_revision->tid != $tid) {
+          
+          $feed['vopros_editorial_' . $editorial_revision->revision_timestamp] = array(
+            '#theme' => 'vopros_editorial_field_feed',
+            '#revision' => $editorial_revision,
+            '#weight' => $editorial_revision->revision_timestamp,
+          );
+          // Update the tid we're matching for
+          $tid = $editorial_revision->tid;
+        }
+      }
+    }
+  }
+}
+
+
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -272,4 +332,18 @@ function vopros_editorial_views_default_views_alter(&$views) {
     $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
     $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'] = $subject;
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_editorial_theme() {
+  $path = drupal_get_path('module', 'vopros_editorial') . '/theme';
+  return array(
+    'vopros_editorial_field_feed' => array(
+      'render element' => 'question',
+      'file' => 'vopros_editorial.theme.inc',
+      'path' => $path,
+    ),
+  );
 }
