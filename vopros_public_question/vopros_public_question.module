@@ -5,6 +5,13 @@
  */
 
 /**
+ * Implementation of hook_init().
+ */
+function vopros_public_question_init() {
+  drupal_add_css(drupal_get_path('module', 'vopros_public_question') . '/theme/vopros_public_question.base.css');
+}
+
+/**
  * Implements hook_entity_info().
  */
 function vopros_public_question_entity_info() {
@@ -197,10 +204,18 @@ function vopros_public_question_load($public_question_id, $revision_id = NULL, $
 }
 
 /**
+ * Loads a public question by question_id.
+ */
+function vopros_public_question_load_by_question_id($question_id, $reset = FALSE) {
+  $public_questions = vopros_public_question_load_multiple(FALSE, array('question_id' => $question_id), $reset);
+  return $public_questions ? reset($public_questions) : FALSE;
+}
+
+/**
  * Loads an revision of a question.
  */
 function vopros_public_question_revision_load($revision_id) {
-  $public_questions = vopros_public_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
+  $public_questions = vopros_public_question_load_multiple(FALSE, array('revision_id' => $revision_id), FALSE);
   return $public_questions ? reset($public_questions) : FALSE;
 }
 
@@ -247,4 +262,32 @@ function vopros_public_question_publish_submit(&$form, &$form_state) {
   if ($form_state['values']['publish']) {
     $form_state['redirect'] = 'admin/vopros/public-questions/new/' . $form['answer']['#value']->question_id;
   }
+}
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_public_question_vopros_question_activity_feed($question, &$feed) {
+  $public_question = vopros_public_question_load_by_question_id($question->question_id);
+  if ($public_question->status == 'published') {
+    $feed['public_question_' . $public_question->public_question_id] = array(
+      '#public_question' => $public_question,
+      '#theme' => 'vopros_public_question_feed',
+      '#weight' => $public_question->created,
+    );
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_public_question_theme() {
+  $path = drupal_get_path('module', 'vopros_public_question') . '/theme';
+  return array(
+    'vopros_public_question_feed' => array(
+      'render element' => 'element',
+      'path' => $path,
+      'file' => 'vopros_public_question.theme.inc',
+    ),
+  );
 }
