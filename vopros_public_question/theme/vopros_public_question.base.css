@@ -1,0 +1,7 @@
+/**
+ * Published question feed item
+ */
+
+.feed .published-feed-item {
+  font-weight: bold;
+}
