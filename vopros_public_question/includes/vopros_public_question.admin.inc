@@ -120,13 +120,14 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   $public_question->description = $public_question->question_content . "\n\n" . $public_question->answer_content;
   $result = osa_addi_create_object($public_question, $public_question->uuid);
   if ($result['status'] == 'object_created') {
-    drupal_set_message(t('Record created'));
+    drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
     $public_question->status = 'published';
     $question = vopros_question_load($public_question->question_id);
     $question->question_status = 'published';
     $question->question_status_reason = '';
     vopros_question_save($question);
     vopros_public_question_save($public_question);
+    $form_state['redirect'] = 'admin/vopros/questions/list';
   }
   else {
     drupal_set_message(t('Record could not be created'), 'error');
