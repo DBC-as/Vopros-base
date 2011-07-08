@@ -196,7 +196,7 @@ function vopros_sms_views_data_alter(&$data) {
  * Implements hook_entity_property_info_alter().
  */
 function vopros_sms_entity_property_info_alter(&$info) {
-  // Need to clear the quesiton cache when the question_id is altered.
+  // Need to clear the question cache when the question_id is altered.
   $info['vopros_sms']['properties']['answer_id']['clear'] = array('question');
 }
 

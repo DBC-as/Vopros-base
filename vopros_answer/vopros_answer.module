@@ -100,7 +100,7 @@ function vopros_answer_enable() {
  * Implements hook_entity_property_info_alter().
  */
 function vopros_answer_entity_property_info_alter(&$info) {
-  // Need to clear the quesiton cache when the question_id is altered.
+  // Need to clear the question cache when the question_id is altered.
   $info['vopros_answer']['properties']['question_id']['clear'] = array('question');
   $info['vopros_answer']['properties']['uid']['clear'] = array('user');
 }

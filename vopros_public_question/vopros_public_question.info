@@ -1,5 +1,5 @@
 name = Vopros Public Questions
-description = Defines the public quesiton entity and associated features.
+description = Defines the public question entity and associated features.
 package = Vopros
 core = 7.x
 

@@ -563,7 +563,7 @@ function vopros_question_entity_property_info() {
     'label' => t('Question URL'),
     'type' => 'uri',
     'description' => t("The URL of the question page."),
-    'getter callback' => 'vopros_quesiton_get_properties',
+    'getter callback' => 'vopros_question_get_properties',
   );
 
   return $info;
@@ -573,7 +573,7 @@ function vopros_question_entity_property_info() {
  * Implements hook_entity_property_info_alter().
  */
 function vopros_question_entity_property_info_alter(&$info) {
-  // Need to clear the quesiton cache when the question_id is altered.
+  // Need to clear the question cache when the question_id is altered.
   $info['vopros_question']['properties']['uid']['clear'] = array('user');
 }
 
@@ -994,21 +994,21 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
 }
 
 /**
- * Submit handler for vopros_question_handle_quesiton_form edit action.
+ * Submit handler for vopros_question_handle_question_form edit action.
  */
 function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/edit';
 }
 
 /**
- * Submit handler for vopros_question_handle_quesiton_form close action.
+ * Submit handler for vopros_question_handle_question_form close action.
  */
 function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/close';
 }
 
 /**
- * Submit handler for vopros_question_handle_quesiton_form open action.
+ * Submit handler for vopros_question_handle_question_form open action.
  */
 function vopros_question_handle_question_form_open_submit(&$form, &$form_state) {
   $question = $form['question']['#value'];
@@ -1072,7 +1072,7 @@ function vopros_question_vopros_question_activity_feed($question, &$feed) {
   }
 }
 
-function vopros_quesiton_get_properties($question, array $options, $name, $entity_type) {
+function vopros_question_get_properties($question, array $options, $name, $entity_type) {
   switch ($name) {
     case 'url':
       if (empty($question->question_id)) {

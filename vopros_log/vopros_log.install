@@ -66,7 +66,7 @@ function vopros_log_schema() {
       ),
       'question' => array(
         'table' => 'vopros_question',
-        'columns'=> array('quesiton_id' => 'question_id'),
+        'columns'=> array('question_id' => 'question_id'),
       ),
       'user' => array(
         'table' => 'user',
