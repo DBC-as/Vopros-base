@@ -858,6 +858,7 @@ function _vopros_question_status() {
     'assigned' => t('Assigned'),
     'answered' => t('Answered'),
     'closed' => t('Closed without answer'),
+    'published' => t('Published'),
   );
 }
 
@@ -869,6 +870,7 @@ function _vopros_question_status_reason() {
     'spam' => t('Spam'),
     'problem question' => t('Problem question'),
     'answered' => t('Already answered'),
+    'published' => t('Already published'),
     'ask for email' => t('Ask for email'),
     'need more info' => t('Need more info'),
     'no time for deadline' => t('Not enough time for deadline'),
@@ -961,7 +963,7 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   );
 
   // The question is closed, make it possible to open
-  if (in_array($question->question_status, array('answered', 'closed'))) {
+  if (in_array($question->question_status, array('answered', 'closed', 'published'))) {
     $form['open'] = array(
       '#type' => 'submit',
       '#value' => t('Open question'),
@@ -1023,6 +1025,7 @@ function vopros_question_get_reasons($type = 'contact_mail') {
       'spam' => t('Spam'),
       'problem question' => t('Problem question'),
       'answered' => t('Already answered'),
+      'published' => t('Already published'),
      );
      break;
     case 'contact_sms':

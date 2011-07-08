@@ -268,14 +268,15 @@ function vopros_public_question_publish_submit(&$form, &$form_state) {
  * Implements hook_vopros_question_activity_feed().
  */
 function vopros_public_question_vopros_question_activity_feed($question, &$feed) {
-  $public_question = vopros_public_question_load_by_question_id($question->question_id);
+  // Do this by question status for now.
+  /*$public_question = vopros_public_question_load_by_question_id($question->question_id);
   if ($public_question->status == 'published') {
     $feed['public_question_' . $public_question->public_question_id] = array(
       '#public_question' => $public_question,
       '#theme' => 'vopros_public_question_feed',
       '#weight' => $public_question->created,
     );
-  }
+  }*/
 }
 
 /**
