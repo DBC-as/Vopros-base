@@ -191,5 +191,108 @@ function vopros_email_schema() {
     ),
   );
 
+  $schema['vopros_email_transfers'] = array(
+    'description' => 'Stores information about emails being transfered from one question to another.',
+    'fields' => array(
+      'email_transfer_id' => array(
+        'description' => 'The primary identifier for an email transfer record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'email_id' => array(
+        'description' => 'The {vopros_email}.email_id of the email this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The uid of the user performing the transfer.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'origin_question_id' => array(
+        'description' => 'The id of the question the email was comming from.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'target_question_id' => array(
+        'description' => 'The id of the question the email is transfered to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'transfer_time' => array(
+        'description' => 'The Unix timestamp when this email was transfered.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('email_transfer_id'),
+    'indexes' => array(
+      'email_id' => array('email_id'),
+      'origin_question_id' => array('origin_question_id'),
+      'target_question_id' => array('target_question_id'),
+    ),
+  );
+
   return $schema;
+}
+
+/**
+ * Add vopros_email_transfers table.
+ */
+function vopros_email_update_7000(&$sandbox) {
+  db_create_table('vopros_email_transfers', array(
+    'description' => 'Stores information about emails being transfered from one question to another.',
+    'fields' => array(
+      'email_transfer_id' => array(
+        'description' => 'The primary identifier for an email transfer record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'email_id' => array(
+        'description' => 'The {vopros_email}.email_id of the email this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The uid of the user performing the transfer.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'origin_question_id' => array(
+        'description' => 'The id of the question the email was comming from.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'target_question_id' => array(
+        'description' => 'The id of the question the email is transfered to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'transfer_time' => array(
+        'description' => 'The Unix timestamp when this email was transfered.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('email_transfer_id'),
+    'indexes' => array(
+      'email_id' => array('email_id'),
+      'origin_question_id' => array('origin_question_id'),
+      'target_question_id' => array('target_question_id'),
+    ),
+  ));
 }

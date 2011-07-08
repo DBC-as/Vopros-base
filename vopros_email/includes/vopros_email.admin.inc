@@ -430,3 +430,55 @@ function vopros_email_convert_to_question_form_submit(&$form, &$form_state) {
   vopros_email_save($email);
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
+
+/**
+ * Form for transferring an email from one question to another
+ */
+function vopros_email_transfer_form($form, &$form_state, $email) {
+  // Don't allow transfering emails that doesn't belong to a question.
+  if (!$email->question_id) {
+    $form['message'] = array(
+      '#markup' => t('This email cannot be transfered'),
+    );
+    return $form;
+  }
+
+  module_load_include('inc', 'vopros_question', 'includes/vopros_question.admin');
+  $question = vopros_question_new(array(
+    'question_title' => $email->subject,
+    'question_content' => $email->email_content,
+    'user_email' => $email->email,
+  ));
+
+  $form = vopros_question_question_form($form, $form_state, $question);
+
+  $form['email'] = array(
+    '#type' => 'value',
+    '#value' => $email,
+  );
+
+  $form['#validate'] = array('vopros_question_question_form_validate');
+  $form['#submit'] = array('vopros_question_question_form_submit', 'vopros_email_transfer_form_submit');
+
+  return $form; 
+}
+
+/**
+ * Submit handler for vopros_email_transfer_form().
+ */
+function vopros_email_transfer_form_submit(&$form, &$form_state) {
+  $question = $form_state['question'];
+  $email = $form_state['values']['email'];
+  $record = array(
+    'email_id' => $email->email_id,
+    'uid' => $GLOBALS['user']->uid,
+    'origin_question_id' => $email->question_id,
+    'target_question_id' => $question->question_id,
+    'transfer_time' => $question->created,
+  );
+  drupal_write_record('vopros_email_transfers', $record);
+  $question->question_status_reason = 'created from email';
+  vopros_question_save($question);
+  $email->question_id = $question->question_id;
+  vopros_email_save($email);
+}

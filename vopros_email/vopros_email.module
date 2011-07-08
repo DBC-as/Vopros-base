@@ -135,6 +135,14 @@ function vopros_email_menu() {
       'access arguments' => array('contact', 3),
       'file' => 'includes/vopros_email.admin.inc',
     ),
+    'admin/vopros/emails/%vopros_email/transfer' => array(
+      'title' => 'Transfer email',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_transfer_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_email.admin.inc',
+    ),
   );
 }
 
@@ -557,6 +565,13 @@ function vopros_email_build_content($email, $view_mode = 'administrator', $langc
     '#email' => $email,
     '#view_mode' => $view_mode,
   );
+  if ($email->type == 'ingoing' && $email->question_id > 0) {
+    $email->content['header']['transfer_link'] = array(
+      '#theme' => 'vopros_email_transfer_link',
+      '#email' => $email,
+      '#view_mode' => $view_mode,
+    );
+  }
   $email->content['body']['email_content'] = array(
     '#theme' => 'vopros_email_content',
     '#email' => $email,
@@ -653,6 +668,16 @@ function vopros_email_theme() {
       'file' => 'vopros_email.theme.inc',
       'path' => $path,
     ),
+    'vopros_email_transfer_link' => array(
+      'render element' => 'email',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_email_transfer_feed' => array(
+      'render element' => 'element',
+      'file' => 'vopros_email.theme.inc',
+      'path' => $path,
+    )
   );
 }
 
@@ -665,6 +690,24 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
     vopros_email_build_content($email);
     $feed['email_' . $email_id] = $email->content;
     $feed['email_' . $email_id]['#weight'] = $email->created;
+  }
+  $transfers = db_select('vopros_email_transfers', 't')
+    ->fields('t')
+    ->condition('t.origin_question_id', $question->question_id)
+    ->execute();
+
+  foreach ($transfers as $transfer) {
+    $email = vopros_email_load($transfer->email_id);
+    $email->question_id = '';
+    vopros_email_build_content($email);
+    $feed['email_transfer_' . $transfer->email_transfer_id] = array(
+      '#weight' => $email->created,
+      'email_content' => $email->content,
+      'transfer_status' => array(
+        '#transfer' => $transfer,
+        '#theme' => 'vopros_email_transfer_feed',
+      ),
+    );
   }
 }
 

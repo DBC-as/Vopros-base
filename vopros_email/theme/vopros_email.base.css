@@ -32,6 +32,10 @@
   margin: 10px 0;
 }
 
+.feed .email-transfer-feed-item {
+  font-weight: bold;
+}
+
 /** Contact user email page **/
 #vopros-email-question-contact-form .action {
   width: 30%;

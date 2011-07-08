@@ -136,3 +136,28 @@ function theme_vopros_email_question_feed($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Theme function for transfer link for ingoing emails.
+ */
+function theme_vopros_email_transfer_link($variables) {
+  $email = $variables['email']['#email'];
+  $output = '<div class="email-transfer vopros-email-extra">';
+  $output .= '<span class="label">' . t('Transfer:') .  '</span>';
+  $output .= '<span class="value">' . l(t('Create new question'), 'admin/vopros/emails/' . $email->email_id . '/transfer') .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * Theme function to render a transfer status message.
+ */
+function theme_vopros_email_transfer_feed($variables) {
+  $transfer = $variables['element']['#transfer'];
+  $username = theme('username', array('account' => user_load($transfer->uid)));
+  $date = format_date($transfer->transfer_time, 'short');
+  $output = '<div class="email-transfer-feed-item feed-item">';
+  $output .= t('Email converted into new !question by by !username @date', array('@date' => $date, '!username' => $username, '!question' => l(t('question'), 'admin/vopros/questions/' . $transfer->target_question_id)));
+  $output .= '</div>';
+  return $output;
+}
