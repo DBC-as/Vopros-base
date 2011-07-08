@@ -848,6 +848,13 @@ function _vopros_question_user_age() {
   );
 }
 
+function _vopros_question_user_gender() {
+  return array(
+    'm' => t('Male'),
+    'f' => t('Female'),
+  );
+}
+
 /**
  * Utility function to get the question status options.
  */
@@ -869,8 +876,8 @@ function _vopros_question_status_reason() {
   return array(
     'spam' => t('Spam'),
     'problem question' => t('Problem question'),
-    'answered' => t('Already answered'),
-    'published' => t('Already published'),
+    'already answered' => t('Already answered'),
+    'already published' => t('Already published'),
     'ask for email' => t('Ask for email'),
     'need more info' => t('Need more info'),
     'no time for deadline' => t('Not enough time for deadline'),
@@ -1081,5 +1088,25 @@ function vopros_question_get_properties($question, array $options, $name, $entit
       $return = entity_uri('vopros_question', $question);
       return $return ? url($return['path'], $return['options'] + $options) : '';
       break;
+  }
+}
+
+/**
+ * Implements hook_search_api_facet_load().
+ */
+function vopros_question_search_api_facet_load(array $facets) {
+  foreach ($facets as &$facet) {
+    if (strpos($facet->field, 'question_status_reason') !== FALSE) {
+      $facet->options['options'] = _vopros_question_status_reason();
+    }
+    elseif (strpos($facet->field, 'question_status') !== FALSE) {
+      $facet->options['options'] = _vopros_question_status();
+    }
+    elseif (strpos($facet->field, 'user_gender') !== FALSE) {
+      $facet->options['options'] = _vopros_question_user_gender();
+    }
+    elseif (strpos($facet->field, 'user_answer_preference') !== FALSE) {
+      $facet->options['options'] = _vopros_question_user_answer_preference();
+    }
   }
 }

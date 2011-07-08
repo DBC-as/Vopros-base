@@ -132,10 +132,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
   $form['form']['ask']['user_gender'] = array(
     '#type' => 'select',
     '#title' => t('Gender'),
-    '#options' => array(
-      'm' => t('Male'),
-      'f' => t('Female'),
-    ),
+    '#options' => _vopros_question_user_gender(),
     '#default_value' => isset($question->user_gender) ? $question->user_gender : '',
   );
 
