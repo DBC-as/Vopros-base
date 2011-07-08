@@ -15,6 +15,8 @@ class VoprosPublicQuestionEntityController extends VoprosAPIEntityController {
       'question_id' => 0,
       'uid' => 0,
       'title' => '',
+      'question_content' => '',
+      'answer_content' => '',
       'description' => '',
       'status' => 'unpublished',
       'subject' => '',

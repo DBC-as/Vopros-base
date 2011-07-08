@@ -45,8 +45,14 @@ function vopros_public_question_schema() {
         'length' => 255,
         'not null' => TRUE,
       ),
-      'description' => array(
-        'description' => 'The actual question that has been asked.',
+      'question_content' => array(
+        'description' => 'The question content.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'answer_content' => array(
+        'description' => 'The answer content.',
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',

@@ -27,6 +27,9 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
   if (isset($question->question_id)) {
     $public_question->question_id = $question->question_id;
   }
+  elseif ($public_question->question_id) {
+    $question = vopros_question_load($public_question->question_id);
+  }
 
   $form['title'] = array(
     '#type' => 'textfield',
@@ -34,21 +37,23 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
     '#default_value' => $public_question->title ? $public_question->title : $question->question_title,
   );
 
-  if ($public_question->description) {
-    $description = $public_question->description;
-  }
-  else {
-    $description = $question->question_content;
-    $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
-    foreach ($answers as $answer) {
-      $description .= "\n\n\n\n" . $answer->answer_content;
-    }
+  $form['question_content'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Question content'),
+    '#default_value' => $public_question->question_content ? $public_question->question_content : $question->question_content,
+    '#rows' => 20,
+  );
+
+  $answer_content = '';
+  $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+  foreach ($answers as $answer) {    
+    $answer_content .= $answer->answer_content . "\n\n\n\n";
   }
 
-  $form['description'] = array(
+  $form['answer_content'] = array(
     '#type' => 'textarea',
-    '#title' => t('Content'),
-    '#default_value' => $description,
+    '#title' => t('Answer content'),
+    '#default_value' => $public_question->answer_content ? $public_question->answer_content : trim($answer_content),
     '#rows' => 20,
   );
 
@@ -85,9 +90,9 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
 function vopros_public_question_form_save_submit(&$form, &$form_state) {
   global $user;
   $public_question = $form_state['public_question'];
-
   $public_question->title = $form_state['values']['title'];
-  $public_question->description = $form_state['values']['description'];
+  $public_question->answer_content = $form_state['values']['answer_content'];
+  $public_question->question_content = $form_state['values']['question_content'];
   $public_question->subject = $form_state['values']['subject'];
   $public_question->uid = $user->uid;
   vopros_public_question_save($public_question);
@@ -105,11 +110,14 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   $public_question = $form_state['public_question'];
 
   $public_question->title = $form_state['values']['title'];
-  $public_question->description = $form_state['values']['description'];
+  $public_question->answer_content = $form_state['values']['answer_content'];
+  $public_question->question_content = $form_state['values']['question_content'];
   $public_question->subject = $form_state['values']['subject'];
   $public_question->uid = $user->uid;
   vopros_public_question_save($public_question);
 
+  // Create the description from the question and answer. Used by osa_addi.
+  $public_question->description = $public_question->question_content . "\n\n" . $public_question->answer_content;
   $result = osa_addi_create_object($public_question, $public_question->uuid);
   if ($result['status'] == 'object_created') {
     drupal_set_message(t('Record created'));
