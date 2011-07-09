@@ -299,6 +299,22 @@ function vopros_feedback_build_content($feedback, $view_mode = 'administrator', 
 }
 
 /**
+ * Implements hook_page_alter().
+ */
+function vopros_feedback_page_alter(&$page) {
+  global $vopros_feedback_hide_regions;
+  // Hide all regions exept main content area for feedback pages.
+  if ($vopros_feedback_hide_regions) {
+    foreach ($page as $key => &$region) {
+      if (is_array($region) && !isset($region['system_main']) && strpos($key, '#') === FALSE) {
+        $region['#access'] = FALSE;
+      }
+    }
+    array_unshift($page['#theme_wrappers'], 'vopros_feedback_page');
+  }
+}
+
+/**
  * Implements hook_theme().
  */
 function vopros_feedback_theme($existing, $type, $theme, $path) {
@@ -307,7 +323,12 @@ function vopros_feedback_theme($existing, $type, $theme, $path) {
     'vopros_feedback_content' => array(
       'render element' => 'element',
       'path' => $path,
-       'file' => 'vopros_feedback.theme.inc',
+      'file' => 'vopros_feedback.theme.inc',
+    ),
+    'vopros_feedback_page' => array(
+      'render element' => 'page',
+      'template' => 'vopros-feedback-page',
+      'path' => $path,
     ),
   );
 }

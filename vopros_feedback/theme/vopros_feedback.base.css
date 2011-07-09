@@ -1,0 +1,24 @@
+#header, #footer-wrapper {
+  display: none;
+}
+
+#vopros-feedback-page {
+  width: 500px;
+}
+
+#vopros-feedback-page .form-item {
+  margin-bottom: 15px;
+}
+
+body #vopros-feedback-page #vopros-feedback-page-inner div {
+  min-width: 0;
+  width: auto;
+}
+
+#vopros-feedback-page #main {
+  margin: 0;
+}
+
+#vopros-feedback-page h1 {
+  display: none;
+}
