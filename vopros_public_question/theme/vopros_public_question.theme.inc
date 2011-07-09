@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file Theme implementations for the vopros_question module
+ * @file Theme implementations for the vopros_public_question module
  */
 
 /**

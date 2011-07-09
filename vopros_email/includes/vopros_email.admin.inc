@@ -335,7 +335,7 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
 }
 
 /**
- * Handle the display of a question
+ * Handle the display of an email.
  */
 function vopros_email_page_view($email, $view_mode = 'administrator', $langcode = NULL) {
   $build = array();

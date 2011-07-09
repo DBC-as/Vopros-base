@@ -57,6 +57,27 @@ function vopros_feedback_form_submit(&$form, &$form_state) {
   vopros_feedback_save($feedback);
 }
 
-function vopros_feedback_page_view($feedback) {
-  return 'Not implemented yet.';
+/**
+ * Handle the display of an feedback.
+ */
+function vopros_feedback_page_view($feedback, $view_mode = 'administrator', $langcode = NULL) {
+  $build = array();
+
+  // Populate $feedback->content with a render() array.
+  vopros_feedback_build_content($feedback, $view_mode, $langcode);
+
+  $build = $feedback->content + $build;
+  unset($feedback->content);
+
+  $build += array(
+    '#view_mode' => $view_mode,
+    '#theme' => 'vopros_feedback',
+    '#feedback' => $feedback,
+    '#language' => $langcode,
+  );
+
+  $type = 'vopros_feedback';
+  drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
+
+  return $build;
 }
