@@ -49,7 +49,6 @@ function vopros_feedback_enable() {
   vopros_feedback_configure_feedback();
 }
 
-
 /**
  * Implementation of hook_menu().
  */
@@ -108,6 +107,14 @@ function vopros_feedback_menu() {
       'access arguments' => array('delete'),
       'file' => 'includes/vopros_feedback.admin.inc',
     ),*/
+    'vopros/feedback/%vopros_email/%' => array(
+      'title' => 'Give feedback',
+      'page callback' => 'vopros_feedback_public_feedback_page',
+      'page arguments' => array(2),
+      'access callback' => 'vopros_feedback_give_feedback_access',
+      'access arguments' => array(2, 3),
+      'file' => 'includes/vopros_feedback.pages.inc',
+    ),
   );
 }
 
@@ -305,7 +312,16 @@ function vopros_feedback_theme($existing, $type, $theme, $path) {
   );
 }
 
-
+/**
+ * Access control function for public feedback page.
+ */
+function vopros_feedback_give_feedback_access($email, $hash) {
+  // Need a question id.
+  if (!$email->question_id || $email->type != 'outgoing') {
+    return FALSE;
+  }
+  return md5($email->email_id . variable_get('vopros_feedback_secret', '')) == $hash;
+}
 
 /**
  * Configure the vopros_feedback entity.

@@ -5,10 +5,11 @@ core = 7.x
 
 configure = admin/vopros/config/feedback
 
+dependencies[] = fivestar
 dependencies[] = vopros_base
 dependencies[] = vopros_answer
+dependencies[] = vopros_email
 dependencies[] = vopros_question
-dependencies[] = fivestar
 
 ; Entity controller include:
 files[] = includes/vopros_feedback.controller.inc
