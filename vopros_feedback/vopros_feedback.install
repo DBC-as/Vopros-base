@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function vopros_feedback_schema() {
+  $schema['vopros_feedback'] = array(
+    'description' => 'The base table for vopros feedbacks.',
+    'fields' => array(
+      'feedback_id' => array(
+        'description' => 'The primary identifier for a feedback.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'uid' => array(
+        'description' => 'The uid of the user giving the feedback.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'feedback_content' => array(
+        'description' => 'The actual feedback the user has given.',
+        'type' => 'text',
+        'size' => 'big',
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the feedback was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the feedback was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'user' => array('uid'),
+      'created' => array('created'),
+    ),
+    'primary key' => array('feedback_id'),
+  );
+  return $schema;
+}
+

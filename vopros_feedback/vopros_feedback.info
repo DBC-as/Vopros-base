@@ -1,0 +1,14 @@
+name = Vopros Feedback
+description = Defines the Feedback entity and associated features, used for allowing users to provide feedback.
+package = Vopros
+core = 7.x
+
+configure = admin/vopros/config/feedback
+
+dependencies[] = vopros_base
+dependencies[] = vopros_answer
+dependencies[] = vopros_question
+dependencies[] = fivestar
+
+; Entity controller include:
+files[] = includes/vopros_feedback.controller.inc
