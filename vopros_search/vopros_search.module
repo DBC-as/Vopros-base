@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file Drupal hook implementations and utility functions for the vopros_search module
+ */
+
+/**
+ * Implements hook_search_api_facet_load().
+ */
+function vopros_search_search_api_facet_load(array $facets) {
+  foreach ($facets as &$facet) {
+    if (strpos($facet->field, 'question_status_reason') !== FALSE) {
+      $facet->options['options'] = _vopros_question_status_reason();
+    }
+    elseif (strpos($facet->field, 'question_status') !== FALSE) {
+      $facet->options['options'] = _vopros_question_status();
+    }
+    elseif (strpos($facet->field, 'user_gender') !== FALSE) {
+      $facet->options['options'] = _vopros_question_user_gender();
+    }
+    elseif (strpos($facet->field, 'user_answer_preference') !== FALSE) {
+      $facet->options['options'] = _vopros_question_user_answer_preference();
+    }
+  }
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function vopros_search_views_data_alter(&$data) {
+  // Use custom handler to translate question status into human readable and translatable strings.
+  $data['search_api_index_answer_and_question']['question_question_status']['field']['handler'] = 'VoprosSeachSearchApiViewsHandlerField';
+  $data['search_api_index_answer_and_question']['question_question_status_reason']['field']['handler'] = 'VoprosSeachSearchApiViewsHandlerField';
+  $data['search_api_index_answer_and_question']['question_created']['field']['handler'] = 'SearchApiViewsHandlerFieldDate';
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function vopros_search_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_search') . '/includes/views',
+  );
+}
+

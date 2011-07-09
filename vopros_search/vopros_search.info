@@ -1,0 +1,15 @@
+name = Vopros Search
+description = Defines the search pages and performs integration with search API
+package = Vopros
+core = 7.x
+
+dependencies[] = vopros_base
+dependencies[] = vopros_answer
+dependencies[] = vopros_question
+dependencies[] = search_api
+dependencies[] = search_api_facets
+dependencies[] = search_api_solr
+dependencies[] = search_api_views
+
+; Views handlers includes
+files[] = includes/views/handlers/vopros_seach_search_api_views_handler_field.inc

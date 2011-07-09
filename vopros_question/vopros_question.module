@@ -1090,23 +1090,3 @@ function vopros_question_get_properties($question, array $options, $name, $entit
       break;
   }
 }
-
-/**
- * Implements hook_search_api_facet_load().
- */
-function vopros_question_search_api_facet_load(array $facets) {
-  foreach ($facets as &$facet) {
-    if (strpos($facet->field, 'question_status_reason') !== FALSE) {
-      $facet->options['options'] = _vopros_question_status_reason();
-    }
-    elseif (strpos($facet->field, 'question_status') !== FALSE) {
-      $facet->options['options'] = _vopros_question_status();
-    }
-    elseif (strpos($facet->field, 'user_gender') !== FALSE) {
-      $facet->options['options'] = _vopros_question_user_gender();
-    }
-    elseif (strpos($facet->field, 'user_answer_preference') !== FALSE) {
-      $facet->options['options'] = _vopros_question_user_answer_preference();
-    }
-  }
-}
