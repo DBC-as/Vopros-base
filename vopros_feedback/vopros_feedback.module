@@ -46,10 +46,7 @@ function vopros_feedback_entity_info() {
  * Implements hook_enabled().
  */
 function vopros_feedback_enable() {
-  // When the module is enabled, we need to make sure that the
-  // menu is buildt correctly with the entity info.
-  //menu_rebuild();
-  //vopros_feedback_configure_feedback();
+  vopros_feedback_configure_feedback();
 }
 
 
@@ -252,4 +249,78 @@ function vopros_feedback_delete($feedback_id) {
  */
 function vopros_feedback_load_multiple($feedback_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_feedback', $feedback_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function vopros_feedback_field_extra_fields() {
+  $extra['vopros_feedback']['vopros_feedback'] = array(
+    'form' => array(
+      'feedback_content' => array(
+        'label' => t('Feedback content'),
+        'description' => t('The actual feedback'),
+        'weight' => 0,
+      ),
+    ),
+    'display' => array(
+    )
+  );
+
+  return $extra;
+}
+
+
+
+/**
+ * Configure the vopros_feedback entity.
+ */
+function vopros_feedback_configure_feedback() {
+  $type = 'vopros_feedback';
+  $bundle = 'vopros_feedback';
+
+  // Create a taxonomy term reference field
+  $field_name = 'vopros_feedback_rating';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => 1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'settings' => array(
+        'stars' => 5,
+        'axis' => 0,
+      ),
+      'field_name' => $field_name,
+      'type' => 'fivestar',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Rating'),
+      'widget' => array(
+        'type' => 'stars',
+        'module' => 'fivestar'
+      ),
+      'settings' => array(
+        'axis' => 'vote',
+      ),
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'type' => 'fivestar_formatter_default',
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
