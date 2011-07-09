@@ -9,7 +9,7 @@ class VoprosFeedbackEntityController extends EntityAPIController {
    */
   public function create(array $values = array()) {
     return (object) ($values + array(
-      'answer_id' => 0,
+      'email_id' => 0,
       'question_id' => 0,
       'feedback_content' => '',
       'created' => '',

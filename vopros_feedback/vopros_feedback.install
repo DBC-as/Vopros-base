@@ -23,6 +23,20 @@ function vopros_feedback_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'question_id' => array(
+        'description' => 'The id of the question the user is giving the feedback.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'email_id' => array(
+        'description' => 'The id of the email the user is giving the feedback.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'feedback_content' => array(
         'description' => 'The actual feedback the user has given.',
         'type' => 'text',
@@ -44,9 +58,9 @@ function vopros_feedback_schema() {
     'indexes' => array(
       'user' => array('uid'),
       'created' => array('created'),
+      'question' => array('question_id'),
     ),
     'primary key' => array('feedback_id'),
   );
   return $schema;
 }
-
