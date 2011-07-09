@@ -81,10 +81,10 @@ class VoprosAPIEntityController extends EntityAPIController {
   }
 
   /**
-   * Saves an order revision with the uid of the current user.
+   * Saves a revision with the uid of the current user.
    *
    * @param $order
-   *   The fully loaded order object.
+   *   The fully loaded entity object.
    * @param $uid
    *   The user's uid for the current revision.
    * @param $log

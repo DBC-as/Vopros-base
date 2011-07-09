@@ -40,13 +40,13 @@ function vopros_log_schema() {
         'size' => 'big',
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the order was created.',
+        'description' => 'The Unix timestamp when the log was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
       'changed' => array(
-        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'description' => 'The Unix timestamp when the log was most recently saved.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,

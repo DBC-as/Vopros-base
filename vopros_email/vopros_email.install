@@ -71,13 +71,13 @@ function vopros_email_schema() {
         'default' => 0,
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the order was created.',
+        'description' => 'The Unix timestamp when the email was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
       'changed' => array(
-        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'description' => 'The Unix timestamp when the email was most recently saved.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
@@ -131,7 +131,7 @@ function vopros_email_schema() {
         'default' => 0,
       ),
       'answer_id' => array(
-        'description' => 'The {vopros_answer}.answer_id of the order this revision belongs to.',
+        'description' => 'The {vopros_answer}.answer_id of the answer this revision belongs to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,

@@ -55,13 +55,13 @@ function vopros_answer_schema() {
         'default' => 0,
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the order was created.',
+        'description' => 'The Unix timestamp when the answer was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
       'changed' => array(
-        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'description' => 'The Unix timestamp when the answer was most recently saved.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
@@ -106,7 +106,7 @@ function vopros_answer_schema() {
         'default' => 0,
       ),
       'question_id' => array(
-        'description' => 'The {vopros_question}.question_id of the order this revision belongs to.',
+        'description' => 'The {vopros_question}.question_id of the question this revision belongs to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,

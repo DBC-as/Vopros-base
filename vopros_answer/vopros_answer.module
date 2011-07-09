@@ -522,7 +522,7 @@ function vopros_answer_access($op, $answer = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
-  // Grant access to any operation for any order for administrators.
+  // Grant access to any operation for any answer for administrators.
   if (user_access('administer answers', $account)) {
     return TRUE;
   }
@@ -533,7 +533,7 @@ function vopros_answer_access($op, $answer = NULL, $account = NULL) {
     if (user_access('access answers', $account)) {
       return TRUE;
     }
-    elseif (user_access('view own answers', $account) && $order->uid == $account->uid) {
+    elseif (user_access('view own answers', $account) && $answer->uid == $account->uid) {
       return TRUE;
     }
   }
@@ -547,8 +547,8 @@ function vopros_answer_access($op, $answer = NULL, $account = NULL) {
       return TRUE;
     }
 
-    // Others either don't have any access or must match the order uid.
-    if ($account->uid && user_access('edit own answers', $account) && $order->uid == $account->uid) {
+    // Others either don't have any access or must match the uid.
+    if ($account->uid && user_access('edit own answers', $account) && $answer->uid == $account->uid) {
       return TRUE;
     }
   }

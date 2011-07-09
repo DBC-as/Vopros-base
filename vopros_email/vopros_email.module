@@ -271,7 +271,7 @@ function vopros_email_permission() {
 }
 
 /**
- * Checks order access for various operations.
+ * Checks email access for various operations.
  *
  * @param $op
  *   The operation being performed. One of 'view', 'update', 'create' or
@@ -285,7 +285,7 @@ function vopros_email_access($op, $email = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
-  // Grant access to any operation for any order for administrators.
+  // Grant access to any operation for any email for administrators.
   if (user_access('administer emails', $account)) {
     return TRUE;
   }
@@ -296,7 +296,7 @@ function vopros_email_access($op, $email = NULL, $account = NULL) {
     if (user_access('access emails', $account)) {
       return TRUE;
     }
-    elseif (user_access('view own emails', $account) && $order->uid == $account->uid) {
+    elseif (user_access('view own emails', $account) && $email->uid == $account->uid) {
       return TRUE;
     }
   }
@@ -310,8 +310,8 @@ function vopros_email_access($op, $email = NULL, $account = NULL) {
       return TRUE;
     }
 
-    // Others either don't have any access or must match the order uid.
-    if ($account->uid && user_access('edit own emails', $account) && $order->uid == $account->uid) {
+    // Others either don't have any access or must match the uid.
+    if ($account->uid && user_access('edit own emails', $account) && $email->uid == $account->uid) {
       return TRUE;
     }
   }

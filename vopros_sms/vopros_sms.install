@@ -59,13 +59,13 @@ function vopros_sms_schema() {
         'default' => 0,
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the order was created.',
+        'description' => 'The Unix timestamp when the sms was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
       'changed' => array(
-        'description' => 'The Unix timestamp when the order was most recently saved.',
+        'description' => 'The Unix timestamp when the sms was most recently saved.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,

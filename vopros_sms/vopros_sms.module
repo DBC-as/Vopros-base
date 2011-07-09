@@ -234,7 +234,7 @@ function vopros_sms_permission() {
 }
 
 /**
- * Checks order access for various operations.
+ * Checks sms access for various operations.
  *
  * @param $op
  *   The operation being performed. One of 'view', 'update', 'create' or
@@ -248,7 +248,7 @@ function vopros_sms_access($op, $sms = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
-  // Grant access to any operation for any order for administrators.
+  // Grant access to any operation for any sms for administrators.
   if (user_access('administer SMSes', $account)) {
     return TRUE;
   }
@@ -259,7 +259,7 @@ function vopros_sms_access($op, $sms = NULL, $account = NULL) {
     if (user_access('access SMSes', $account)) {
       return TRUE;
     }
-    elseif (user_access('view own SMSes', $account) && $order->uid == $account->uid) {
+    elseif (user_access('view own SMSes', $account) && $sms->uid == $account->uid) {
       return TRUE;
     }
   }
@@ -273,8 +273,8 @@ function vopros_sms_access($op, $sms = NULL, $account = NULL) {
       return TRUE;
     }
 
-    // Others either don't have any access or must match the order uid.
-    if ($account->uid && user_access('edit own SMSes', $account) && $order->uid == $account->uid) {
+    // Others either don't have any access or must match the uid.
+    if ($account->uid && user_access('edit own SMSes', $account) && $sms->uid == $account->uid) {
       return TRUE;
     }
   }
