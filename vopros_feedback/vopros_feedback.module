@@ -71,7 +71,15 @@ function vopros_feedback_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
     ),
-    /*'admin/vopros/feedback/%vopros_feedback' => array(
+    'admin/vopros/feedback/new' => array(
+      'title' => 'Create feedback',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_feedback_form', vopros_feedback_new()),
+      'access callback' => 'vopros_feedback_access',
+      'access arguments' => array('create'),
+      'file' => 'includes/vopros_feedback.admin.inc',
+    ),
+    'admin/vopros/feedback/%vopros_feedback' => array(
       'title callback' => 'vopros_feedback_title',
       'title arguments' => array(3),
        'page callback' => 'vopros_feedback_page_view',
@@ -79,12 +87,12 @@ function vopros_feedback_menu() {
        'access callback' => 'vopros_feedback_access',
        'access arguments' => array('view'),
        'file' => 'includes/vopros_feedback.admin.inc',
-    ),*/
-    /*'admin/vopros/feedback/%vopros_feedback/view' => array(
+    ),
+    'admin/vopros/feedback/%vopros_feedback/view' => array(
       'title' => 'View',
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
-    ),*/
+    ),
     'admin/vopros/feedback/%vopros_feedback/edit' => array(
       'title' => 'Edit',
       'page callback' => 'drupal_get_form',
