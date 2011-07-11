@@ -52,7 +52,7 @@ function vopros_user_get_libraries() {
       }
     }
     asort($libraries);
-    cache_set('vopros_user_libraries', $libraries, 'cache_field', time() + 86400);
+    cache_set('vopros_user_libraries', $libraries, 'cache_field', REQUEST_TIME + 86400);
   }
   $include_libraries = variable_get('vopros_user_included_libraries', '');
   if ($include_libraries) {

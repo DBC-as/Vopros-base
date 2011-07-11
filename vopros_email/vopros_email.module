@@ -414,7 +414,7 @@ function vopros_email_mail($key, &$message, $params) {
   switch ($key) {
     case 'vopros_email':
       $email = $params['email'];
-      $trenner  = md5(uniqid(time()));
+      $trenner  = md5(uniqid(REQUEST_TIME));
       $message['headers']['Content-Type'] = "multipart/mixed; boundary=$trenner";
       $message['headers']['MIME-Version'] = '1.0';
 

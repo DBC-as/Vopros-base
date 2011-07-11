@@ -24,7 +24,7 @@ class VoprosFeedbackEntityController extends EntityAPIController {
    * Set defaults values before the entity is saved.
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
-    $time = time();
+    $time = REQUEST_TIME;
     if (empty($entity->created)) {
       $entity->created = $time;
     }

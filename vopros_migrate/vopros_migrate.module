@@ -227,7 +227,7 @@ function _vopros_migrate_create_question($row) {
         'entity_id' => $question->question_id,
         'entity_type' => 'question',
         'migrate_id' => $row->QuestionId,
-        'created' => time(),
+        'created' => REQUEST_TIME,
       );
       drupal_write_record('vopros_migrate', $migration);
       return $question;
@@ -294,7 +294,7 @@ function _vopros_migrate_create_user($row) {
         'entity_id' => $account->uid,
         'entity_type' => 'user',
         'migrate_id' => $row->UserId,
-        'created' => time(),
+        'created' => REQUEST_TIME,
       );
       drupal_write_record('vopros_migrate', $migration);
     }
@@ -322,7 +322,7 @@ function _vopros_migrate_create_term($row, $vid) {
         'entity_id' => $term->tid,
         'entity_type' => 'taxonomy_term',
         'migrate_id' => $row->catagory_id,
-        'created' => time(),
+        'created' => REQUEST_TIME,
       );
       drupal_write_record('vopros_migrate', $migration);
       return $term;

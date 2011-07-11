@@ -18,7 +18,7 @@ class VoprosAPIEntityController extends EntityAPIController {
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
     if (empty($entity->created)) {
-      $entity->created = time();
+      $entity->created = REQUEST_TIME;
     }
     if (empty($entity->uuid)) {
       $entity->uuid = uuid_uuid();
@@ -28,7 +28,7 @@ class VoprosAPIEntityController extends EntityAPIController {
     }
     $transaction = isset($transaction) ? $transaction : db_transaction();
     try {
-      $entity->changed = time();
+      $entity->changed = REQUEST_TIME;
       // Load the stored entity, if any.
       if (!empty($entity->{$this->nameKey}) && !isset($entity->original)) {
         // In order to properly work in case of name changes, load the original
@@ -98,7 +98,7 @@ class VoprosAPIEntityController extends EntityAPIController {
       $uid = $GLOBALS['user']->uid;
     }
     $entity->revision_uid = $uid;
-    $entity->revision_timestamp = time();
+    $entity->revision_timestamp = REQUEST_TIME;
     if (!isset($entity->log) || (!empty($log))) {
       $entity->log = $log;
     }
