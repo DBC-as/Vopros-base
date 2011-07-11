@@ -2,13 +2,13 @@
 
 /**
  * @file
- * VorposMailhandlerProcessor class.
+ * VoprosMailhandlerProcessor class.
  */
 
 /**
  * Parses an IMAP stream and creates and email entity.
  */
-class VorposMailhandlerProcessor extends FeedsProcessor {
+class VoprosMailhandlerProcessor extends FeedsProcessor {
   /**
    * Entity type this processor operates on.
    */

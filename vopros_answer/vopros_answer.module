@@ -22,7 +22,7 @@ function vopros_answer_entity_info() {
       'base table' => 'vopros_answer',
       'revision table' => 'vopros_answer_revision',
       'fieldable' => TRUE,
-      'label callback' => 'vorpros_answer_entity_label_callback',
+      'label callback' => 'vopros_answer_entity_label_callback',
       'entity keys' => array(
         'id' => 'answer_id',
         'revision' => 'revision_id',
@@ -143,7 +143,7 @@ function vopros_answer_views_data_alter(&$data) {
 /**
  * Label callback for the vopros_answer entity
  */
-function vorpros_answer_entity_label_callback($entity) {
+function vopros_answer_entity_label_callback($entity) {
   return 'label';
 }
 

@@ -5,7 +5,7 @@
  */
 class VoprosLogEntityController extends EntityAPIController {
   /**
-   * Creates a new instance of a vorpos_log entity.
+   * Creates a new instance of a vopros_log entity.
    */
   public function create(array $values = array()) {
     return (object) ($values + array(
@@ -20,7 +20,7 @@ class VoprosLogEntityController extends EntityAPIController {
   }
 
   /**
-   * Save function for the vorpos_log entity.
+   * Save function for the vopros_log entity.
    *
    * Set defaults values before the entity is saved.
    */

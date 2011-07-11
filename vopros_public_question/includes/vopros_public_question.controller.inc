@@ -8,7 +8,7 @@ module_load_include('inc', 'vopros_base', 'includes/vopros.controller');
  */
 class VoprosPublicQuestionEntityController extends VoprosAPIEntityController {
   /**
-   * Creates a new instance of a vorpos_log entity.
+   * Creates a new instance of a vopros_log entity.
    */
   public function create(array $values = array()) {
     return (object) ($values + array(

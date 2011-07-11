@@ -2,13 +2,13 @@
 
 /**
  * @file
- * VorposMailhandlerParser class.
+ * VoprosMailhandlerParser class.
  */
 
 /**
  * Parses an IMAP stream and creates and email entity.
  */
-class VorposMailhandlerParser extends MailhandlerParser {
+class VoprosMailhandlerParser extends MailhandlerParser {
   public function configForm(&$form_state) {
     $form = array();
 
