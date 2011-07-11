@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * The vopros_log module creates a log entity that can be asociated to
@@ -52,8 +51,6 @@ function vopros_log_init() {
  * Create a new log object
  */
 function vopros_log_new($values = array()) {
-  $default_values = array();
-  $values += $default_values;
   return entity_create('vopros_log', $values);
 }
 
