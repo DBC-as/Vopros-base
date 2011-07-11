@@ -508,7 +508,7 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
 }
 
 /**
- * Checks order access for various operations.
+ * Checks answer access for various operations.
  *
  * @param $op
  *   The operation being performed. One of 'view', 'update', 'create' or

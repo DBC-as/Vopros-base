@@ -41,6 +41,40 @@ function vopros_log_entity_info() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function vopros_log_permission() {
+  $permissions = array(
+    'administer logs' => array(
+      'title' => t('Administer logs'),
+      'restrict access' => TRUE,
+    ),
+    'access logs' => array(
+      'title' => t('Access lists of logs, primarily for viewing and referencing'),
+      'restrict access' => TRUE,
+    ),
+    'create logs' => array(
+      'title' => t('Create logs'),
+      'restrict access' => TRUE,
+    ),
+    'edit any log' => array(
+      'title' => t('Edit any log'),
+      'restrict access' => TRUE,
+    ),
+    'edit own logs' => array(
+      'title' => t('Edit own logs'),
+      'restrict access' => TRUE,
+    ),
+    'view own logs' => array(
+      'title' => t('View own logs'),
+    ),
+  );
+
+  return $permissions;
+}
+
+
+/**
  * Implementation of hook_init().
  */
 function vopros_log_init() {
@@ -99,7 +133,56 @@ function vopros_log_load_multiple($log_ids = array(), $conditions = array(), $re
   return entity_load('vopros_log', $log_ids, $conditions, $reset);
 }
 
-function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL) {
+/**
+ * Checks log access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $log
+ *   Optionally an anwer to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_log_access($op, $log = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any log for administrators.
+  if (user_access('administer logs', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access orders permission
+  // or to a user's own orders with the view own orders permission.
+  if ($op == 'view') {
+    if (user_access('access logs', $account)) {
+      return TRUE;
+    }
+    elseif (user_access('view own logs', $account) && $log->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create logs', $account)) {
+    return TRUE;
+  }
+
+  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+    if (user_access('edit any log', $account)) {
+      return TRUE;
+    }
+
+    // Others either don't have any access or must match the uid.
+    if ($account->uid && user_access('edit own logs', $account) && $log->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $log_id = NULL) {
   $form['question_id'] = array(
     '#type' => 'value',
     '#value' => $question_id,
