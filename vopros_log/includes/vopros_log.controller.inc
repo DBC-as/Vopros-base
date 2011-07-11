@@ -25,9 +25,8 @@ class VoprosLogEntityController extends EntityAPIController {
    * Set defaults values before the entity is saved.
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
-    $time = time();
     if (empty($entity->created)) {
-      $entity->created = $time;
+      $entity->created = REQUEST_TIME;
     }
     $entity->changed = $time;
     parent::save($entity, $transaction);
