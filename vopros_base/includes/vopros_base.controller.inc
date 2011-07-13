@@ -30,10 +30,10 @@ class VoprosAPIEntityController extends EntityAPIController {
     try {
       $entity->changed = REQUEST_TIME;
       // Load the stored entity, if any.
-      if (!empty($entity->{$this->nameKey}) && !isset($entity->original)) {
+      if (!empty($entity->{$this->idKey}) && !isset($entity->original)) {
         // In order to properly work in case of name changes, load the original
         // entity using the id key if it is available.
-        $entity->original = entity_load_unchanged($this->entityType, !empty($entity->{$this->idKey}) ? $entity->{$this->idKey} : $entity->{$this->nameKey});
+        $entity->original = entity_load_unchanged($this->entityType, $entity->{$this->idKey});
       }
       // Update the status for entities getting overridden.
       if (entity_has_status($this->entityType, $entity, ENTITY_IN_CODE) && empty($entity->is_rebuild)) {
@@ -52,7 +52,7 @@ class VoprosAPIEntityController extends EntityAPIController {
           $this->saveRevision($this->entityInfo['revision table'], $entity, TRUE);
         }
         $return = drupal_write_record($this->entityInfo['base table'], $entity, $this->idKey);
-        $this->resetCache(array($entity->{$this->nameKey}));
+        $this->resetCache(array($entity->{$this->idKey}));
         $this->invoke('update', $entity);
       }
       else {
