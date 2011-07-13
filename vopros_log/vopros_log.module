@@ -182,7 +182,7 @@ function vopros_log_access($op, $log = NULL, $account = NULL) {
   return FALSE;
 }
 
-function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $log_id = NULL) {
+function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL) {
   $form['question_id'] = array(
     '#type' => 'value',
     '#value' => $question_id,
