@@ -200,6 +200,23 @@ function vopros_sms_entity_property_info_alter(&$info) {
   $info['vopros_sms']['properties']['answer_id']['clear'] = array('question');
 }
 
+
+/**
+ * Implements hook_vopros_install_tasks().
+ */
+function vopros_sms_vopros_install_tasks() {
+  return array(
+    'vopros_sms' => array(
+      'display_name' => t('Vopros sms settings'),
+      'display' => TRUE,
+      'type' => 'form',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+      'function' => 'vopros_sms_settings_form',
+      'file' => drupal_get_path('module', 'vopros_sms') . '/includes/vopros_sms.admin.inc',
+    ),
+  );
+}
+
 /**
  * Implements hook_permission().
  */

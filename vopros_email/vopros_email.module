@@ -711,6 +711,24 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
   }
 }
 
+
+/**
+ * Implements hook_vopros_install_tasks().
+ */
+function vopros_email_vopros_install_tasks() {
+  module_load_include('inc', 'vopros_email', 'includes/vopros_email.admin');
+  return array(
+    'vopros_email' => array(
+      'display_name' => t('Vopros email settings'),
+      'display' => TRUE,
+      'type' => 'form',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+      'function' => 'vopros_email_settings_form',
+      'file' => drupal_get_path('module', 'vopros_email') . '/includes/vopros_email.admin.inc',
+    )
+  );
+}
+
 /**
  * Utility function that defines the possible types an email can have.
  */
