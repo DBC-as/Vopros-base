@@ -111,24 +111,38 @@ function _vopros_migrate_perform_migrate_questions($count, $offset = 0) {
 }
 
 /**
- * Performs the actual migration of users.
+ * Performs the actual migration of users as a batch job.
  */
-function _vopros_migrate_perform_migrate_users($count, $offset = 0) {
+function _vopros_migrate_perform_migrate_users($count, &$context) {
   global $user;
   if (vopros_migrate_connect()) {
-    $count = min(50, (int) $count);
-    // Get top question id:
-    $top_user_id = mssql_fetch_object(mssql_query("SELECT TOP 1 UserId FROM Users ORDER BY UserId DESC"));
-    $top_user_id = $top_user_id->UserId - $offset;
-    $bottom_user_id = $top_user_id - $count + 1;
-    $query = mssql_query("SELECT * FROM Users WHERE UserId BETWEEN $bottom_user_id AND $top_user_id ORDER BY UserId DESC");
+    if (empty($context['sandbox'])) {
+      // Get top user id:
+      $result = mssql_fetch_object(mssql_query("SELECT TOP 1 UserId FROM Users ORDER BY UserId DESC"));
+      $top_user_id = $result->UserId;
+      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'user';")->fetchCol();
+      // Set the current state of our import.
+      $context['sandbox']['progress'] = (int) $progress[0];
+      $context['sandbox']['max'] = min($top_user_id, $count);
+      $context['results']['count'] = 0;
+    }
+    $min_user_id = $context['sandbox']['progress'];
+    $max_user_id = $context['sandbox']['progress'] + 50;
+    $query = mssql_query("SELECT * FROM Users WHERE UserId BETWEEN $min_user_id AND $max_user_id ORDER BY UserId DESC");
     while ($row = mssql_fetch_object($query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
         $row->$key = utf8_encode($value);
       }
-      _vopros_migrate_create_user($row);
+      if (_vopros_migrate_create_user($row)) {
+        $context['results']['count'] += 1;
+      }
     }
+    $context['sandbox']['progress'] += 51;
+    if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+    $context['message'] = t('Migrating user with id @id', array('@id' => $context['sandbox']['progress']));
   }
 }
 
