@@ -82,19 +82,27 @@ function vopros_migrate_connect() {
 }
 
 /**
- * Performs the actual migration of questions.
+ * Performs the actual migration of questions as a batch job.
  */
-function _vopros_migrate_perform_migrate_questions($count, $offset = 0) {
+function _vopros_migrate_perform_migrate_questions($count, &$context) {
   if (vopros_migrate_connect()) {
-    $count = min(50, (int) $count);
+    if(empty($context['sandbox'])) {
+      // Get top question id:
+      $result = mssql_fetch_object(mssql_query("SELECT TOP 1 QuestionId FROM Questions ORDER BY QuestionId DESC"));
+      $top_question_id = $result->QuestionId;
+      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'question';")->fetchCol();
+      // Set the current state of our import.
+      $context['sandbox']['progress'] = (int) $progress[0];
+      $context['sandbox']['max'] = min($top_question_id, $count + $progress[0]);
+      $context['results']['count'] = 0;
+    }
     // Get top question id:
-    $top_question_id = mssql_fetch_object(mssql_query("SELECT TOP 1 QuestionId FROM Questions ORDER BY QuestionId DESC"));
-    $top_question_id = $top_question_id->QuestionId - $offset;
-    $bottom_question_id = $top_question_id - $count + 1;
+    $min_question_id = $context['sandbox']['progress'];
+    $max_question_id = $context['sandbox']['progress'] + 50;
     $query = mssql_query("SELECT q.*, c.catagory_id FROM Questions AS q
                           LEFT JOIN QA ON QA.QuestionId = q.QuestionId
                           LEFT JOIN Kbase_CatagoryConnections AS c ON c.QAId = QA.QAId
-                          WHERE q.QuestionId BETWEEN $bottom_question_id AND $top_question_id ORDER BY q.QuestionId DESC");
+                          WHERE q.QuestionId BETWEEN $min_question_id AND $max_question_id ORDER BY q.QuestionId DESC");
     while ($row = mssql_fetch_object($query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
@@ -104,9 +112,15 @@ function _vopros_migrate_perform_migrate_questions($count, $offset = 0) {
       $row->QuestionTimestamp = _vopros_migrate_mssql_date_convert($row->QuestionTimestamp);
       $question = _vopros_migrate_create_question($row);
       if ($question) {
+        $context['results']['count'] += 1;
         _vopros_migrate_create_answer($row, $question);
       }
     }
+    $context['sandbox']['progress'] += 51;
+    if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+    $context['message'] = t('Migrating question with id @id', array('@id' => $context['sandbox']['progress']));
   }
 }
 
@@ -123,7 +137,7 @@ function _vopros_migrate_perform_migrate_users($count, &$context) {
       $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'user';")->fetchCol();
       // Set the current state of our import.
       $context['sandbox']['progress'] = (int) $progress[0];
-      $context['sandbox']['max'] = min($top_user_id, $count);
+      $context['sandbox']['max'] = min($top_user_id, $count + $progress[0]);
       $context['results']['count'] = 0;
     }
     $min_user_id = $context['sandbox']['progress'];
@@ -159,7 +173,7 @@ function _vopros_migrate_perform_migrate_vocabolary($count, &$context) {
       $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'taxonomy_term';")->fetchCol();
       // Set the current state of our import.
       $context['sandbox']['progress'] = (int) $progress[0];
-      $context['sandbox']['max'] = min($top_term_id, $count);
+      $context['sandbox']['max'] = min($top_term_id, $count + $progress[0]);
       $context['results']['count'] = 0;
     }
 
@@ -177,6 +191,11 @@ function _vopros_migrate_perform_migrate_vocabolary($count, &$context) {
         $context['results']['count'] += 1;
       };
     }
+    $context['sandbox']['progress'] += 51;
+    if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+    $context['message'] = t('Migrating term with id @id', array('@id' => $context['sandbox']['progress']));
   }
 }
 
@@ -216,7 +235,7 @@ function _vopros_migrate_create_question($row) {
       'user_gender' => '',
       'user_field_of_study' => $row->Education,
       'user_library' => '',
-      'user_answer_preference' => $row->Email ? 'mail' : 'sms',
+      'user_answer_preference' => $row->Phone ? 'sms' : 'mail',
       'created' => $row->QuestionTimestamp,
       'changed' => $row->QuestionTimestamp,
       'uid' => NULL,

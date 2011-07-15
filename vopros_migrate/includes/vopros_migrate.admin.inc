@@ -89,7 +89,31 @@ function vopros_migrate_perform_migrate_questions_validate(&$form, &$form_state)
  * Submit handler for vopros_migrate_perform_migrate_questions().
  */
 function vopros_migrate_perform_migrate_questions_submit(&$form, &$form_state) {
-  _vopros_migrate_perform_migrate_questions((int) $form_state['values']['count']);
+  $count = $form_state['values']['count'];
+  $batch = array(
+    'title' => t('Importing users from external database'),
+    'operations' => array(
+      array('_vopros_migrate_perform_migrate_questions', array($count)),
+    ),
+    'finished' => 'vopros_migrate_questions_batch_finished',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+  );
+  batch_set($batch);
+}
+
+/**
+ * Callback for when user import batch job is finished.
+ */
+function vopros_migrate_questions_batch_finished($success, $results, $operations) {
+  // The 'success' parameter means no fatal PHP errors were detected. All
+  // other error management should be handled using 'results'.
+  if ($success) {
+    $message = format_plural($results['count'], 'One question and answer imported.', '@count questions and answers imported.');
+  }
+  else {
+    $message = t('Finished with an error.');
+  }
+  drupal_set_message($message);
 }
 
 /**
