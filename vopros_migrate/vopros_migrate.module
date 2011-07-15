@@ -149,26 +149,36 @@ function _vopros_migrate_perform_migrate_users($count, &$context) {
 /**
  * Performs the actual migration of taxonomy terms.
  */
-function _vopros_migrate_perform_migrate_vocabolary($count, $offset = 0) {
+function _vopros_migrate_perform_migrate_vocabolary($count, &$context) {
   global $user;
   if (vopros_migrate_connect()) {
-    $count = min(50, (int) $count);
-    // Get top question id:
-    $top_term_id = mssql_fetch_object(mssql_query("SELECT TOP 1 catagory_id FROM KbaseCatagories ORDER BY catagory_id DESC"));
-    $top_term_id = $top_term_id->catagory_id - $offset;
-    $bottom_term_id = $top_term_id - $count + 1;
-    $query = mssql_query("SELECT * FROM KbaseCatagories WHERE catagory_id BETWEEN $bottom_term_id AND $top_term_id ORDER BY catagory_id DESC");
+    if (empty($context['sandbox'])) {
+      // Get top catagory id:
+      $result = mssql_fetch_object(mssql_query("SELECT TOP 1 catagory_id FROM KbaseCatagories ORDER BY catagory_id DESC"));
+      $top_term_id = $result->catagory_id;
+      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'taxonomy_term';")->fetchCol();
+      // Set the current state of our import.
+      $context['sandbox']['progress'] = (int) $progress[0];
+      $context['sandbox']['max'] = min($top_term_id, $count);
+      $context['results']['count'] = 0;
+    }
+
+    $min_term_id = $context['sandbox']['progress'];
+    $max_term_id = $context['sandbox']['progress'] + 50;
+
+    $query = mssql_query("SELECT * FROM KbaseCatagories WHERE catagory_id BETWEEN $min_term_id AND $max_term_id ORDER BY catagory_id DESC");
     $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory');
     while ($row = mssql_fetch_object($query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
         $row->$key = utf8_encode($value);
       }
-      _vopros_migrate_create_term($row, $vocab->vid);
+      if (_vopros_migrate_create_term($row, $vocab->vid)) {
+        $context['results']['count'] += 1;
+      };
     }
   }
 }
-
 
 /**
  * Function to convert MSSQL time formats to ISO-8601 formats.
@@ -311,8 +321,10 @@ function _vopros_migrate_create_user($row) {
         'created' => REQUEST_TIME,
       );
       drupal_write_record('vopros_migrate', $migration);
+      return $account->uid;
     }
   }
+  return FALSE;
 }
 
 /**
