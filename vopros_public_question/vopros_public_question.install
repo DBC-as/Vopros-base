@@ -51,11 +51,21 @@ function vopros_public_question_schema() {
         'not null' => TRUE,
         'size' => 'big',
       ),
+      'question_content_format' => array(
+        'description' => 'The format used for the question content.',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
       'answer_content' => array(
         'description' => 'The answer content.',
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
+      ),
+      'answer_content_format' => array(
+        'description' => 'The format used for the question content.',
+        'type' => 'varchar',
+        'length' => 255,
       ),
       'subject' => array(
         'description' => 'The subject of the public question.',
@@ -137,6 +147,28 @@ function vopros_public_question_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
+      ),
+      'question_content' => array(
+        'description' => 'The question content.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'question_content_format' => array(
+        'description' => 'The format used for the question content.',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'answer_content' => array(
+        'description' => 'The answer content.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'answer_content_format' => array(
+        'description' => 'The format used for the question content.',
+        'type' => 'varchar',
+        'length' => 255,
       ),
       'description' => array(
         'description' => 'The actual question that has been asked.',
