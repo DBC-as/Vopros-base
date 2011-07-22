@@ -705,6 +705,7 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
   foreach ($transfers as $transfer) {
     $email = vopros_email_load($transfer->email_id);
     $email->transfer = TRUE;
+    $email->transfer_uid = $transfer->uid;
     vopros_email_build_content($email);
     $feed['email_transfer_' . $transfer->email_transfer_id] = array(
       '#weight' => $transfer->transfer_time,

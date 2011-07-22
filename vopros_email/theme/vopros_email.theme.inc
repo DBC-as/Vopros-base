@@ -153,7 +153,10 @@ function theme_vopros_email_transfer_link($variables) {
   }
   else {
     $output .= '<span class="label">' . t('Transfered:') .  '</span>';
-    $output .= '<span class="value">' . l(t('See question'), 'admin/vopros/questions/' . $email->question_id) .  '</span>';
+    $output .= '<span class="value">' . t('!question created by !username', array(
+      '!question' => l(t('New question'), 'admin/vopros/questions/' . $email->question_id),
+      '!username' => theme('username', array('account' => user_load($email->transfer_uid))),
+    )) . '</span>';
   }
   
   $output .= '</div>';
