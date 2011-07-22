@@ -438,7 +438,7 @@ function vopros_email_transfer_form($form, &$form_state, $email) {
   // Don't allow transfering emails that doesn't belong to a question.
   if (!$email->question_id) {
     $form['message'] = array(
-      '#markup' => t('This email cannot be transfered'),
+      '#markup' => t('This email cannot be transferred'),
     );
     return $form;
   }

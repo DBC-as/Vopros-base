@@ -529,7 +529,7 @@ function vopros_email_views_api() {
  */
 function vopros_email_build_content($email, $view_mode = 'administrator', $langcode = NULL) {
   $email->content = array(
-    '#prefix' => '<div class="vopros-email-display">',
+    '#prefix' => '<div class="vopros-email-display ' . $email->type . '">',
     '#suffix' => '</div>',
     'body' => array(
       '#prefix' => '<div class="body">',
@@ -687,6 +687,12 @@ function vopros_email_theme() {
 function vopros_email_vopros_question_activity_feed($question, &$feed) {
   $emails = vopros_email_load_multiple(FALSE, array('question_id' => $question->question_id));
   foreach ($emails as $email_id => $email) {
+    $email->no_transfer = array_shift(db_select('vopros_email_transfers', 't')
+      ->condition('t.target_question_id', $question->question_id)
+      ->countQuery()
+      ->execute()
+      ->fetchCol());
+      
     vopros_email_build_content($email);
     $feed['email_' . $email_id] = $email->content;
     $feed['email_' . $email_id]['#weight'] = $email->created;
@@ -698,10 +704,10 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
 
   foreach ($transfers as $transfer) {
     $email = vopros_email_load($transfer->email_id);
-    $email->question_id = '';
+    $email->transfer = TRUE;
     vopros_email_build_content($email);
     $feed['email_transfer_' . $transfer->email_transfer_id] = array(
-      '#weight' => $email->created,
+      '#weight' => $transfer->transfer_time,
       'email_content' => $email->content,
       'transfer_status' => array(
         '#transfer' => $transfer,

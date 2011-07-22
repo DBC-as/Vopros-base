@@ -143,8 +143,19 @@ function theme_vopros_email_question_feed($variables) {
 function theme_vopros_email_transfer_link($variables) {
   $email = $variables['email']['#email'];
   $output = '<div class="email-transfer vopros-email-extra">';
-  $output .= '<span class="label">' . t('Transfer:') .  '</span>';
-  $output .= '<span class="value">' . l(t('Create new question'), 'admin/vopros/emails/' . $email->email_id . '/transfer') .  '</span>';
+  if (isset($email->no_transfer) && $email->no_transfer) {
+    $output .= '<span class="label">' . t('Transfer:') .  '</span>';
+    $output .= '<span class="value">' . t('Can\'t transfer question, already transferred') . '</span>';
+  }
+  elseif (!isset($email->transfer)) {
+    $output .= '<span class="label">' . t('Transfer:') .  '</span>';
+    $output .= '<span class="value">' . l(t('Create new question'), 'admin/vopros/emails/' . $email->email_id . '/transfer') .  '</span>';
+  }
+  else {
+    $output .= '<span class="label">' . t('Transfered:') .  '</span>';
+    $output .= '<span class="value">' . l(t('See question'), 'admin/vopros/questions/' . $email->question_id) .  '</span>';
+  }
+  
   $output .= '</div>';
   return $output;
 }

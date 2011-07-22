@@ -192,7 +192,7 @@ function vopros_email_schema() {
   );
 
   $schema['vopros_email_transfers'] = array(
-    'description' => 'Stores information about emails being transfered from one question to another.',
+    'description' => 'Stores information about emails being transferred from one question to another.',
     'fields' => array(
       'email_transfer_id' => array(
         'description' => 'The primary identifier for an email transfer record.',
@@ -220,13 +220,13 @@ function vopros_email_schema() {
         'default' => 0,
       ),
       'target_question_id' => array(
-        'description' => 'The id of the question the email is transfered to.',
+        'description' => 'The id of the question the email is transferred to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
       ),
       'transfer_time' => array(
-        'description' => 'The Unix timestamp when this email was transfered.',
+        'description' => 'The Unix timestamp when this email was transferred.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
@@ -248,7 +248,7 @@ function vopros_email_schema() {
  */
 function vopros_email_update_7000(&$sandbox) {
   db_create_table('vopros_email_transfers', array(
-    'description' => 'Stores information about emails being transfered from one question to another.',
+    'description' => 'Stores information about emails being transferred from one question to another.',
     'fields' => array(
       'email_transfer_id' => array(
         'description' => 'The primary identifier for an email transfer record.',
@@ -276,13 +276,13 @@ function vopros_email_update_7000(&$sandbox) {
         'default' => 0,
       ),
       'target_question_id' => array(
-        'description' => 'The id of the question the email is transfered to.',
+        'description' => 'The id of the question the email is transferred to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
       ),
       'transfer_time' => array(
-        'description' => 'The Unix timestamp when this email was transfered.',
+        'description' => 'The Unix timestamp when this email was transferred.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,

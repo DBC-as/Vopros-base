@@ -5,6 +5,10 @@
   padding: 5px;
 }
 
+.vopros-email-display.ingoing .header {
+  background-color: #ECF8EE;
+}
+
 .vopros-email-display .body {
   border: 1px solid black;
   border-top: none;
