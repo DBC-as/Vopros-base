@@ -124,6 +124,7 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
 
   // Format the question and answer content.
   $public_question->answer_content = check_markup($public_question->answer_content, $public_question->answer_content_format);
+  $unformatted_question_content = $public_question->question_content;
   $public_question->question_content = check_markup($public_question->question_content, $public_question->question_content_format);  
 
   // Create the description from the question and answer. Used by osa_addi.
@@ -135,12 +136,12 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
     $question = vopros_question_load($public_question->question_id);
     $question->question_status = 'published';
     $question->question_status_reason = '';
+    $public_question->question_content = $unformatted_question_content;
     vopros_question_save($question);
     vopros_public_question_save($public_question);
     $form_state['redirect'] = 'admin/vopros/questions/list';
   }
   else {
-    drupal_set_message(t('a'), 'error');
+    drupal_set_message(t('Could not create question at service.'), 'error');
   }
-  
 }

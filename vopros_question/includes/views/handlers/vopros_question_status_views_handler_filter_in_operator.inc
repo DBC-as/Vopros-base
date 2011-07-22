@@ -57,6 +57,7 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
           'all_closed' => t('All closed'),
           'answered' => $mapping['answered'],
           'closed' => $mapping['closed'],
+          'published' => $mapping['published'],
         ),
       );
       $this->value_options = $options;
