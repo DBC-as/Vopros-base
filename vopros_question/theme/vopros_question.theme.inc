@@ -46,7 +46,6 @@ function theme_vopros_question_status($variables) {
     $reason_mapping = _vopros_question_status_reason();
     if (isset($reason_mapping[$question->question_status_reason])) {
       $reason = ' <span class="reason">(' . $reason_mapping[$question->question_status_reason] . ')</span>';
-      $status .= ':';
     }
   }
   $output = '<div class="question-status vopros-question-extra">';
