@@ -321,7 +321,7 @@ function vopros_feedback_theme($existing, $type, $theme, $path) {
   $path = drupal_get_path('module', 'vopros_feedback') . '/theme';
   return array(
     'vopros_feedback_content' => array(
-      'render element' => 'element',
+      'variables' => array('feedback' => NULL),
       'path' => $path,
       'file' => 'vopros_feedback.theme.inc',
     ),
@@ -330,6 +330,11 @@ function vopros_feedback_theme($existing, $type, $theme, $path) {
       'template' => 'vopros-feedback-page',
       'path' => $path,
     ),
+    'vopros_feedback_result' => array(
+      'variables' => array('feedback' => NULL),
+      'path' => $path,
+      'file' => 'vopros_feedback.theme.inc',
+    )
   );
 }
 
@@ -394,5 +399,26 @@ function vopros_feedback_configure_feedback() {
       ),
     );
     field_create_instance($instance);
+  }
+}
+
+
+/**
+ * Implements hook_vopros_question_activity_feed().
+ */
+function vopros_feedback_vopros_question_activity_feed($question, &$feed) {
+  $result = db_select('vopros_feedback', 'f')
+    ->fields('f')
+    ->condition('question_id', $question->question_id)
+    ->execute()
+    ->fetchAll();
+  foreach ($result as $feedback) {
+    $feed['email_' . $feedback->email_id]['body']['feedback_result'] = array(
+      '#theme' => 'vopros_feedback_result',
+      '#feedback' => vopros_feedback_load($feedback->feedback_id),
+      '#weight' => 100,
+      '#prefix' => '<div class="feedback"><h3>' . t('User feedback') . '</h3>',
+      '#suffix' => '</div>',
+    );
   }
 }
