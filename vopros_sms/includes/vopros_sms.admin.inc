@@ -9,21 +9,27 @@
  * Answer settings form
  */
 function vopros_sms_settings_form($form, &$form_state) {
-  $form['vopros_sms_push_api_url'] = array(
+  $form['sms_gateway'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('SMS gateway'),
+    '#description' => t('Setup the SMS gateway used for sending out SMSes to users.'),
+  );
+
+  $form['sms_gateway']['vopros_sms_push_api_url'] = array(
     '#type' => 'textfield',
     '#title' => t('SMS send API url'),
     '#description' => t('The API url to use for sending SMSes.'),
     '#default_value' => variable_get('vopros_sms_push_api_url', ''),
   );
 
-  $form['vopros_sms_push_user_name'] = array(
+  $form['sms_gateway']['vopros_sms_push_user_name'] = array(
     '#type' => 'textfield',
     '#title' => t('SMS send user name'),
     '#description' => t('The user name to use as authentication when sending SMSes'),
     '#default_value' => variable_get('vopros_sms_push_user_name', ''),
   );
 
-  $form['pass'] = array(
+  $form['sms_gateway']['pass'] = array(
     '#type' => 'fieldset',
     '#title' => t('SMS send password'),
     '#description' => t('The user name to use as authentication when sending SMSes.'),
@@ -31,26 +37,32 @@ function vopros_sms_settings_form($form, &$form_state) {
     '#collapsed' => (bool) variable_get('vopros_sms_push_password', ''),
   );
 
-  $form['pass']['vopros_sms_push_password'] = array(
+  $form['sms_gateway']['pass']['vopros_sms_push_password'] = array(
     '#type' => 'textfield',
     '#title' => t('Password'),
     '#default_value' => variable_get('vopros_sms_push_password', ''),
   );
 
-  $form['vopros_sms_push_short_code'] = array(
+  $form['sms_gateway']['vopros_sms_push_short_code'] = array(
     '#type' => 'textfield',
     '#title' => t('SMS send short code'),
     '#description' => t('The short code used when sending SMSes'),
     '#default_value' => variable_get('vopros_sms_push_short_code', ''),
   );
 
-  $form['vopros_sms_push_sender'] = array(
+  $form['sms_gateway']['vopros_sms_push_sender'] = array(
     '#type' => 'textfield',
     '#title' => t('SMS send sender'),
     '#description' => t('Used as the sender of the SMSes, 11 alphanumeric chars allowed'),
     '#default_value' => variable_get('vopros_sms_push_sender', ''),
     '#maxlength' => 11,
     '#element_validate' => array('vopros_sms_push_sender_validate'),
+  );
+
+  $form['info'] = array(
+    '#markup' => t('Below you can define default texts used for different situations when sending a SMS to the user. This could be a SMS containing the answer, or when the need to contact the user arises, fx to ask for more info. It is possible to use Drupal tokens to create dynamic macros containing question/answer or user data. See below under each category for a list of available tokens and their meaning.'),
+    '#prefix' => '<p>',
+    '#suffix' => '</p>',
   );
 
   $form['contact'] = array(
@@ -65,6 +77,7 @@ function vopros_sms_settings_form($form, &$form_state) {
       '#title' => $value,
       '#description' => t('Macro used when contacting a user.'),
       '#default_value' => variable_get('vopros_sms_macro_' . $key, ''),
+      '#weight' => -1,
     );
   }
 
@@ -78,7 +91,7 @@ function vopros_sms_settings_form($form, &$form_state) {
   $form['macros'] = array(
     '#type' => 'fieldset',
     '#title' => t('SMS macros'),
-    '#description' => t('Create macros inserted when sending an email.'),
+    '#description' => t('Create macros inserted when sending a sms.'),
   );
 
   $form['macros']['vopros_sms_answered_question_macro'] = array(
@@ -86,6 +99,7 @@ function vopros_sms_settings_form($form, &$form_state) {
     '#title' => t('Answered question'),
     '#description' => t('Macro used when answering a question.'),
     '#default_value' => variable_get('vopros_sms_answered_question_macro', ''),
+    '#weight' => -1,
   );
 
   $form['macros']['tokens'] = array(

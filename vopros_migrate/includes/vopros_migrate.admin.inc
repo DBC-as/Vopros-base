@@ -15,6 +15,7 @@ function vopros_migrate_setting_form($form, &$form_state) {
   $form['database_configuration'] = array(
     '#type' => 'fieldset',
     '#title' => t('Database configuration'),
+    '#description' => t('Setup the connection to the external database you want to use as source for the migration of data.'),
     '#collapsible' => TRUE,
     '#collapsed' => $connect,
     '#access' => user_access('administer vopros_migrate'),

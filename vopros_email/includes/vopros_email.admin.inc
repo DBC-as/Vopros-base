@@ -9,6 +9,12 @@
  * Answer settings form
  */
 function vopros_email_settings_form($form, &$form_state) {
+  $form['info'] = array(
+    '#markup' => t('Below you can define default texts used for different situations when sending an email to the user. This could be an email containing the answer, or when the need to contact the user arises, fx to ask for more info. It is possible to use Drupal tokens to create dynamic macros containing question/answer or user data. See below under each category for a list of available tokens and their meaning.'),
+    '#prefix' => '<p>',
+    '#suffix' => '</p>',
+  );
+
   $form['contact'] = array(
     '#type' => 'fieldset',
     '#title' => t('Contact user email macros'),
@@ -40,6 +46,7 @@ function vopros_email_settings_form($form, &$form_state) {
       'token_types' => array('vopros_question'),
       'global_types' => FALSE,
     )),
+    '#weight' => 2,
   );
 
   $form['macros'] = array(
@@ -67,6 +74,7 @@ function vopros_email_settings_form($form, &$form_state) {
       'token_types' => array('vopros_answer', 'vopros_question'),
       'global_types' => FALSE,
     )),
+    '#weight' => 2,
   );
 
   return system_settings_form($form);
