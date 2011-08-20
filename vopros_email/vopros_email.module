@@ -694,6 +694,9 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
       ->fetchCol());
       
     vopros_email_build_content($email);
+    if ($email->type == 'outgoing') {
+      $email->content['body'][] = array('#markup' => '<iframe style="border: 2px solid red;" width="500px" height="300px" src="' . url('vopros/feedback/' . $email_id . '/' . md5($email_id . variable_get('vopros_feedback_secret', ''))) . '"></iframe>');
+    }
     $feed['email_' . $email_id] = $email->content;
     $feed['email_' . $email_id]['#weight'] = $email->created;
   }
