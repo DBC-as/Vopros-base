@@ -37,9 +37,9 @@ function vopros_question_views_default_views() {
     'question_usage' => 'question_usage',
     'question_status' => 'question_status',
     'question_deadline_timestamp' => 'question_deadline_timestamp',
-    'uid' => 'uid',
     'changed' => 'changed',
     'created' => 'created',
+    'vopros_feedback_rating' => 'vopros_feedback_rating',
   );
   $handler->display->display_options['style_options']['default'] = 'created';
   $handler->display->display_options['style_options']['info'] = array(
@@ -77,12 +77,6 @@ function vopros_question_views_default_views() {
       'align' => '',
       'separator' => '',
     ),
-    'uid' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-    ),
     'changed' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
@@ -90,6 +84,12 @@ function vopros_question_views_default_views() {
       'separator' => '',
     ),
     'created' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'vopros_feedback_rating' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -104,6 +104,11 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['header']['own_questions']['id'] = 'own_questions';
   $handler->display->display_options['header']['own_questions']['table'] = 'vopros_question';
   $handler->display->display_options['header']['own_questions']['field'] = 'own_questions';
+  /* Relationship: Question: Feedback */
+  $handler->display->display_options['relationships']['feedback_question_id']['id'] = 'feedback_question_id';
+  $handler->display->display_options['relationships']['feedback_question_id']['table'] = 'vopros_question';
+  $handler->display->display_options['relationships']['feedback_question_id']['field'] = 'feedback_question_id';
+  $handler->display->display_options['relationships']['feedback_question_id']['required'] = 0;
   /* Field: Question: Question ID */
   $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
   $handler->display->display_options['fields']['question_id']['table'] = 'vopros_question';
@@ -289,6 +294,30 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['created']['empty_zero'] = 0;
   $handler->display->display_options['fields']['created']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['created']['date_format'] = 'short';
+  /* Field: feedback: Rating */
+  $handler->display->display_options['fields']['vopros_feedback_rating']['id'] = 'vopros_feedback_rating';
+  $handler->display->display_options['fields']['vopros_feedback_rating']['table'] = 'field_data_vopros_feedback_rating';
+  $handler->display->display_options['fields']['vopros_feedback_rating']['field'] = 'vopros_feedback_rating';
+  $handler->display->display_options['fields']['vopros_feedback_rating']['relationship'] = 'feedback_question_id';
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['vopros_feedback_rating']['click_sort_column'] = 'rating';
+  $handler->display->display_options['fields']['vopros_feedback_rating']['field_api_classes'] = 0;
   /* Filter criterion: Question: Question_status */
   $handler->display->display_options['filters']['question_status']['id'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
@@ -299,6 +328,7 @@ function vopros_question_views_default_views() {
     'assigned' => 'assigned',
     'answered' => 'answered',
     'closed' => 'closed',
+    'published' => 'published',
   );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
@@ -341,6 +371,18 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
+  /* Filter criterion: feedback: Rating (vopros_feedback_rating:rating) */
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['id'] = 'vopros_feedback_rating_rating';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['table'] = 'field_data_vopros_feedback_rating';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['field'] = 'vopros_feedback_rating_rating';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['relationship'] = 'feedback_question_id';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['operator_id'] = 'vopros_feedback_rating_rating_op';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['label'] = 'with rating';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['operator'] = 'vopros_feedback_rating_rating_op';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['identifier'] = 'vopros_feedback_rating_rating';
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['remember'] = 1;
+  $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['reduce'] = 0;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -585,7 +627,6 @@ function vopros_question_views_default_views() {
     'assigned' => 'assigned',
     'answered' => 'answered',
     'closed' => 'closed',
-    'published' => 'published',
   );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';

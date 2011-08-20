@@ -3,6 +3,7 @@ description = Handles parcing of mails to create entities of them.
 package = Vopros
 core = 7.x
 
+dependencies[] = mailhandler
 dependencies[] = vopros_base
 dependencies[] = vopros_email
 dependencies[] = vopros_question

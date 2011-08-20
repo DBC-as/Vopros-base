@@ -422,3 +422,32 @@ function vopros_feedback_vopros_question_activity_feed($question, &$feed) {
     );
   }
 }
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function vopros_feedback_views_data_alter(&$data) {
+  $data['vopros_question']['feedback_question_id'] = array(
+    'title' => t('Feedback'),
+    'help' => t('Latest feedback created for question'),
+    'relationship' => array(
+      'handler' => 'vopros_feedback_views_handler_argument_question_id',
+      'base' => 'vopros_feedback',
+      'field' => 'question_id',
+      'label' => 'question',
+    ),
+  );
+}
+
+/**
+ * A handler hardcoded to use the question_id as field.
+ */
+class vopros_feedback_views_handler_argument_question_id extends views_handler_relationship {
+  /**
+   * Override init method to set the field that we want to query, the question_id
+   */
+  function init(&$view, &$options) {
+    parent::init($view, $options);
+    $this->field = 'question_id';
+  }
+}
