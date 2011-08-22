@@ -437,6 +437,43 @@ function vopros_feedback_views_data_alter(&$data) {
       'label' => 'question',
     ),
   );
+  $data['vopros_feedback']['uid'] = array(
+    'title' => 'User given feedback',
+    'help' => 'Feedback uid',
+    'field' => array(
+      'field' => 'uid',
+      'handler' => 'views_handler_field_user',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_user_uid',
+      'name field' => 'name', // display this field in the summary
+    ),
+    'filter' => array(
+      'title' => t('User given feedback'),
+      'handler' => 'views_handler_filter_user_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'handler' => 'views_handler_relationship',
+      'base' => 'users',
+      'field' => 'uid',
+      'label' => 'user',
+    ),
+  );
+
+  $data['vopros_feedback']['email_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_email',
+    'field' => 'email_id',
+    'label' => 'email',
+  );
+  $data['vopros_feedback']['email_id']['argument'] = array(
+    'handler' => 'views_handler_argument_numeric',
+  );
+  
 }
 
 /**
