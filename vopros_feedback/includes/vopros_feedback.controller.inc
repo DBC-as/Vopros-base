@@ -28,6 +28,14 @@ class VoprosFeedbackEntityController extends EntityAPIController {
     if (empty($entity->created)) {
       $entity->created = $time;
     }
+    // Act when creating a new feedback that has a reference to a question.
+    // Remove direct relationship to question.
+    if (empty($entity->feedback_id) && !empty($entity->question_id)) {
+      db_update('vopros_feedback')
+        ->fields(array('question_id' => 0))
+        ->condition('question_id', $entity->question_id)
+        ->execute();
+    }
     $entity->changed = $time;
     parent::save($entity, $transaction);
   }
