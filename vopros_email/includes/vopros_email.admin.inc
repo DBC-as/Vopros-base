@@ -90,6 +90,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
 
   if ($answer) {
     $answer_wrapper = entity_metadata_wrapper('vopros_answer', $answer);
+    $email->answer_uid = $answer->uid;
   }
 
   $form['action'] = array(
