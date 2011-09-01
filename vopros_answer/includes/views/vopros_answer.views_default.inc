@@ -135,28 +135,32 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
   /* Field: Question: Subject */
-  $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['relationship'] = 'question_id';
-  $handler->display->display_options['fields']['subject_catagory']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['click_sort_column'] = 'tid';
-  $handler->display->display_options['fields']['subject_catagory']['type'] = 'taxonomy_term_reference_plain';
-  $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
+  // Logic to see if we have any terms.
+  $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory');
+  if (!empty($vocab) && !empty(taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid)))) {
+    $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
+    $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
+    $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';
+    $handler->display->display_options['fields']['subject_catagory']['relationship'] = 'question_id';
+    $handler->display->display_options['fields']['subject_catagory']['alter']['alter_text'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['make_link'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['absolute'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['external'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['replace_spaces'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['trim'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['nl2br'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['word_boundary'] = 1;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['ellipsis'] = 1;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['strip_tags'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['alter']['html'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['element_label_colon'] = 1;
+    $handler->display->display_options['fields']['subject_catagory']['element_default_classes'] = 1;
+    $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
+    $handler->display->display_options['fields']['subject_catagory']['click_sort_column'] = 'tid';
+    $handler->display->display_options['fields']['subject_catagory']['type'] = 'taxonomy_term_reference_plain';
+    $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
+  }
   /* Field: Question: Question_usage */
   $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
   $handler->display->display_options['fields']['question_usage']['table'] = 'vopros_question';
