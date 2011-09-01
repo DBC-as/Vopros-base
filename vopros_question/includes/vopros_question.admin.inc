@@ -39,7 +39,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
   );
 
   field_attach_form('vopros_question', $question, $form['form'], $form_state);
-  if (!$form['form']['vopros_editorial']['und']['#default_value']) {
+  if (empty($form['form']['vopros_editorial']['und']['#default_value']) && !empty($form['form']['vopros_editorial']['und']['#options'])) {
     $options = $form['form']['vopros_editorial']['und']['#options'];
     if (isset($options['_none'])) {
       unset($options['_none']);
