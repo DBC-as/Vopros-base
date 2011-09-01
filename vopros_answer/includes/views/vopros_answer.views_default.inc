@@ -137,7 +137,8 @@ function vopros_answer_views_default_views() {
   /* Field: Question: Subject */
   // Logic to see if we have any terms.
   $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory');
-  if (!empty($vocab) && !empty(taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid)))) {
+  $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+  if (!empty($vocab) && !empty($terms)) {
     $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
     $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
     $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';

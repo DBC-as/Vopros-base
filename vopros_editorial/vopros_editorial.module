@@ -315,8 +315,9 @@ function vopros_editorial_vopros_email_question_contact_form_macro_alter(&$text,
  */
 function vopros_editorial_views_default_views_alter(&$views) {
   $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+  $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
   /* Filter criterion: Fields: Editorial (vopros_editorial) - tid */
-  if (isset($views['vopros_question_list']) && !empty(taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid)))) {
+  if (isset($views['vopros_question_list']) && !empty($terms)) {
     $subject = $views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid'];
     unset($views['vopros_question_list']->display['default']->display_options['filters']['subject_catagory_tid']);
     $views['vopros_question_list']->display['default']->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
