@@ -38,5 +38,7 @@ class VoprosFeedbackEntityController extends EntityAPIController {
     }
     $entity->changed = $time;
     parent::save($entity, $transaction);
+    // Notify users about the rating.
+      vopros_feedback_notify($entity);
   }
 }

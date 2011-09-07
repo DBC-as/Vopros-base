@@ -350,6 +350,36 @@ function vopros_feedback_give_feedback_access($email, $hash) {
 }
 
 /**
+ * Implements hook_mail().
+ */
+function vopros_feedback_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'notify':
+      $message['subject'] .= t('Notification, a answer has received feedback');
+      $message['body'][] = t('The answer for the question: @title  has received feedback link: !url', array('@title' => $params['question']->question_title, '!url' => url('admin/vopros/questions/' . $params['question']->question_id)));
+      break;
+  }
+}
+
+/**
+ * Notify users about the alteration of feedback
+ *
+ * @param $feedback
+ *    The vopros feedback that is changed (saved)
+ */
+function vopros_feedback_notify($feedback) {
+  $email = vopros_email_load($feedback->email_id);
+  $notity = array(user_load($email->uid));
+  if ($email->answer_uid != $email->uid) {
+    $notity[] = user_load($email->answer_uid);
+  }
+  $language = language_default();
+  foreach ($notity as $account) {
+    drupal_mail('vopros_feedback', 'notify', $account->mail, $language, array('question' => vopros_question_load($email->question_id), 'answer' => vopros_answer_load($email->answer_id)));
+  }
+}
+
+/**
  * Configure the vopros_feedback entity.
  */
 function vopros_feedback_configure_feedback() {
@@ -473,7 +503,6 @@ function vopros_feedback_views_data_alter(&$data) {
   $data['vopros_feedback']['email_id']['argument'] = array(
     'handler' => 'views_handler_argument_numeric',
   );
-  
 }
 
 /**
