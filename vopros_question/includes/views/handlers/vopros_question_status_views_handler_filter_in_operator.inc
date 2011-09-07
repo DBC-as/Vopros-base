@@ -50,7 +50,7 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
         t('Open') => array(
           'open' => t('All open'),
           'new' => $mapping['new'],
-          'active' => $mapping['active'],
+          'active' => t('Active', array(), array('context' => 'plural form')),
         ),
         'assigned' => $mapping['assigned'],
         t('Closed') => array(
