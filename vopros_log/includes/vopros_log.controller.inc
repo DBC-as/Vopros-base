@@ -28,7 +28,7 @@ class VoprosLogEntityController extends EntityAPIController {
     if (empty($entity->created)) {
       $entity->created = REQUEST_TIME;
     }
-    $entity->changed = $time;
+    $entity->changed = REQUEST_TIME;
     parent::save($entity, $transaction);
   }
 }
