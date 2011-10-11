@@ -150,6 +150,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     '#description' => t('The main content of the email.'),
     '#default_value' => $email->email_content,
     '#required' => TRUE,
+    '#rows' => 10,
   );
 
   if (!$email->email_content && $answer && isset($answer_wrapper)) {
