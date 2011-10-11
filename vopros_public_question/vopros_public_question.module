@@ -246,11 +246,19 @@ function vopros_public_question_form_alter(&$form, &$form_state, $form_id) {
   switch ($form_id) {
     case 'vopros_email_form':
     case 'vopros_sms_form':
-      $form['action']['publish'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Publish question and answer'),
-      );
-      $form['#submit'][] = 'vopros_public_question_publish_submit';
+      $count = db_select('vopros_public_question')
+        ->condition('question_id', $form['answer']['#value']->question_id)
+        ->countQuery()
+        ->execute()
+        ->fetch();
+
+      if ($count->expression == 0) {
+        $form['action']['publish'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Publish question and answer'),
+        );
+        $form['#submit'][] = 'vopros_public_question_publish_submit';
+      }
       break;
   }
 }
@@ -259,7 +267,7 @@ function vopros_public_question_form_alter(&$form, &$form_state, $form_id) {
  * Submit handler for sending out questions that may need to be published.
  */
 function vopros_public_question_publish_submit(&$form, &$form_state) {
-  if ($form_state['values']['publish']) {
+  if (!empty($form_state['values']['publish'])) {
     $form_state['redirect'] = 'admin/vopros/public-questions/new/' . $form['answer']['#value']->question_id;
   }
 }
