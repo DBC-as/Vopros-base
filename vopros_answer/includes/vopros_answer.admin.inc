@@ -142,7 +142,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $form['form']['cancel'] = array(
     '#type' => 'submit',
-    '#value' => t('Cancel'),
+    '#value' => t('Release'),
     '#submit' => array('vopros_answer_form_cancel_submit'),
   );
 
