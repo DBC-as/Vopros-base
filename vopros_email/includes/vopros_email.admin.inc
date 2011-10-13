@@ -278,6 +278,11 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
     '#value' => t('Send mail'),
   );
 
+  $form['form']['cancel'] = array(
+    '#type' => 'markup',
+    '#markup' => l(t('Cancel'), 'admin/vopros/questions/' . $question->question_id),
+  );
+
   return $form;
 }
 
