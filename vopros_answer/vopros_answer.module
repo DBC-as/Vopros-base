@@ -138,6 +138,14 @@ function vopros_answer_views_data_alter(&$data) {
       'handler' => 'vopros_answer_area_own_questions',
     ),
   );
+
+  $data['vopros_question']['views_count'] = array(
+    'title' => t('Views Count'),
+    'help' => t('Display the number of results for the view.'),
+    'area' => array(
+      'handler' => 'vopros_answer_area_views_count',
+    ),
+  );
 }
 
 /**

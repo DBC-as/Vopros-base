@@ -104,6 +104,12 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['header']['own_questions']['id'] = 'own_questions';
   $handler->display->display_options['header']['own_questions']['table'] = 'vopros_question';
   $handler->display->display_options['header']['own_questions']['field'] = 'own_questions';
+  /* Footer: Question: Views Count */
+  if (module_exists('vopros_answer')) {
+    $handler->display->display_options['footer']['views_count']['id'] = 'views_count';
+    $handler->display->display_options['footer']['views_count']['table'] = 'vopros_question';
+    $handler->display->display_options['footer']['views_count']['field'] = 'views_count';
+  }
   /* Relationship: Question: Feedback */
   $handler->display->display_options['relationships']['feedback_question_id']['id'] = 'feedback_question_id';
   $handler->display->display_options['relationships']['feedback_question_id']['table'] = 'vopros_question';
@@ -361,16 +367,6 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
-  /* Filter criterion: Question: Subject (subject_catagory) */
-  $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
-  $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
   /* Filter criterion: feedback: Rating (vopros_feedback_rating:rating) */
   $handler->display->display_options['filters']['vopros_feedback_rating_rating']['id'] = 'vopros_feedback_rating_rating';
   $handler->display->display_options['filters']['vopros_feedback_rating_rating']['table'] = 'field_data_vopros_feedback_rating';
@@ -383,6 +379,16 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['identifier'] = 'vopros_feedback_rating_rating';
   $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['remember'] = 1;
   $handler->display->display_options['filters']['vopros_feedback_rating_rating']['expose']['reduce'] = 0;
+  /* Filter criterion: Question: Subject (subject_catagory) */
+  $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
+  $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
+  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -687,6 +693,42 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Admin list';
   $handler->display->display_options['menu']['weight'] = '0';
+  $translatables['vopros_question_list'] = array(
+    t('Master'),
+    t('Question list'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('question'),
+    t('Question ID'),
+    t('.'),
+    t('Title'),
+    t('admin/vopros/questions/[question_id]'),
+    t('Subject'),
+    t('Usage'),
+    t('Status'),
+    t('Deadline'),
+    t('Updated'),
+    t('Created'),
+    t('Rating'),
+    t('Show all'),
+    t('questions used for'),
+    t('with the editorial'),
+    t('with rating'),
+    t('with the subject'),
+    t('Page'),
+    t('user'),
+    t('Question assignee'),
+    t('Question status'),
+    t('Question usage'),
+    t('Editorial'),
+  );
 
   $views[$view->name] = $view;
 
