@@ -387,3 +387,10 @@ function vopros_question_update_7001(&$sandbox) {
 
   return t('All questions has had their status updated.');
 }
+
+/**
+ * Update fields on questions.
+ */
+function vopros_question_update_7002(&$sandbox) {
+  vopros_question_configure_question();
+}

@@ -715,6 +715,56 @@ function vopros_question_configure_question() {
     );
     field_create_instance($instance);
   }
+
+  // Create a file field for attachments.
+  $field_name = 'vopros_question_attachment';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => -1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'assigned' => TRUE,
+      'field_name' => $field_name,
+      'type' => 'file',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'weight' => 0,
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('File attachments'),
+      'widget' => array(
+        'type' => 'file_generic',
+        'settings' => array(
+          'progress_indicator' => 'throbber',
+        ),
+      ),
+      'settings' => array(
+        'file_directory' => 'vopros_question',
+        'file_extensions' => 'txt gif png jpg jpeg pdf doc docx',
+      ),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'file_default',
+          'settings' => array(),
+          'module' => 'file',
+          'weight' => 0,
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
 
 /**

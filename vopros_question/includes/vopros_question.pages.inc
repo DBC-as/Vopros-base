@@ -25,6 +25,17 @@ function vopros_question_create_service() {
       $question->{$property} = $post_data[$property];
     }
   }
+  if (!empty($_POST['questionAttachmentData'])) {
+    $file = file_save_data(base64_decode($_POST['questionAttachmentData']));
+    if ($file) {
+      $file_data = array(
+        'fid' => $file->fid,
+        'display' => 1,
+        'description' => '',
+      );
+    }
+    $question_wrapper->vopros_question_attachment = $file_data;
+  }
   $validation = vopros_question_validate_data($question);
   if ($validation['status'] == 'valid') {
     $question_wrapper->save();
