@@ -78,6 +78,13 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
       '#submit' => array('vopros_public_question_form_publish_submit'),
     );
   }
+  else {
+    $form['update'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save and update'),
+      '#submit' => array('vopros_public_question_form_update_submit'),
+    );
+  }
 
   $form_state['public_question'] = $public_question;
   $form_state['question'] = $question;
@@ -143,5 +150,31 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   }
   else {
     drupal_set_message(t('Could not create question at service.'), 'error');
+  }
+}
+
+/**
+ * Submit handler for vopros_public_question_form().
+ * Used for saving a public question and updating it on external storage.
+ */
+function vopros_public_question_form_update_submit(&$form, &$form_state) {
+  global $user;
+  $public_question = $form_state['public_question'];
+  $public_question->title = $form_state['values']['title'];
+  $public_question->answer_content = $form_state['values']['answer_content']['value'];
+  $public_question->answer_content_format = $form_state['values']['answer_content']['format'];
+  $public_question->question_content = $form_state['values']['question_content']['value'];
+  $public_question->question_content_format = $form_state['values']['question_content']['format'];
+  $public_question->subject = $form_state['values']['subject'];
+  $public_question->uid = $user->uid;
+  vopros_public_question_save($public_question);
+  $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
+  if ($result['status'] == 'object_updated') {
+    drupal_set_message(t("Question/answer has been saved and made public"));
+    $form_state['redirect'] = 'admin/vopros/questions/list';
+  }
+  else {
+    $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
+    drupal_set_message(t('Could not update question at service.'), 'error');
   }
 }
