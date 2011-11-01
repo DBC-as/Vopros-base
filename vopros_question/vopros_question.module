@@ -969,7 +969,10 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
     '#type' => 'value',
     '#value' => $question,
   );
-
+  // If the question is locked for answering, don't allow any action.
+  if ($question->question_status == 'assigned') {
+    return $form;
+  }
   // The question is closed, make it possible to open
   if (in_array($question->question_status, array('answered', 'closed', 'published'))) {
     $form['open'] = array(
@@ -991,7 +994,6 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
       '#submit' => array('vopros_question_handle_question_form_close_submit'),
     );
   }
-
   $form['edit'] = array(
     '#type' => 'submit',
     '#value' => t('Edit question'),
