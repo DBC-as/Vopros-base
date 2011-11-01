@@ -33,7 +33,7 @@ function vopros_question_create_service() {
         'display' => 1,
         'description' => '',
       );
-      $question_wrapper->vopros_question_attachment = $file_data;
+      $question_wrapper->vopros_question_attachment[0] = $file_data;
     }
   }
   $validation = vopros_question_validate_data($question);
