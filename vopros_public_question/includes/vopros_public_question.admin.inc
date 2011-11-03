@@ -30,6 +30,7 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
   elseif ($public_question->question_id) {
     $question = vopros_question_load($public_question->question_id);
   }
+  $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
 
   $form['title'] = array(
     '#type' => 'textfield',
@@ -59,10 +60,23 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
     '#rows' => 20,
   );
 
+  $vocab = taxonomy_vocabulary_machine_name_load('vopros_question_subject_catagory');
+  $options = array();
+  $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+  $question_terms = $question_wrapper->subject_catagory->value();
+  $question_term_name = '';
+  if ($question_terms) {
+    $question_term = array_shift($question_terms);
+    $question_term_name = $question_term->name;
+  }
+  foreach ($terms as $term) {
+    $options[$term->name] = $term->name;
+  }
   $form['subject'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
     '#title' => t('Subject'),
-    '#default_value' => $public_question->subject ? $public_question->subject : '',
+    '#default_value' => $public_question->subject ? $public_question->subject : $question_term_name,
+    '#options' => $options,
   );
 
   $form['save'] = array(
