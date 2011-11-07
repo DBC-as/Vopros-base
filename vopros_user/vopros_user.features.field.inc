@@ -10,14 +10,14 @@
 function vopros_user_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'profile2-vopros_user_librarian-field_vopros_user_shortcuts'
-  $fields['profile2-vopros_user_librarian-field_vopros_user_shortcuts'] = array(
+  // Exported field: 'profile2-vopros_user_librarian-vopros_user_shortcuts'
+  $fields['profile2-vopros_user_librarian-vopros_user_shortcuts'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_vopros_user_shortcuts',
+      'field_name' => 'vopros_user_shortcuts',
       'foreign keys' => array(),
       'indexes' => array(),
       'module' => 'link',
@@ -54,7 +54,7 @@ function vopros_user_field_default_fields() {
         ),
       ),
       'entity_type' => 'profile2',
-      'field_name' => 'field_vopros_user_shortcuts',
+      'field_name' => 'vopros_user_shortcuts',
       'label' => 'Shortcut links',
       'required' => 0,
       'settings' => array(

@@ -77,3 +77,39 @@ function vopros_user_default_profile2_type() {
   }');
   return $items;
 }
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_user_permission() {
+  return array(
+    'edit own shortcut links' =>  array(
+      'title' => t('Edit own shortcut links'),
+      'description' => t('Edit own shortcut links on user profile.'),
+    ),
+    'edit any shortcut links' =>  array(
+      'title' => t('Edit any shortcut links'),
+      'description' => t('Edit any shortcut links on user profile.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_user_form_user_profile_form_alter(&$form, &$form_state) {
+  global $user;
+  if (!empty($form['profile_vopros_user_librarian']['vopros_user_shortcuts'])) {
+    $access = user_access('edit any shortcut links') || (user_access('edit own shortcut links') && $user->uid == $form['#user']->uid);
+    $form['profile_vopros_user_librarian']['vopros_user_shortcuts']['#access'] = $access;
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function vopros_user_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
