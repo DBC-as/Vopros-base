@@ -71,7 +71,7 @@ function vopros_email_settings_form($form, &$form_state) {
 
   $form['macros']['tokens'] = array(
     '#markup' => theme('token_tree', array(
-      'token_types' => array('vopros_answer', 'vopros_question'),
+      'token_types' => array('vopros_answer', 'vopros_question', 'vopros_email'),
       'global_types' => FALSE,
     )),
     '#weight' => 2,
@@ -176,7 +176,6 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   }
 
   field_attach_form('vopros_email', $email, $form['form'], $form_state);
-
   return $form;
 }
 
@@ -204,6 +203,9 @@ function vopros_email_form_submit(&$form, &$form_state) {
     $email->question_id = $form_state['values']['answer']->question_id;
   }
   
+  vopros_email_save($email);
+  // Replace email tokens if any (only possible after the email is created).
+  $email->email_content = token_replace($email->email_content, array('vopros_email' => $email));
   vopros_email_save($email);
   if ($email->status != 'sent') {
     vopros_email_send($email);

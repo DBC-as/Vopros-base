@@ -356,7 +356,7 @@ function vopros_feedback_mail($key, &$message, $params) {
   switch ($key) {
     case 'notify':
       $message['subject'] .= t('Notification, a answer has received feedback');
-      $message['body'][] = t('The answer for the question: @title  has received feedback link: !url', array('@title' => $params['question']->question_title, '!url' => url('admin/vopros/questions/' . $params['question']->question_id)));
+      $message['body'][] = t('The answer for the question: @title  has received feedback link: !url', array('@title' => $params['question']->question_title, '!url' => url('admin/vopros/questions/' . $params['question']->question_id, array('absolute' => TRUE))));
       break;
   }
 }
@@ -516,4 +516,40 @@ class vopros_feedback_views_handler_argument_question_id extends views_handler_r
     parent::init($view, $options);
     $this->field = 'question_id';
   }
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function vopros_feedback_token_info() {
+  $info['types']['feedback-url'] = array(
+    'name' => t('Feedback url'),
+    'description' => t('The feedback url used in emails.'),
+  );
+}
+
+/**
+ * Implements hook_token_info_alter().
+ */
+function vopros_feedback_token_info_alter(&$info) {
+  $info['tokens']['vopros_email']['feedback-url'] = array(
+    'name' => t('Feedback url'),
+    'type' => 'feedback-url',
+    'entity-token' => TRUE,
+    'description' => t('The feedback url used in emails.'),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function vopros_feedback_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+  if ($type == 'vopros_email' && !empty($data['vopros_email'])) {
+    $email = $data['vopros_email'];
+    if (in_array('feedback-url', array_keys($tokens))) {
+      $replacements[$tokens['feedback-url']] = url('vopros/feedback/' . $email->email_id . '/' . md5($email->email_id . variable_get('vopros_feedback_secret', '')), array('absolute' => TRUE));
+    }
+  }
+  return $replacements;
 }
