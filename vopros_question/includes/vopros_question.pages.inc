@@ -36,6 +36,15 @@ function vopros_question_create_service() {
       $question_wrapper->vopros_question_attachment[0] = $file_data;
     }
   }
+  if (module_exists('vopros_editorial') && !empty($_POST['vopros_editorial'])) {
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+    $terms = taxonomy_term_load_multiple(FALSE, array('name' => 'vopros_editorial', 'vid' => $vocab->vid));
+    if ($terms) {
+      $term = array_shift($terms);
+      $question_wrapper->vopros_editorial = $term;
+    }
+  }
+  if (!empty($post_data))
   $validation = vopros_question_validate_data($question);
   if ($validation['status'] == 'valid') {
     $question_wrapper->save();
