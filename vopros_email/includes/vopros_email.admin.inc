@@ -369,7 +369,7 @@ function vopros_email_page_view($email, $view_mode = 'administrator', $langcode 
   );
 
   $type = 'vopros_email';
-  drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
+  drupal_alter(array('vopros_email_view', 'entity_view'), $build, $type);
 
   return $build;
 }

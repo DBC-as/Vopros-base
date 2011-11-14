@@ -16,3 +16,13 @@ function theme_vopros_public_question_feed($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Theme function for displaying status entry when the question was published.
+ */
+function theme_vopros_public_question_link($variables) {
+  $public_question = $variables['element']['#public_question'];
+  $output = '<div class="public-question vopros-question-extra"><span class="label">' . t('Public question') . ':</span><span class="value">' . l(t('Edit public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit') . '</span>';
+  $output .= '</div>';
+  return $output;
+}

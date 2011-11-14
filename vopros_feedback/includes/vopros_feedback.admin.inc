@@ -94,7 +94,7 @@ function vopros_feedback_page_view($feedback, $view_mode = 'administrator', $lan
   );
 
   $type = 'vopros_feedback';
-  drupal_alter(array('vopros_question_view', 'entity_view'), $build, $type);
+  drupal_alter(array('vopros_feedback_view', 'entity_view'), $build, $type);
 
   return $build;
 }
