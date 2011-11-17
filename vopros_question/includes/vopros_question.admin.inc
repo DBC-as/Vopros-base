@@ -165,6 +165,8 @@ function vopros_question_question_form($form, &$form_state, $question) {
   $form['form']['buttons']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#attributes' => array('class' => array('primary-action')),
+    
   );
 
   return $form;
@@ -790,6 +792,7 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
   }
 
   $form['form']['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
+  
 
   $form['form']['buttons']['contact'] = array(
     '#value' => t('Contact user'),

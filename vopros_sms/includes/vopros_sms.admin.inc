@@ -205,6 +205,7 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     '#type' => 'submit',
     '#value' => t('Send'),
     '#submit' => array('vopros_sms_form_submit'),
+    '#attributes' => array('class' => array('primary-action')),
   );
 
   $form['form']['buttons']['edit_answer'] = array(

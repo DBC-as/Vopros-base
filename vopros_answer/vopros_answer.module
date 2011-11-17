@@ -435,6 +435,7 @@ function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &
       '#validate' => array('vopros_answer_question_view_form_validate'),
       '#submit' => array('vopros_answer_question_view_form_submit'),
       '#weight' => -10,
+      '#attributes' => array('class' => array('primary-action')),
     );
   }
 }

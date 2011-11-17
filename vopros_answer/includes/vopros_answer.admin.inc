@@ -138,6 +138,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
     '#value' => t('Save and send'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
+    '#attributes' => array('class' => array('primary-action')),
   );
 
   $form['form']['cancel'] = array(

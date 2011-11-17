@@ -5,6 +5,15 @@
  */
 
 /**
+ * Implements hook_init().
+ */
+function vopros_base_init() {
+  if (arg(0) == 'vopros' || arg(1) == 'vopros') {
+    drupal_add_css(drupal_get_path('module', 'vopros_base') . '/theme/vopros_base.theme.css');
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function vopros_base_menu() {

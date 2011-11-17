@@ -17,6 +17,10 @@
   border-radius: 40px;
 }
 
+#vopros-answer-form .action .form-submit:active {
+  background: #666;
+}
+
 #vopros-answer-form .form .vopros-question .content {
   float: none;
   width: 100%;

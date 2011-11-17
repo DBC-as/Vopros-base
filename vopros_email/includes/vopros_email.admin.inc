@@ -167,6 +167,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['form']['buttons']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
+    '#attributes' => array('class' => array('primary-action')),
   );
 
   if ($answer) {
@@ -278,6 +279,7 @@ function vopros_email_question_contact_form($form, &$form_state, $question) {
   $form['form']['send_mail'] = array(
     '#type' => 'submit',
     '#value' => t('Send mail'),
+    '#attributes' => array('class' => array('primary-action')),
   );
 
   $form['form']['cancel'] = array(
