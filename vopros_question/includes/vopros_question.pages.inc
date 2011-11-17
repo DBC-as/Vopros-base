@@ -37,8 +37,9 @@ function vopros_question_create_service() {
     }
   }
   if (module_exists('vopros_editorial') && !empty($_POST['vopros_editorial'])) {
+    unset($question->vopros_editorial);
     $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
-    $terms = taxonomy_term_load_multiple(FALSE, array('name' => 'vopros_editorial', 'vid' => $vocab->vid));
+    $terms = taxonomy_term_load_multiple(FALSE, array('name' => $_POST['vopros_editorial'], 'vid' => $vocab->vid));
     if ($terms) {
       $term = array_shift($terms);
       $question_wrapper->vopros_editorial = $term;
@@ -60,6 +61,7 @@ function vopros_question_create_service() {
   print t('Question not created');
   exit();
 }
+
 
 /**
  * Page callback to create questions.
