@@ -8,7 +8,7 @@
  * Customized SearchApiViewsHandlerField for rendering fields displayed in
  * search results render with views and search_api.
  */
-class VoprosSeachSearchApiViewsHandlerField extends SearchApiViewsHandlerField {
+class VoprosSeachSearchApiViewsHandlerField extends entity_views_handler_field_text {
 
   /**
    * Render the field.
@@ -35,8 +35,8 @@ class VoprosSeachSearchApiViewsHandlerField extends SearchApiViewsHandlerField {
     }
     // Proceed as normal.
     if (is_array($value)) {
-      return $this->renderArray($value, $values);
+      return EntityFieldHandlerHelper::render_list($this, $value, $values);
     }
-    return $this->renderLink($value, $values);
+    return EntityFieldHandlerHelper::render_entity_link($this, $value, $values);
   }
 }

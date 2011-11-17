@@ -6,12 +6,11 @@
 function vopros_search_views_default_views() {
   $views = array();
 
-  // Search page
   $view = new view;
   $view->name = 'vopros_search_solr';
   $view->description = '';
   $view->tag = 'default';
-  $view->base_table = 'search_api_index_answer_and_question';
+  $view->base_table = 'search_api_index_vopros_answer_question';
   $view->human_name = 'Solr Search';
   $view->core = 7;
   $view->api_version = '3.0-alpha1';
@@ -28,33 +27,35 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
-  /* Field: Question: Question URL */
-  $handler->display->display_options['fields']['question_url']['id'] = 'question_url';
-  $handler->display->display_options['fields']['question_url']['table'] = 'search_api_index_answer_and_question';
-  $handler->display->display_options['fields']['question_url']['field'] = 'question_url';
-  $handler->display->display_options['fields']['question_url']['label'] = '';
-  $handler->display->display_options['fields']['question_url']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['question_url']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['question_url']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['question_url']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['question_url']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['question_url']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['question_url']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['question_url']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['question_url']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['question_url']['hide_alter_empty'] = 0;
-  $handler->display->display_options['fields']['question_url']['link_to_entity'] = 0;
-  /* Field: Question: Question_status_reason */
+  /* Field: Answer: Question_id */
+  $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
+  $handler->display->display_options['fields']['question_id']['table'] = 'search_api_index_vopros_answer_question';
+  $handler->display->display_options['fields']['question_id']['field'] = 'question_id';
+  $handler->display->display_options['fields']['question_id']['label'] = '';
+  $handler->display->display_options['fields']['question_id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['question_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_id']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['question_id']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_id']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['question_id']['separator'] = '';
+  $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
+  $handler->display->display_options['fields']['question_id']['link_to_entity'] = 0;
+  /* Field: Question: Question_status_reason (indexed) */
   $handler->display->display_options['fields']['question_question_status_reason']['id'] = 'question_question_status_reason';
-  $handler->display->display_options['fields']['question_question_status_reason']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['question_question_status_reason']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['question_question_status_reason']['field'] = 'question_question_status_reason';
   $handler->display->display_options['fields']['question_question_status_reason']['label'] = '';
   $handler->display->display_options['fields']['question_question_status_reason']['exclude'] = TRUE;
@@ -76,14 +77,14 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['question_question_status_reason']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_question_status_reason']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['question_question_status_reason']['link_to_entity'] = 0;
-  /* Field: Question: Question_title */
+  /* Field: Question: Question_title (indexed) */
   $handler->display->display_options['fields']['question_question_title']['id'] = 'question_question_title';
-  $handler->display->display_options['fields']['question_question_title']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['question_question_title']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['question_question_title']['field'] = 'question_question_title';
   $handler->display->display_options['fields']['question_question_title']['label'] = '';
   $handler->display->display_options['fields']['question_question_title']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['question_question_title']['alter']['make_link'] = 1;
-  $handler->display->display_options['fields']['question_question_title']['alter']['path'] = '[question_url]';
+  $handler->display->display_options['fields']['question_question_title']['alter']['path'] = 'admin/vopros/questions/[question_id]';
   $handler->display->display_options['fields']['question_question_title']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['question_question_title']['alter']['external'] = 0;
   $handler->display->display_options['fields']['question_question_title']['alter']['replace_spaces'] = 0;
@@ -102,9 +103,9 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['question_question_title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_question_title']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['question_question_title']['link_to_entity'] = 0;
-  /* Field: Question: Created */
+  /* Field: Question: Created (indexed) */
   $handler->display->display_options['fields']['question_created']['id'] = 'question_created';
-  $handler->display->display_options['fields']['question_created']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['question_created']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['question_created']['field'] = 'question_created';
   $handler->display->display_options['fields']['question_created']['label'] = 'Asked';
   $handler->display->display_options['fields']['question_created']['alter']['alter_text'] = 0;
@@ -124,15 +125,11 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['question_created']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_created']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_created']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['question_created']['date_format'] = 'short';
   $handler->display->display_options['fields']['question_created']['link_to_entity'] = 0;
-  $handler->display->display_options['fields']['question_created']['format'] = array(
-    'type' => 'short',
-    'custom' => '',
-    'granularity' => '1',
-  );
-  /* Field: Question: Question_status */
+  /* Field: Question: Question_status (indexed) */
   $handler->display->display_options['fields']['question_question_status']['id'] = 'question_question_status';
-  $handler->display->display_options['fields']['question_question_status']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['question_question_status']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['question_question_status']['field'] = 'question_question_status';
   $handler->display->display_options['fields']['question_question_status']['label'] = 'Status';
   $handler->display->display_options['fields']['question_question_status']['alter']['alter_text'] = 1;
@@ -155,9 +152,9 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['question_question_status']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_question_status']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['question_question_status']['link_to_entity'] = 0;
-  /* Field: Question: Question_content */
+  /* Field: Question: Question_content (indexed) */
   $handler->display->display_options['fields']['question_question_content']['id'] = 'question_question_content';
-  $handler->display->display_options['fields']['question_question_content']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['question_question_content']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['question_question_content']['field'] = 'question_question_content';
   $handler->display->display_options['fields']['question_question_content']['label'] = '';
   $handler->display->display_options['fields']['question_question_content']['alter']['alter_text'] = 0;
@@ -205,7 +202,7 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 0;
   /* Field: Answer: Answer_content */
   $handler->display->display_options['fields']['answer_content']['id'] = 'answer_content';
-  $handler->display->display_options['fields']['answer_content']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['fields']['answer_content']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['fields']['answer_content']['field'] = 'answer_content';
   $handler->display->display_options['fields']['answer_content']['label'] = '';
   $handler->display->display_options['fields']['answer_content']['alter']['alter_text'] = 0;
@@ -229,7 +226,7 @@ function vopros_search_views_default_views() {
   $handler->display->display_options['fields']['answer_content']['link_to_entity'] = 0;
   /* Filter criterion: Search: Fulltext search */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_answer_and_question';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_vopros_answer_question';
   $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
