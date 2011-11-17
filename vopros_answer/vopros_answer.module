@@ -233,11 +233,9 @@ function vopros_answer_permission() {
     ),
     'access answers' => array(
       'title' => t('Access lists of answers, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create answers' => array(
       'title' => t('Create answers'),
-      'restrict access' => TRUE,
     ),
     'edit any answer' => array(
       'title' => t('Edit any answer'),
@@ -245,7 +243,6 @@ function vopros_answer_permission() {
     ),
     'edit own answers' => array(
       'title' => t('Edit own answers'),
-      'restrict access' => TRUE,
     ),
     'view own answers' => array(
       'title' => t('View own answers'),

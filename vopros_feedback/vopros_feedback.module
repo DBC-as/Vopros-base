@@ -129,11 +129,9 @@ function vopros_feedback_permission() {
     ),
     'access feedback' => array(
       'title' => t('Access lists of feedback, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create feedback' => array(
       'title' => t('Create feedback'),
-      'restrict access' => TRUE,
     ),
     'edit any feedback' => array(
       'title' => t('Edit any feedback'),
@@ -141,7 +139,6 @@ function vopros_feedback_permission() {
     ),
     'edit own feedback' => array(
       'title' => t('Edit own feedback'),
-      'restrict access' => TRUE,
     ),
     'view own feedback' => array(
       'title' => t('View own feedback'),

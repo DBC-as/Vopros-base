@@ -248,11 +248,9 @@ function vopros_email_permission() {
     ),
     'access emails' => array(
       'title' => t('Access lists of emails, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create emails' => array(
       'title' => t('Create emails'),
-      'restrict access' => TRUE,
     ),
     'edit any email' => array(
       'title' => t('Edit any email'),
@@ -260,7 +258,6 @@ function vopros_email_permission() {
     ),
     'edit own emails' => array(
       'title' => t('Edit own emails'),
-      'restrict access' => TRUE,
     ),
     'view own emails' => array(
       'title' => t('View own emails'),

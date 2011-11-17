@@ -228,11 +228,9 @@ function vopros_sms_permission() {
     ),
     'access SMSes' => array(
       'title' => t('Access lists of SMSes, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create SMSes' => array(
       'title' => t('Create SMSes'),
-      'restrict access' => TRUE,
     ),
     'edit any sms' => array(
       'title' => t('Edit any sms'),
@@ -240,7 +238,6 @@ function vopros_sms_permission() {
     ),
     'edit own SMSes' => array(
       'title' => t('Edit own SMSes'),
-      'restrict access' => TRUE,
     ),
     'view own SMSes' => array(
       'title' => t('View own SMSes'),

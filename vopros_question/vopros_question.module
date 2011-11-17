@@ -336,15 +336,12 @@ function vopros_question_permission() {
     ),
     'access questions' => array(
       'title' => t('Access lists of questions, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create questions' => array(
       'title' => t('Create questions'),
-      'restrict access' => TRUE,
     ),
     'edit questions' => array(
       'title' => t('Edit any question'),
-      'restrict access' => TRUE,
     ),
     'contact user about question' => array(
       'title' => t('Contact user about question'),

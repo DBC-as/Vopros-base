@@ -51,11 +51,9 @@ function vopros_log_permission() {
     ),
     'access logs' => array(
       'title' => t('Access lists of logs, primarily for viewing and referencing'),
-      'restrict access' => TRUE,
     ),
     'create logs' => array(
       'title' => t('Create logs'),
-      'restrict access' => TRUE,
     ),
     'edit any log' => array(
       'title' => t('Edit any log'),
@@ -63,7 +61,6 @@ function vopros_log_permission() {
     ),
     'edit own logs' => array(
       'title' => t('Edit own logs'),
-      'restrict access' => TRUE,
     ),
     'view own logs' => array(
       'title' => t('View own logs'),
