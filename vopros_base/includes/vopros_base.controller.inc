@@ -21,7 +21,7 @@ class VoprosAPIEntityController extends EntityAPIController {
       $entity->created = REQUEST_TIME;
     }
     if (empty($entity->uuid)) {
-      $entity->uuid = uuid_uuid();
+      $entity->uuid = uuid_generate();
     }
     if (!isset($entity->revision)) {
       $entity->revision = 1;
