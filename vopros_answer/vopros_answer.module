@@ -401,7 +401,7 @@ function vopros_answer_vopros_question_activity_feed($question, &$feed) {
   foreach ($answers as $answer_id => $answer) {
     if (trim($answer->answer_content)) {
       $feed['answer_header'] = array(
-        '#weight' => 0,
+        '#weight' => -pow(10, 15),
         '#markup' => '<h2 class="answer-header">' . t('Answers:') . '</h2>',
       );
       $feed['answer' . $answer_id] = array(
@@ -409,7 +409,7 @@ function vopros_answer_vopros_question_activity_feed($question, &$feed) {
         '#suffix' => '</div>',
         '#markup' => str_replace("\n", '<br />', check_plain($answer->answer_content)),
         // Make answers float to the top.
-        '#weight' => '0.' . $answer->created,
+        '#weight' => -pow(10, 14) + $answer->created,
       );
     }
   }

@@ -1123,7 +1123,7 @@ function vopros_question_vopros_question_activity_feed($question, &$feed) {
       $feed['question_revision_' . $revision->revision_id] = array(
         '#theme' => 'vopros_question_revision_question_feed',
         '#revision' => $revision,
-        '#weight' => $revision->revision_timestamp,
+        '#weight' => - $revision->revision_timestamp,
       ) ;
       $status = $revision->question_status;
       $reason = $revision->question_status_reason;

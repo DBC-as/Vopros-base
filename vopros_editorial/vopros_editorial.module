@@ -123,7 +123,7 @@ function vopros_editorial_vopros_question_activity_feed($question, &$feed) {
           $feed['vopros_editorial_' . $editorial_revision->revision_timestamp] = array(
             '#theme' => 'vopros_editorial_field_feed',
             '#revision' => $editorial_revision,
-            '#weight' => $editorial_revision->revision_timestamp,
+            '#weight' => - $editorial_revision->revision_timestamp,
           );
           // Update the tid we're matching for
           $tid = $editorial_revision->tid;

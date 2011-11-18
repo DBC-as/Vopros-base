@@ -315,7 +315,7 @@ function vopros_public_question_vopros_question_activity_feed($question, &$feed)
     $feed['public_question_' . $public_question->public_question_id] = array(
       '#public_question' => $public_question,
       '#theme' => 'vopros_public_question_feed',
-      '#weight' => $public_question->created,
+      '#weight' => - $public_question->created,
     );
   }*/
 }
