@@ -326,6 +326,12 @@ function vopros_email_views_default_views() {
     t('admin/vopros/emails/[email_id]/delete'),
     t('Page'),
   );
+  
+  $menu_translations = array(
+    t('Display a list of inbound emails'),
+    t('Emails'),
+    t('Email list'),
+  );
 
   $views[$view->name] = $view;
 

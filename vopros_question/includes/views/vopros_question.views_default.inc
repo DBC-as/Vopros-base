@@ -728,6 +728,20 @@ function vopros_question_views_default_views() {
     t('Question status'),
     t('Question usage'),
     t('Editorial'),
+    t('Questions'),
+    t('Admin list'),
+    t('List'),
+    t('Question list'),
+    t('Display a list of active questions')
+  );
+
+  $custom_translatables = array(
+   t('Admin list'),
+   t('Feedback'),
+   t('User feedback'),
+   t('Display a list of active questions'),
+   t('Questions'),
+   t('Question list'),
   );
 
   $views[$view->name] = $view;

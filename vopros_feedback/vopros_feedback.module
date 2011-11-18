@@ -74,6 +74,7 @@ function vopros_feedback_menu() {
       'access callback' => 'vopros_feedback_access',
       'access arguments' => array('create'),
       'file' => 'includes/vopros_feedback.admin.inc',
+      'type' => MENU_LOCAL_TASK,
     ),
     'admin/vopros/feedback/%vopros_feedback' => array(
       'title callback' => 'vopros_feedback_title',
@@ -549,4 +550,15 @@ function vopros_feedback_tokens($type, $tokens, array $data = array(), array $op
     }
   }
   return $replacements;
+}
+
+
+/**
+ * Implements hook_views_api().
+ */
+function vopros_feedback_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vopros_feedback') . '/includes/views',
+  );
 }

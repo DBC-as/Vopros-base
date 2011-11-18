@@ -237,6 +237,26 @@ function vopros_search_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'search';
+  $translatables['vopros_search_solr'] = array(
+    t('Master'),
+    t('Search'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('.'),
+    t('admin/vopros/questions/[question_id]'),
+    t('Asked'),
+    t('Status'),
+    t('[question_question_status] ([question_question_status_reason])'),
+    t('Answer'),
+    t('Page'),
+  );
 
   $views['vopros_search_solr'] = $view;
 

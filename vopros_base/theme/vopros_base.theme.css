@@ -1,0 +1,13 @@
+/**
+ * Generic CSS across Vorpos
+ */
+
+form input.primary-action {
+  background: #A5E494;
+  border-color: #80BE81;
+}
+
+form input.primary-action:active {
+  background: #578358;
+  border-color: #324E33;
+}
