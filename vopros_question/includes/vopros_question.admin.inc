@@ -517,7 +517,7 @@ function _vopros_question_diff_rows($old_question, $new_question) {
 
   foreach ($single_line as $key) {
     $question_diffs[$key] = array(
-      '#name' => t(str_replace('_', ' ', $p[$key]['label'])),
+      '#name' => str_replace('_', ' ', $p[$key]['label']),
       '#old' => array(isset($select[$key]) ? $select[$key][$old_question->{$key}] : $old_question->{$key}),
       '#new' => array(isset($select[$key]) ? $select[$key][$new_question->{$key}] : $new_question->{$key}),
       '#format' => array(
@@ -533,7 +533,7 @@ function _vopros_question_diff_rows($old_question, $new_question) {
 
   foreach ($multi_line as $key) {
     $question_diffs[$key] = array(
-      '#name' => t(str_replace('_', ' ', $p[$key]['label'])),
+      '#name' => str_replace('_', ' ', $p[$key]['label']),
       '#old' => explode("\n", $new_question->{$key}),
       '#new' => explode("\n", $old_question->{$key}),
     );
