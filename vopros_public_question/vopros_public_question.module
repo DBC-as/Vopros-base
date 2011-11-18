@@ -21,7 +21,7 @@ function vopros_public_question_entity_info() {
       'controller class' => 'VoprosPublicQuestionEntityController',
       'base table' => 'vopros_public_question',
       'revision table' => 'vopros_public_question_revision',
-      'fieldable' => FALSE,
+      'fieldable' => TRUE,
       'uri callback' => 'vopros_public_question_uri',
       'entity keys' => array(
         'id' => 'public_question_id',
@@ -59,6 +59,69 @@ function vopros_public_question_uri($public_question) {
   return array(
     'path' => 'admin/vopros/public-questions/' . $public_question->public_question_id,
   );
+}
+
+/**
+ * Implements hook_enable().
+ */
+function vopros_public_question_enable() {
+  vopros_public_question_configure_question();
+}
+
+/**
+ * Configure the vopros email entity with fields.
+ */
+function vopros_public_question_configure_question() {
+  $type = 'vopros_public_question';
+  $bundle = 'vopros_public_question';
+
+  // Create a taxonomy term reference field
+  $field_name = 'vopros_public_question_subject';
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($type, $field_name, $bundle);
+
+  if (empty($field)) {
+    $field = array(
+      'cardinality' => -1,
+      'entity_types' => array($type),
+      'translatable' => FALSE,
+      'assigned' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          array(
+            'vocabulary' => 'vopros_question_subject_catagory',
+            'parent' => 0,
+          ),
+        ),
+      ),
+      'field_name' => $field_name,
+      'type' => 'taxonomy_term_reference',
+    );
+    field_create_field($field);
+  }
+
+  if (empty($instance)) {
+    $instance = array(
+      'entity_type' => $type,
+      'bundle' => $bundle,
+      'required' => FALSE,
+      'settings' => array(),
+      'field_name' => $field_name,
+      'label' => t('Subject'),
+      'widget' => array(
+        'type' => 'options_buttons',
+      ),
+      'settings' => array(),
+
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'taxonomy_term_reference_link',
+        ),
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
 
 /**

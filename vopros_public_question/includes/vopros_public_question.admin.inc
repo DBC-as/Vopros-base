@@ -30,7 +30,11 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
   elseif ($public_question->question_id) {
     $question = vopros_question_load($public_question->question_id);
   }
+  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
   $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+  if (!empty($public_question->is_new)) {
+    $public_question_wrapper->vopros_public_question_subject = $question_wrapper->subject_catagory->value();
+  }
 
   $form['title'] = array(
     '#type' => 'textfield',
@@ -72,12 +76,8 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
   foreach ($terms as $term) {
     $options[$term->name] = $term->name;
   }
-  $form['subject'] = array(
-    '#type' => 'select',
-    '#title' => t('Subject'),
-    '#default_value' => $public_question->subject ? $public_question->subject : $question_term_name,
-    '#options' => $options,
-  );
+
+  field_attach_form('vopros_public_question', $public_question, $form, $form_state);
 
   $form['save'] = array(
     '#type' => 'submit',
@@ -107,6 +107,14 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
 }
 
 /**
+ * Validate handler for vopros_public_question_form()/
+ */
+function vopros_public_question_form_validate(&$form, &$form_state) {
+  $public_question = $form_state['public_question'];
+  field_attach_validate('vopros_public_question', $public_question, $form, $form_state);
+}
+
+/**
  * Submit handler for vopros_public_question_form().
  * Used for saving a public question.
  */
@@ -118,8 +126,8 @@ function vopros_public_question_form_save_submit(&$form, &$form_state) {
   $public_question->answer_content_format = $form_state['values']['answer_content']['format'];
   $public_question->question_content = $form_state['values']['question_content']['value'];
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
-  $public_question->subject = $form_state['values']['subject'];
   $public_question->uid = $user->uid;
+  field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
   vopros_public_question_save($public_question);
   $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
   drupal_set_message(t("Question/answer has been saved but haven't been made public"), 'warning');
@@ -139,8 +147,8 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   $public_question->answer_content_format = $form_state['values']['answer_content']['format'];
   $public_question->question_content = $form_state['values']['question_content']['value'];
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
-  $public_question->subject = $form_state['values']['subject'];
   $public_question->uid = $user->uid;
+  field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
   vopros_public_question_save($public_question);
 
   // Format the question and answer content.
@@ -150,6 +158,11 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
 
   // Create the description from the question and answer. Used by osa_addi.
   $public_question->description = $public_question->question_content . "\n\n" . $public_question->answer_content;
+  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
+  $public_question->subject = array();
+  foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
+    $public_question->subject[] = $term->name;
+  }
   $result = osa_addi_create_object($public_question, $public_question->uuid);
   if ($result['status'] == 'object_created') {
     drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
@@ -179,9 +192,13 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   $public_question->answer_content_format = $form_state['values']['answer_content']['format'];
   $public_question->question_content = $form_state['values']['question_content']['value'];
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
-  $public_question->subject = $form_state['values']['subject'];
   $public_question->uid = $user->uid;
   vopros_public_question_save($public_question);
+  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
+  $public_question->subject = array();
+  foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
+    $public_question->subject[] = $term->name;
+  }
   $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
   if ($result['status'] == 'object_updated') {
     drupal_set_message(t("Question/answer has been saved and made public"));

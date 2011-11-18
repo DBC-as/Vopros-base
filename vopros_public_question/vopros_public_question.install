@@ -67,12 +67,6 @@ function vopros_public_question_schema() {
         'type' => 'varchar',
         'length' => 255,
       ),
-      'subject' => array(
-        'description' => 'The subject of the public question.',
-        'type' => 'varchar',
-        'length' => '255',
-        'not null' => TRUE,
-      ),
       'status' => array(
         'description' => 'The status of the public question.',
         'type' => 'varchar',
@@ -176,12 +170,6 @@ function vopros_public_question_schema() {
         'not null' => TRUE,
         'size' => 'big',
       ),
-      'subject' => array(
-        'description' => 'The subject of the public question.',
-        'type' => 'varchar',
-        'length' => '255',
-        'not null' => TRUE,
-      ),
       'status' => array(
         'description' => 'The status of the public question.',
         'type' => 'varchar',
@@ -216,3 +204,14 @@ function vopros_public_question_schema() {
 
   return $schema;
 }
+
+/**
+ * Remove subject field and add a taxonomy reference field instead.
+ */
+function vopros_public_question_update_7000(&$sandbox) {
+  db_drop_field('vopros_public_question', 'subject');
+  db_drop_field('vopros_public_question_revision', 'subject');
+  vopros_public_question_configure_question();
+}
+
+
