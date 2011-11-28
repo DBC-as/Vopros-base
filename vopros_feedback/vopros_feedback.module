@@ -291,6 +291,7 @@ function vopros_feedback_build_content($feedback, $view_mode = 'administrator', 
   );
 
   // Add fields
+  field_attach_prepare_view('vopros_feedback', array($feedback->feedback_id => $feedback), $view_mode, $langcode);
   $feedback->content[] = field_attach_view('vopros_feedback', $feedback, $view_mode, $langcode);
 
   module_invoke_all('entity_view', $feedback, 'vopros_feedback', $view_mode, $langcode);

@@ -311,7 +311,7 @@ function vopros_editorial_vopros_email_question_contact_form_macro_alter(&$text,
 
 
 /**
- * Implements hook_field_views_data_alter().
+ * Implements hook_views_default_views_alter().
  */
 function vopros_editorial_views_default_views_alter(&$views) {
   $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');

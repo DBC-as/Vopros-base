@@ -145,7 +145,7 @@ function theme_vopros_email_transfer_link($variables) {
   $output = '<div class="email-transfer vopros-email-extra">';
   if (isset($email->no_transfer) && $email->no_transfer) {
     $output .= '<span class="label">' . t('Transfer:') .  '</span>';
-    $output .= '<span class="value">' . t('Can\'t transfer question, already transferred') . '</span>';
+    $output .= '<span class="value">' . t('Can\'t transfer e-mail, already transferred') . '</span>';
   }
   elseif (!isset($email->transfer)) {
     $output .= '<span class="label">' . t('Transfer:') .  '</span>';
@@ -171,7 +171,7 @@ function theme_vopros_email_transfer_feed($variables) {
   $username = theme('username', array('account' => user_load($transfer->uid)));
   $date = format_date($transfer->transfer_time, 'short');
   $output = '<div class="email-transfer-feed-item feed-item">';
-  $output .= t('Email converted into new !question by by !username @date', array('@date' => $date, '!username' => $username, '!question' => l(t('question'), 'admin/vopros/questions/' . $transfer->target_question_id)));
+  $output .= t('Email converted into new !question by !username @date', array('@date' => $date, '!username' => $username, '!question' => l(t('question'), 'admin/vopros/questions/' . $transfer->target_question_id)));
   $output .= '</div>';
   return $output;
 }

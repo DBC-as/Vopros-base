@@ -343,7 +343,7 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
   vopros_question_save($question);
-  drupal_set_message(t('The answer has been sent to @receiver and the question !question is marked as closed without answer (@status_reason).',
+  drupal_set_message(t('The e-mail has been sent to @receiver and the question !question is marked as closed without answer (@status_reason).',
     array(
       '@receiver' => $email->email,
       '!question' => '<em>' . l($question->question_title, 'admin/vopros/questions/' . $question->question_id) . '</em>',

@@ -576,6 +576,7 @@ function vopros_email_build_content($email, $view_mode = 'administrator', $langc
   );
 
   // Add fields
+  field_attach_prepare_view('vopros_email', array($email->email_id => $email), $view_mode, $langcode);
   $email->content['body'][] = field_attach_view('vopros_email', $email, $view_mode, $langcode);
 
   module_invoke_all('entity_view', $email, 'vopros_email', $view_mode, $langcode);
@@ -692,7 +693,7 @@ function vopros_email_vopros_question_activity_feed($question, &$feed) {
       
     vopros_email_build_content($email);
     if ($email->type == 'outgoing') {
-      $email->content['body'][] = array('#markup' => '<iframe style="border: 2px solid red;" width="500px" height="300px" src="' . url('vopros/feedback/' . $email_id . '/' . md5($email_id . variable_get('vopros_feedback_secret', ''))) . '"></iframe>');
+      //$email->content['body'][] = array('#markup' => '<iframe style="border: 2px solid red;" width="500px" height="300px" src="' . url('vopros/feedback/' . $email_id . '/' . md5($email_id . variable_get('vopros_feedback_secret', ''))) . '"></iframe>');
     }
     $feed['email_' . $email_id] = $email->content;
     $feed['email_' . $email_id]['#weight'] = $email->created;

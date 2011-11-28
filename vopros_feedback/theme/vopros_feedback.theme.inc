@@ -22,6 +22,7 @@ function theme_vopros_feedback_content($variables) {
 function theme_vopros_feedback_result($variables) {
   $feedback = $variables['feedback'];
 
+  field_attach_prepare_view('vopros_feedback', array($feedback->feedback_id => $feedback), 'full');
   $build = field_attach_view('vopros_feedback', $feedback, 'full');
   $build['feedback_content'] = array(
     '#theme' => 'vopros_feedback_content',
