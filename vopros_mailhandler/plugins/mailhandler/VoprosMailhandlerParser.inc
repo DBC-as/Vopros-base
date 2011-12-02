@@ -26,7 +26,7 @@ class VoprosMailhandlerParser extends MailhandlerParser {
     $sources = parent::getMappingSources();
     $sources['subject_question'] = array(
       'name' => t('Question id from subject code'),
-      'description' => t('The question id gotten form a code in the subject'),
+      'description' => t('The question id gotten from a code in the subject'),
     );
     return $sources;
   }

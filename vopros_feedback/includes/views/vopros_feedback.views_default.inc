@@ -101,7 +101,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['relationships']['question_id']['relationship'] = 'email_id';
   $handler->display->display_options['relationships']['question_id']['label'] = 'spørgsmål';
   $handler->display->display_options['relationships']['question_id']['required'] = 0;
-  /* Felt: Feedback: Feedback ID */
+  /* Field: Feedback: Feedback ID */
   $handler->display->display_options['fields']['feedback_id']['id'] = 'feedback_id';
   $handler->display->display_options['fields']['feedback_id']['table'] = 'vopros_feedback';
   $handler->display->display_options['fields']['feedback_id']['field'] = 'feedback_id';
@@ -126,7 +126,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['fields']['feedback_id']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['feedback_id']['separator'] = '';
   $handler->display->display_options['fields']['feedback_id']['format_plural'] = 0;
-  /* Felt: Email: Email ID */
+  /* Field: Email: Email ID */
   $handler->display->display_options['fields']['email_id']['id'] = 'email_id';
   $handler->display->display_options['fields']['email_id']['table'] = 'vopros_email';
   $handler->display->display_options['fields']['email_id']['field'] = 'email_id';
@@ -152,7 +152,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['fields']['email_id']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['email_id']['separator'] = '';
   $handler->display->display_options['fields']['email_id']['format_plural'] = 0;
-  /* Felt: Email: Question_id */
+  /* Field: Email: Question_id */
   $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
   $handler->display->display_options['fields']['question_id']['table'] = 'vopros_email';
   $handler->display->display_options['fields']['question_id']['field'] = 'question_id';
@@ -178,7 +178,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['fields']['question_id']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['question_id']['separator'] = '';
   $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
-  /* Felt: Spørgsmål: Question_title */
+  /* Field: Question: Question_title */
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['question_title']['field'] = 'question_title';
@@ -202,7 +202,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_title']['hide_alter_empty'] = 0;
-  /* Felt: Answer link (link to email) */
+  /* Field: Answer link (link to email) */
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
@@ -226,7 +226,7 @@ function vopros_feedback_views_default_views() {
   $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
   $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 0;
-  /* Felt: feedback: Rating */
+  /* Field: feedback: Rating */
   $handler->display->display_options['fields']['vopros_feedback_rating']['id'] = 'vopros_feedback_rating';
   $handler->display->display_options['fields']['vopros_feedback_rating']['table'] = 'field_data_vopros_feedback_rating';
   $handler->display->display_options['fields']['vopros_feedback_rating']['field'] = 'vopros_feedback_rating';
@@ -255,7 +255,7 @@ function vopros_feedback_views_default_views() {
     'text' => 'average',
   );
   $handler->display->display_options['fields']['vopros_feedback_rating']['field_api_classes'] = 0;
-  /* Felt: Feedback: Feedback_content */
+  /* Field: Feedback: Feedback_content */
   $handler->display->display_options['fields']['feedback_content']['id'] = 'feedback_content';
   $handler->display->display_options['fields']['feedback_content']['table'] = 'vopros_feedback';
   $handler->display->display_options['fields']['feedback_content']['field'] = 'feedback_content';
@@ -316,7 +316,7 @@ function vopros_feedback_views_default_views() {
     t('Master'),
     t('Your feedback'),
     t('mere'),
-    t('Anvend'),
+    t('Apply'),
     t('Nulstil'),
     t('Sorter efter'),
     t('Asc'),
@@ -327,16 +327,17 @@ function vopros_feedback_views_default_views() {
     t('email'),
     t('spørgsmål'),
     t('.'),
-    t('Spørgsmål'),
+    t('Question'),
     t('admin/vopros/questions/[question_id]'),
-    t('Svar'),
+    t('Answer'),
     t('See answer sent to user'),
     t('admin/vopros/emails/[email_id]'),
     t('Rating'),
     t('Feedback'),
-    t('Alle'),
+    t('All'),
     t('User rating'),
     t('Page'),
+    t('more'),
   );
 
   $custom_translatables = array(
