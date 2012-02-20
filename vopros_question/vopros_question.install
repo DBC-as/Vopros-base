@@ -156,6 +156,7 @@ function vopros_question_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('question_id'),
     'unique keys' => array(
@@ -325,6 +326,7 @@ function vopros_question_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('revision_id'),
     'foreign keys' => array(
@@ -334,10 +336,6 @@ function vopros_question_schema() {
       ),
     ),
   );
-
-  module_load_include('inc', 'uuid', 'uuid.schema');
-  uuid_schema_generate($schema, 'vopros_question');
-  uuid_schema_generate($schema, 'vopros_question_revision');
 
   return $schema;
 }
