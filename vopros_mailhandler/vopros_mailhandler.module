@@ -28,3 +28,5 @@ function vopros_mailhandler_feeds_plugins() {
     ),
   );
 }
+
+include_once('vopros_mailhandler.features.inc');
