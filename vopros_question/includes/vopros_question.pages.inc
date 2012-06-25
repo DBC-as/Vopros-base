@@ -57,7 +57,7 @@ function vopros_question_create_service() {
   foreach ($validation['errors'] as $value) {
     $errors[] = $value[0];
   }
-  watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields', array('%fields' => implode(', ', $errors)), WATCHDOG_ERROR);
+  watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields. Validation object: %validation', array('%fields' => implode(', ', $errors), '%validation' => print_r($validation, TRUE)), WATCHDOG_ERROR);
   print t('Question not created');
   exit();
 }
