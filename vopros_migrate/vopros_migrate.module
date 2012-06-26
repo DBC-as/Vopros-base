@@ -251,6 +251,7 @@ function _vopros_migrate_create_question($row) {
     );
     // Create and save the question
     $question = vopros_question_new($question_values);
+    $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
     if ($row->catagory_id) {
       $tid = db_select('vopros_migrate', 'v')
         ->fields('v', array('entity_id'))
@@ -259,7 +260,6 @@ function _vopros_migrate_create_question($row) {
         ->execute()
         ->fetch();
       if ($tid) {
-        $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
         $question_wrapper->subject_catagory = array($tid->entity_id);
       }
     }
