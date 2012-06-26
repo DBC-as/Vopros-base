@@ -260,7 +260,7 @@ function _vopros_migrate_create_question($row) {
         ->fetch();
       if ($tid) {
         $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
-        $question_wrapper->subject_catagory = $tid->entity_id;
+        $question_wrapper->subject_catagory = array($tid->entity_id);
       }
     }
     // Hardcode tid value for vopros.biblioteksvagten.dk values.
