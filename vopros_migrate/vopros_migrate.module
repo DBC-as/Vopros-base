@@ -263,6 +263,13 @@ function _vopros_migrate_create_question($row) {
         $question_wrapper->subject_catagory = $tid->entity_id;
       }
     }
+    // Hardcode tid value for vopros.biblioteksvagten.dk values.
+    if ($row->IsResearchLibraryQuestion) {
+      $question_wrapper->vopros_editorial = 1;
+    }
+    else {
+      $question_wrapper->vopros_editorial = 2;
+    }
     vopros_question_save($question);
     // Update link in database to make sure we don't export the same question multiple times.
     if (isset($question->question_id) && $question->question_id) {
