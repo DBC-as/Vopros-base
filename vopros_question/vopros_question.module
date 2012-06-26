@@ -532,6 +532,17 @@ function vopros_question_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+/**
+ * Implements hook_views_pre_render()
+ */
+function vopros_question_form_views_exposed_form_alter(&$form, &$form_state) {
+  // Since we can't set questions to have the open status, we set it, if no get params are set.
+  $view = $form_state['view'];
+  if ($view->name == 'vopros_question_list' && $view->current_display == 'page' && empty($_GET['question_status'])) {
+    $form_state['input']['question_status'] = 'open';
+  }
+}
+
 function vopros_question_user_login_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/list';
 }
