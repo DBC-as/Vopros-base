@@ -45,19 +45,20 @@ function vopros_question_create_service() {
       $question_wrapper->vopros_editorial = $term;
     }
   }
-  if (!empty($post_data))
+  if (!empty($post_data)) {
   $validation = vopros_question_validate_data($question);
-  if ($validation['status'] == 'valid') {
-    $question_wrapper->save();
-    print t('Question created');
-    exit();
+    if ($validation['status'] == 'valid') {
+      $question_wrapper->save();
+      print t('Question created');
+      exit();
+    }
+    drupal_add_http_header('Status', '400');
+    $errors = array();
+    foreach ($validation['errors'] as $value) {
+      $errors[] = $value[0];
+    }
+    watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields. Validation object: %validation', array('%fields' => implode(', ', $errors), '%validation' => print_r($validation, TRUE)), WATCHDOG_ERROR);
   }
-  drupal_add_http_header('Status', '400');
-  $errors = array();
-  foreach ($validation['errors'] as $value) {
-    $errors[] = $value[0];
-  }
-  watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields. Validation object: %validation', array('%fields' => implode(', ', $errors), '%validation' => print_r($validation, TRUE)), WATCHDOG_ERROR);
   print t('Question not created');
   exit();
 }
