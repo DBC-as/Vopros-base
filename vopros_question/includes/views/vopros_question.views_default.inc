@@ -303,8 +303,13 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['value'] = array(
+    'all' => 'all',
     'new' => 'new',
     'active' => 'active',
+    'assigned' => 'assigned',
+    'answered' => 'answered',
+    'closed' => 'closed',
+    'published' => 'published',
   );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
