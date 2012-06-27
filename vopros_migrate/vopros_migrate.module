@@ -118,9 +118,9 @@ function _vopros_migrate_perform_migrate_questions($count, &$context) {
     }
     $context['sandbox']['progress'] += 51;
     if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
-      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+      $context['finished'] = $context['results']['count'] / $count;
     }
-    $context['message'] = t('Migrating question with id @id', array('@id' => $context['sandbox']['progress']));
+    $context['message'] = t('Migrating question with id @id - current migration status: @num/@total', array('@id' => $context['sandbox']['progress'], '@num' => $context['results']['count'], '@total' => $count));
   }
 }
 
@@ -304,7 +304,7 @@ function _vopros_migrate_create_answer($row, $question) {
 
   if ($answers) {
     $answer = array_shift($answers);
-    $answer->uid = $uid;
+    $answer->uid = $uid ? $uid->entity_id : 0;
     $answer->answer_content = $row->Answer;
     $answer->status = 'complete';
   }
