@@ -566,7 +566,7 @@ function vopros_question_entity_property_info() {
     'schema field' => 'users',
   );
 
-  $properties['url'] = array(
+  $properties['question_url'] = array(
     'label' => t('Question URL'),
     'type' => 'uri',
     'description' => t("The URL of the question page."),
@@ -1143,7 +1143,7 @@ function vopros_question_vopros_question_activity_feed($question, &$feed) {
 
 function vopros_question_get_properties($question, array $options, $name, $entity_type) {
   switch ($name) {
-    case 'url':
+    case 'question_url':
       if (empty($question->question_id)) {
         return NULL;
       }
