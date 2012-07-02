@@ -339,7 +339,7 @@ function vopros_question_permission() {
     'create questions' => array(
       'title' => t('Create questions'),
     ),
-    'edit questions' => array(
+    'edit any question' => array(
       'title' => t('Edit any question'),
     ),
     'contact user about question' => array(
