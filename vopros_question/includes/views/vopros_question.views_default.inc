@@ -108,7 +108,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['footer']['views_count']['id'] = 'views_count';
   $handler->display->display_options['footer']['views_count']['table'] = 'vopros_question';
   $handler->display->display_options['footer']['views_count']['field'] = 'views_count';
-  /* Relationship: Broken/missing handler */
+  /* Relationship: Question: Feedback */
   $handler->display->display_options['relationships']['feedback_question_id']['id'] = 'feedback_question_id';
   $handler->display->display_options['relationships']['feedback_question_id']['table'] = 'vopros_question';
   $handler->display->display_options['relationships']['feedback_question_id']['field'] = 'feedback_question_id';
@@ -329,6 +329,19 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_usage']['expose']['identifier'] = 'question_usage';
   $handler->display->display_options['filters']['question_usage']['expose']['remember'] = 1;
   $handler->display->display_options['filters']['question_usage']['expose']['reduce'] = 0;
+  /* Filter criterion: Question: Editorial (vopros_editorial) */
+  $handler->display->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['field'] = 'vopros_editorial_tid';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['group'] = 0;
+  $handler->display->display_options['filters']['vopros_editorial_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['operator_id'] = 'vopros_editorial_tid_op';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'with the editorial';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['use_operator'] = FALSE;
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['operator'] = 'vopros_editorial_tid_op';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['multiple'] = FALSE;
   /* Filter criterion: Question: Subject (subject_catagory) */
   $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
   $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
@@ -339,6 +352,16 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
   $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
+  /* Filter criterion: Question: Qanda_service_name */
+  $handler->display->display_options['filters']['qanda_service_name']['id'] = 'qanda_service_name';
+  $handler->display->display_options['filters']['qanda_service_name']['table'] = 'vopros_question';
+  $handler->display->display_options['filters']['qanda_service_name']['field'] = 'qanda_service_name';
+  $handler->display->display_options['filters']['qanda_service_name']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['operator_id'] = 'qanda_service_name_op';
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['label'] = 'from the service';
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['operator'] = 'qanda_service_name_op';
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['identifier'] = 'qanda_service_name';
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['reduce'] = 0;
 
   /* Display: List */
   $handler = $view->new_display('page', 'List', 'page');

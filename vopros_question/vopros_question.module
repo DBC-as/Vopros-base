@@ -645,6 +645,8 @@ function vopros_question_views_data_alter(&$data) {
   $data['vopros_question']['question_status']['argument']['handler'] =
   $data['vopros_question']['question_status']['filter']['handler'] = 'vopros_question_status_views_handler_filter_in_operator';
 
+  $data['vopros_question']['qanda_service_name']['filter']['handler'] = 'vopros_question_qanda_service_name_views_handler_filter_in_operator';
+
 
   // Add revision table.
   $data['vopros_question_revision'] = $data['vopros_question'];
@@ -905,6 +907,9 @@ function _vopros_question_user_age() {
   );
 }
 
+/**
+ * Get the possible gender options.
+ */
 function _vopros_question_user_gender() {
   return array(
     'm' => t('Male'),
@@ -947,6 +952,19 @@ function _vopros_question_status_reason() {
   );
 }
 
+/**
+ * Get the possible Q and A service name as a option array.
+ */
+function _vopros_question_qanda_serice_options() {
+  $options = array();
+  foreach (explode("\n", variable_get('vopros_question_qanda_service_options', '')) as $option_text) {
+    $option = explode('|', $option_text);
+    if (count($option) == 2) {
+      $options[$option[0]] = $option[1];
+    }
+  }
+  return $options;
+}
 
 /**
  * Implements hook_theme().

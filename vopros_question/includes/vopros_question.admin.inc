@@ -9,6 +9,13 @@
  * Question settings form
  */
 function vopros_question_settings_form($form, &$form_state) {
+  $form['vopros_question_qanda_service_options'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Q and A service options'),
+    '#description' => t('Setup the possible Q and A service options used in question list filters. Enter options as key|name and one per new line.'),
+    '#default_value' => variable_get('vopros_question_qanda_service_options', ''),
+  );
+
   return system_settings_form($form);
 }
 
@@ -46,7 +53,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     }
     $form['form']['vopros_editorial']['und']['#default_value'] = array_shift(array_keys($options));
   }
-  
+
   $form['form']['question_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
