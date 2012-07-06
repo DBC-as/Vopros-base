@@ -74,21 +74,26 @@ function vopros_question_field_extra_fields() {
       'question_title' => array(
         'label' => t('Question title'),
         'description' => t('The title of the question'),
-        'weight' => -5,
+        'weight' => -6,
       ),
       'question_content' => array(
         'label' => t('Question content'),
         'description' => t('The content of the question'),
-        'weight' => -4,
+        'weight' => -5,
       ),
       'question_deadline' => array(
         'label' => t('Deadline'),
         'description' => t('The deadline for the question'),
-        'weight' => -3,
+        'weight' => -4,
       ),
       'question_usage' => array(
         'label' => t('Usage'),
         'description' => t('The usage of the question'),
+        'weight' => -3,
+      ),
+      'qanda_service_name' => array(
+        'label' => t('Q and A service'),
+        'description' => t('The service that has sent the question'),
         'weight' => -2,
       ),
       'question_note' => array(
@@ -111,35 +116,40 @@ function vopros_question_field_extra_fields() {
       'question_title' => array(
         'label' => t('Question title'),
         'description' => t('The title of the question'),
-        'weight' => -6,
+        'weight' => -9,
       ),
       'question_status' => array(
         'label' => t('Question status'),
         'description' => t('The status of the question and reason for status if possible'),
-        'weight' => -5,
+        'weight' => -8,
       ),
       'question_content' => array(
         'label' => t('Question content'),
         'description' => t('The content of the question'),
-        'weight' => -4,
+        'weight' => -7,
       ),
       'created' => array(
         'label' => t('Created'),
         'description' => t('When the question was created'),
-        'weight' => -3,
+        'weight' => -6,
       ),
       'question_deadline' => array(
         'label' => t('Deadline'),
         'description' => t('The deadline for the question'),
-        'weight' => -3,
+        'weight' => -5,
       ),
       'question_usage' => array(
         'label' => t('Usage'),
         'description' => t('The usage of the question'),
-        'weight' => -2,
+        'weight' => -4,
       ),
       'user_answer_preference' => array(
         'label' => t('Prefered answer method'),
+        'weight' => -3,
+      ),
+      'qanda_service_name' => array(
+        'label' => t('Q and A service'),
+        'description' => t('The service that has sent the question'),
         'weight' => -2,
       ),
       'question_note' => array(
@@ -810,7 +820,11 @@ function vopros_question_build_content($question, $view_mode = 'administrator', 
     '#question' => $question,
     '#view_mode' => $view_mode,
   );
-  
+  $question->content['qanda_service_name'] = array(
+    '#theme' => 'vopros_question_qanda_service',
+    '#question' => $question,
+    '#view_mode' => $view_mode,
+  );
   $question->content['question_note'] = array(
     '#theme' => 'vopros_question_note',
     '#question' => $question,
@@ -1014,6 +1028,11 @@ function vopros_question_theme() {
       'path' => $path,
     ),
     'vopros_question_log' => array(
+      'render element' => 'question',
+      'file' => 'vopros_question.theme.inc',
+      'path' => $path,
+    ),
+    'vopros_question_qanda_service' => array(
       'render element' => 'question',
       'file' => 'vopros_question.theme.inc',
       'path' => $path,

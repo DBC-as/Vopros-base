@@ -92,6 +92,31 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
   );
 
+  $qanda = isset($question->qanda_service_name) ? $question->qanda_service_name : '';
+  $qanda_options = _vopros_question_qanda_serice_options();
+  if ($qanda && !isset($qanda_options[$qanda])) {
+    $form['form']['question_usage'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Q and A service'),
+      '#default_value' => $qanda,
+    );
+  }
+  else {
+    $form['form']['qanda_service_name'] = array(
+      '#type' => 'select',
+      '#title' => t('Q and A service'),
+      '#options' => _vopros_question_qanda_serice_options(),
+      '#default_value' => $qanda,
+    );
+  }
+
+  $form['form']['question_usage'] = array(
+    '#type' => 'select',
+    '#title' => t('Usage'),
+    '#options' => _vopros_question_usage(),
+    '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
+  );
+
   $form['form']['question_note'] = array(
     '#type' => 'textarea',
     '#title' => t('Note about the question'),
@@ -103,7 +128,6 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#title' => t('Info about person who asked the question'),
     '#collapsible' => TRUE,
   );
-  
 
   $form['form']['ask']['user_name'] = array(
     '#type' => 'textfield',
@@ -173,7 +197,6 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'submit',
     '#value' => t('Save'),
     '#attributes' => array('class' => array('primary-action')),
-    
   );
 
   return $form;

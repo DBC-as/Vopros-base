@@ -54,7 +54,6 @@ function theme_vopros_question_status($variables) {
   if ($question->question_status == 'assigned') {
     $output .= '<div><span class="label">' . t('Assigned to:') .  '</span>';
     $output .= '<span class="value">' . theme('username', array('account' => user_load($question->uid))) . '</span></div>';
-    
   }
   $output .= '</div>';
   return $output;
@@ -138,6 +137,17 @@ function theme_vopros_question_user_answer_preference($variables) {
   return $output;
 }
 
+function theme_vopros_question_qanda_service($variables) {
+  $qanda_mapping = _vopros_question_qanda_serice_options();
+  $qanda = $variables['question']['#question']->qanda_service_name;
+  $output = '';
+  $output .= '<div class="question-qanda-service vopros-question-extra clearfix">';
+  $output .= '<span class="label">' . t('Q and A service:') .  '</span>';
+  $output .= '<span class="value">' . (isset($qanda_mapping[$qanda]) ? $qanda_mapping[$qanda] : $qanda) .  '</span>';
+  $output .= '</div>';
+  return $output;
+}
+
 /**
  * Theme function for question user data
  */
@@ -148,7 +158,7 @@ function theme_vopros_question_user_data($variables) {
   if ($variables['question']['#view_mode'] !== 'teaser') {
     $output .= '<h3 class="question-user-data">' . t('User data') . '</h3>';
   }
-  
+
   $output .= '<div class="question-user-data-data">';
 
   $output .= '<div class="question-user-name vopros-question-extra">';
