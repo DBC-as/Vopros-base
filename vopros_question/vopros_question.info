@@ -1,18 +1,17 @@
 name = Vopros Questions
 description = Defines the Question entity and associated features.
-package = Vopros
 core = 7.x
-
+package = Vopros
+php = 5.2.4
+dependencies[] = cache_actions
 dependencies[] = diff
+dependencies[] = entity
 dependencies[] = taxonomy
 dependencies[] = vopros_base
-
 configure = admin/vopros/config/question
-
-; Entity controller include:
+features[features_api][] = api:1
+features[rules_config][] = rules_vopros_question_list_cache_reset
 files[] = includes/vopros_question.controller.inc
-
-; Views handlers
 files[] = includes/views/handlers/vopros_question_handler_field_vopros_question.inc
 files[] = includes/views/handlers/vopros_question_handler_field_date.inc
 files[] = includes/views/handlers/vopros_question_status_views_handler_filter_in_operator.inc
