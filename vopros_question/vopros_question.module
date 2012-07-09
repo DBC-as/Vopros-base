@@ -4,6 +4,8 @@
  * @file
  */
 
+include_once('vopros_question.features.inc');
+
 /**
  * Implements hook_init().
  */
@@ -517,16 +519,6 @@ function vopros_question_revision_list($question) {
  */
 function vopros_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_question', $question_ids, $conditions, $reset);
-}
-
-/**
- * Implements hook_views_api().
- */
-function vopros_question_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'vopros_question') . '/includes/views',
-  );
 }
 
 /**

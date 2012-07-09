@@ -1,13 +1,15 @@
 <?php
+/**
+ * @file
+ * vopros_question.views_default.inc
+ */
 
 /**
  * Implements hook_views_default_views().
  */
 function vopros_question_views_default_views() {
-  $views = array();
+  $export = array();
 
-  // Question list view.
-  // Used to display questions, to find the ones that can/should be answered.
   $view = new view;
   $view->name = 'vopros_question_list';
   $view->description = 'Used to display questions, to find the ones that can/should be answered';
@@ -23,7 +25,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['title'] = 'Question list';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'access questions';
-  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'rules';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
@@ -303,7 +305,6 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_status']['table'] = 'vopros_question';
   $handler->display->display_options['filters']['question_status']['field'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['value'] = array(
-    'all' => 'all',
     'new' => 'new',
     'active' => 'active',
     'assigned' => 'assigned',
@@ -375,11 +376,8 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'Display a list of active questions';
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
+  $export['vopros_question_list'] = $view;
 
-  $views[$view->name] = $view;
-
-  // Admin Question list view.
-  // Used to display questions, with additional info.
   $view = new view;
   $view->name = 'vopros_question_list_admin';
   $view->description = 'Used to display questions, to find the ones that can/should be answered';
@@ -395,7 +393,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['title'] = 'Question list';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'administer questions';
-  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'rules';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
@@ -480,7 +478,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['footer']['views_count']['id'] = 'views_count';
   $handler->display->display_options['footer']['views_count']['table'] = 'vopros_question';
   $handler->display->display_options['footer']['views_count']['field'] = 'views_count';
-  /* Relationship: Broken/missing handler */
+  /* Relationship: Question: Feedback */
   $handler->display->display_options['relationships']['feedback_question_id']['id'] = 'feedback_question_id';
   $handler->display->display_options['relationships']['feedback_question_id']['table'] = 'vopros_question';
   $handler->display->display_options['relationships']['feedback_question_id']['field'] = 'feedback_question_id';
@@ -983,9 +981,7 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Admin list';
   $handler->display->display_options['menu']['weight'] = '0';
+  $export['vopros_question_list_admin'] = $view;
 
-  $views[$view->name] = $view;
-
-
-  return $views;
+  return $export;
 }
