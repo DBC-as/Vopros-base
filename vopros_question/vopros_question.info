@@ -15,6 +15,7 @@ features[features_api][] = api:1
 features[rules_config][] = rules_vopros_question_list_cache_reset
 features[views_view][] = vopros_question_list
 features[views_view][] = vopros_question_list_admin
+features[views_view][] = vopros_question_published_list
 files[] = includes/vopros_question.controller.inc
 files[] = includes/views/handlers/vopros_question_handler_field_vopros_question.inc
 files[] = includes/views/handlers/vopros_question_handler_field_date.inc

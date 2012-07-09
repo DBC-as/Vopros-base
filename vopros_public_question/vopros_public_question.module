@@ -45,7 +45,7 @@ function vopros_public_question_entity_info() {
       ),
       'access callback' => 'vopros_public_question_access',
       // Uncommet to add views integration.
-      //'views controller class' => 'EntityDefaultViewsController',
+      'views controller class' => 'EntityDefaultViewsController',
     ),
   );
 
@@ -195,6 +195,18 @@ function vopros_public_question_permission() {
   );
 
   return $permissions;
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function vopros_public_question_views_data_alter(&$data) {
+  $data['vopros_public_question']['question_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_question',
+    'field' => 'question_id',
+    'label' => 'question',
+  );
 }
 
 /**
