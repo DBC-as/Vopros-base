@@ -167,11 +167,7 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   if ($result['status'] == 'object_created') {
     drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
     $public_question->status = 'published';
-    $question = vopros_question_load($public_question->question_id);
-    $question->question_status = 'published';
-    $question->question_status_reason = '';
     $public_question->question_content = $unformatted_question_content;
-    vopros_question_save($question);
     vopros_public_question_save($public_question);
     $form_state['redirect'] = 'admin/vopros/questions/list';
   }

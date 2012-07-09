@@ -422,3 +422,16 @@ function vopros_question_update_7003(&$sandbox) {
   db_add_index('vopros_question_revision', 'qanda_service_name', array('qanda_service_name'));
   db_add_index('vopros_question_revision', 'revision_timestamp', array('revision_timestamp'));
 }
+
+/**
+ * Set published questions to answered
+ */
+function vopros_question_update_7004(&$sandbox) {
+  // Update base table.
+  db_update('vopros_question')
+    ->fields(array(
+      'question_status' => 'answered',
+    ))
+    ->condition('question_status', 'published')
+    ->execute();
+}

@@ -684,13 +684,12 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
  */
 function vopros_question_close_question_form_ajax(&$form, &$form_state) {
   $commands = array();
-  if ($form_state['values']['reason'] == 'answered' || $form_state['values']['reason'] == 'published') {
+  if ($form_state['values']['reason'] == 'answered') {
     $commands[] = ajax_command_invoke('.form-item-log-content', 'hide', array());
   }
   else {
     $commands[] = ajax_command_invoke('.form-item-log-content', 'show', array());
   }
-  
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -705,20 +704,14 @@ function vopros_question_close_question_form_submit(&$form, &$form_state) {
     $question->question_status_reason = 'already answered';
     drupal_set_message(t('Question has been marked as answered'), 'warning');
   }
-  elseif ($v['reason'] == 'published') {
-    $question->question_status = 'published';
-    $question->question_status_reason = 'already published';
-    drupal_set_message(t('Question has been marked as published'), 'warning');
-  }
   else {
     $question->question_status = 'closed';
     $question->question_status_reason = $v['reason'];
     drupal_set_message(t('Question has been closed and wont be answered'), 'warning');
   }
-  
+
   vopros_question_save($question);
   $form_state['redirect'] = 'admin/vopros/questions';
-  
 }
 
 /**

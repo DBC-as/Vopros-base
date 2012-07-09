@@ -310,7 +310,6 @@ function vopros_question_views_default_views() {
     'assigned' => 'assigned',
     'answered' => 'answered',
     'closed' => 'closed',
-    'published' => 'published',
   );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
