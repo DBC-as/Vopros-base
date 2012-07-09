@@ -224,6 +224,7 @@ function _vopros_migrate_create_question($row) {
     $question_time_limit_mapping = vopros_migrate_time_limit_mapping();
     $question_user_age_mapping = vopros_migrate_user_age_mapping();
     $question_usage_mapping = vopros_migrate_question_usage_mapping();
+    $qanda_service_name_mapping = vopros_migrate_question_qanda_service_name_mapping()
     $question_values = array(
       'question_title' => $row->Title,
       'question_content' => $row->Question,
@@ -235,7 +236,7 @@ function _vopros_migrate_create_question($row) {
       'user_gender' => '',
       'user_field_of_study' => $row->Education,
       'user_library' => '',
-      'user_answer_preference' => $row->Phone ? 'sms' : 'mail',
+      'user_answer_preference' => $qanda_service_name_mapping[$row->ReceptionMethodId] == 12 ? 'sms' : 'mail',
       'created' => $row->QuestionTimestamp,
       'changed' => $row->QuestionTimestamp,
       'uid' => NULL,
@@ -245,7 +246,7 @@ function _vopros_migrate_create_question($row) {
       'question_deadline_timestamp' => NULL,
       'question_usage' => isset($question_usage_mapping[$row->PurposeId]) ? $question_usage_mapping[$row->PurposeId] : 'other',
       'question_note' => $row->InternalNote,
-      'qanda_service_name' => NULL,
+      'qanda_service_name' => isset($qanda_service_name_mapping[$row->ReceptionMethodId]) ? $qanda_service_name_mapping[$row->ReceptionMethodId] : NULL,
       'agency_id' => NULL,
       'referenced_by' => NULL,
     );
@@ -482,5 +483,33 @@ function vopros_migrate_question_usage_mapping() {
     2 => 'school2',
     4 => 'school3',
     5 => 'school4',
+  );
+}
+
+/**
+ * Mapping for the question Q and A service name.
+ */
+function vopros_migrate_question_qanda_service_name_mapping() {
+  return array(
+    1 => 'bibvagten',
+    2 => 'chat',
+    3 => 'bv-e-mail',
+    4 => 'bv-telefon',
+    7 => 'bibliotek.dk',
+    8 => 'skrivopgave',
+    9 => 'musikbibliotek.dk',
+    10 => 'e17',
+    11 => 'engelskforalle',
+    12 => 'sms',
+    13 => 'messenger',
+    14 => 'spørgolivia',
+    15 => 'litteratursiden',
+    16 => 'bv-mobilsite',
+    18 => 'dr-tiltasterne',
+    19 => 'danmarksradio',
+    21 => 'jp',
+    22 => 'facebook',
+    23 => 'netlydbog',
+    24 => 'ereolen',
   );
 }
