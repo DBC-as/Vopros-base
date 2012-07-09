@@ -162,6 +162,13 @@ function vopros_question_schema() {
     'unique keys' => array(
       'revision_id' => array('revision_id'),
     ),
+    'indexes' => array(
+      'question_status' => array('question_status'),
+      'question_usage' => array('question_usage'),
+      'qanda_service_name' => array('qanda_service_name'),
+      'created' => array('created'),
+      'changed' => array('changed'),
+    ),
     'foreign keys' => array(
       'current_revision' => array(
         'table' => 'vopros_question_revision',
@@ -329,6 +336,12 @@ function vopros_question_schema() {
       'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('revision_id'),
+    'indexes' => array(
+      'question_status' => array('question_status'),
+      'question_usage' => array('question_usage'),
+      'qanda_service_name' => array('qanda_service_name'),
+      'revision_timestamp' => array('revision_timestamp'),
+    ),
     'foreign keys' => array(
       'question' => array(
         'table' => 'vopros_question',
@@ -391,4 +404,21 @@ function vopros_question_update_7001(&$sandbox) {
  */
 function vopros_question_update_7002(&$sandbox) {
   vopros_question_configure_question();
+}
+
+/**
+ * Add indexes on vopros question table.
+ */
+function vopros_question_update_7003(&$sandbox) {
+  // Add indexes on the main table.
+  db_add_index('vopros_question', 'question_status', array('question_status'));
+  db_add_index('vopros_question', 'question_usage', array('question_usage'));
+  db_add_index('vopros_question', 'qanda_service_name', array('qanda_service_name'));
+  db_add_index('vopros_question', 'created', array('created'));
+  db_add_index('vopros_question', 'changed', array('changed'));
+  // Add indexes on the revision table.
+  db_add_index('vopros_question_revision', 'question_status', array('question_status'));
+  db_add_index('vopros_question_revision', 'question_usage', array('question_usage'));
+  db_add_index('vopros_question_revision', 'qanda_service_name', array('qanda_service_name'));
+  db_add_index('vopros_question_revision', 'revision_timestamp', array('revision_timestamp'));
 }
