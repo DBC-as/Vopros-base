@@ -26,3 +26,13 @@ function theme_vopros_public_question_link($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Theme function for displaying a link that can be used to publish the question.
+ */
+function theme_vopros_public_question_new_link($variables) {
+  $question = $variables['element']['#question'];
+  $output = '<div class="public-question vopros-question-extra"><span class="label">' . t('No public question') . ':</span><span class="value">' . l(t('Add public question now'), 'admin/vopros/public-questions/new/' . $question->question_id) . '</span>';
+  $output .= '</div>';
+  return $output;
+}

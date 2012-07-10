@@ -378,6 +378,12 @@ function vopros_public_question_vopros_question_view_alter(&$build, $bundle) {
       '#theme' => 'vopros_public_question_link',
     );
   }
+  elseif ($question->question_status == 'answered') {
+    $build['public_question'] = array(
+      '#question' => $question,
+      '#theme' => 'vopros_public_question_new_link',
+    );
+  }
 }
 
 /**
@@ -407,6 +413,11 @@ function vopros_public_question_theme() {
       'file' => 'vopros_public_question.theme.inc',
     ),
     'vopros_public_question_link' => array(
+      'render element' => 'element',
+      'path' => $path,
+      'file' => 'vopros_public_question.theme.inc',
+    ),
+    'vopros_public_question_new_link' => array(
       'render element' => 'element',
       'path' => $path,
       'file' => 'vopros_public_question.theme.inc',
