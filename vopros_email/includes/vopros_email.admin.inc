@@ -141,7 +141,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     $form['form']['subject']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_subject_macro', ''), array(
       'vopros_answer' => $answer,
       'vopros_question' => $answer_wrapper->question->value(),
-    ));
+    ), array('sanitize' => FALSE));
   }
 
   $form['form']['email_content'] = array(
@@ -157,13 +157,13 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     $form['form']['email_content']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_macro', ''), array(
       'vopros_answer' => $answer,
       'vopros_question' => $answer_wrapper->question->value(),
-    ));
+    ), array('sanitize' => FALSE));
   }
 
   $form['form']['buttons'] = array(
     '#weight' => 100,
   );
-  
+
   $form['form']['buttons']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
