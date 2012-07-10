@@ -224,7 +224,7 @@ function _vopros_migrate_create_question($row) {
     $question_time_limit_mapping = vopros_migrate_time_limit_mapping();
     $question_user_age_mapping = vopros_migrate_user_age_mapping();
     $question_usage_mapping = vopros_migrate_question_usage_mapping();
-    $qanda_service_name_mapping = vopros_migrate_question_qanda_service_name_mapping()
+    $qanda_service_name_mapping = vopros_migrate_question_qanda_service_name_mapping();
     $question_values = array(
       'question_title' => $row->Title,
       'question_content' => $row->Question,
