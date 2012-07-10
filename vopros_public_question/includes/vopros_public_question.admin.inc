@@ -8,9 +8,24 @@
  * General settings form.
  */
 function vopros_public_question_settings_form($form, &$form_state) {
-  $form['markup'] = array(
-    '#markup' => t('No settings yet.'),
+  $options = array('plain_text' => t('Plain text'));
+
+  $results = db_select('filter_format', 'f')
+    ->fields('f', array('format', 'name'))
+    ->execute();
+
+  foreach ($results as $format) {
+    $options[$format->format] = $format->name;
+  }
+
+  $form['vopros_public_question_default_text_format'] = array(
+    '#type' => 'select',
+    '#title' => t('Default text format'),
+    '#options' => $options,
+    '#default_value' => variable_get('vopros_public_question_default_text_format', 'plain_text'),
+    '#required' => TRUE,
   );
+
   return system_settings_form($form);
 }
 
@@ -52,7 +67,7 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
 
   $answer_content = '';
   $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
-  foreach ($answers as $answer) {    
+  foreach ($answers as $answer) {
     $answer_content .= $answer->answer_content . "\n\n\n\n";
   }
 
