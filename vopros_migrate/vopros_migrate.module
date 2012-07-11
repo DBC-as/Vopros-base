@@ -370,26 +370,28 @@ function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
       if (empty($question)) {
         throw new VoprosQuestionDoesNotExist(t("Can't find question related to public question with id @id", array('@id' => $row->QAId)));
       }
-      $public_question = _vopros_migrate_create_public_question($row, $question);
-      // Here the public question should be migrated to the public data storage.
-      // For now this feature is disabled.
-      if (FALSE) {
-        // Handle the failire of migration
-        if (!vopros_public_question_publish_question($public_question)) {
-          $public_question->delete();
-          throw new VoprosPublicQuestionCouldNotPublishQuestion(t('Could not create the public question at the data store'));
+      if ($row->IsDeleted != 1 && $row->IsUnansweredQuestion != 1) {
+        $public_question = _vopros_migrate_create_public_question($row, $question);
+        // Here the public question should be migrated to the public data storage.
+        // For now this feature is disabled.
+        if (FALSE) {
+          // Handle the failire of migration
+          if (!vopros_public_question_publish_question($public_question)) {
+            $public_question->delete();
+            throw new VoprosPublicQuestionCouldNotPublishQuestion(t('Could not create the public question at the data store'));
+          }
         }
-      }
-      // Save the migration if all went well.
-      $migration = array(
-        'entity_id' => $public_question->public_question_id,
-        'entity_type' => 'public_question',
-        'migrate_id' => $row->QAId,
-        'created' => REQUEST_TIME,
-      );
-      drupal_write_record('vopros_migrate', $migration);
+        // Save the migration if all went well.
+        $migration = array(
+          'entity_id' => $public_question->public_question_id,
+          'entity_type' => 'public_question',
+          'migrate_id' => $row->QAId,
+          'created' => REQUEST_TIME,
+        );
+        drupal_write_record('vopros_migrate', $migration);
 
-      $context['results']['count'] += 1;
+        $context['results']['count'] += 1;
+      }
     }
     $context['sandbox']['progress'] += 51;
     if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
