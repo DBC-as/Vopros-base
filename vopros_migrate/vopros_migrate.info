@@ -8,3 +8,4 @@ configure = admin/vopros/config/migrate
 dependencies[] = vopros_answer
 dependencies[] = vopros_base
 dependencies[] = vopros_question
+dependencies[] = vopros_public_question

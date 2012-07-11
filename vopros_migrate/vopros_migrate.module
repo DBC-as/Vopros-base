@@ -1,5 +1,9 @@
 <?php
 
+// Define a custom exeption.
+class VoprosPublicQuestionQuestionDoesNotExist extends Exception {};
+class VoprosPublicQuestionCouldNotPublishQuestion extends Exception {};
+
 /**
  * Implementation of hook_menu().
  */
@@ -42,6 +46,14 @@ function vopros_migrate_menu() {
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_vocabolary'),
+      'access arguments' => array('administer vopros_migrate'),
+      'file' => 'includes/vopros_migrate.admin.inc',
+    ),
+    'admin/vopros/migrate/migrate-public-question' => array(
+      'title' => 'Migrate public questions',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_migrate_perform_migrate_public_questions'),
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'includes/vopros_migrate.admin.inc',
     ),
@@ -320,6 +332,100 @@ function _vopros_migrate_create_answer($row, $question) {
 
   vopros_answer_save($answer);
 }
+
+/**
+ * Performs the actual migration of public questions as a batch job.
+ */
+function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
+  if (vopros_migrate_connect()) {
+    if(empty($context['sandbox'])) {
+      // Get top question id:
+      $result = mssql_fetch_object(mssql_query("SELECT TOP 1 QAId FROM QA ORDER BY QAId DESC"));
+      $top_question_id = $result->QAId;
+      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'public_question';")->fetchCol();
+      // Set the current state of our import.
+      $context['sandbox']['progress'] = (int) $progress[0];
+      $context['sandbox']['max'] = min($top_question_id, $count + $progress[0]);
+      $context['results']['count'] = 0;
+    }
+    // Get top question id:
+    $min_question_id = $context['sandbox']['progress'];
+    $max_question_id = $context['sandbox']['progress'] + 50;
+    $query = mssql_query("SELECT q.* FROM QA AS q
+                          WHERE q.QAId BETWEEN $min_question_id AND $max_question_id ORDER BY q.QAId DESC");
+
+    while ($row = mssql_fetch_object($query)) {
+      // Format data:
+      foreach ((array) $row as $key => $value) {
+        $row->$key = utf8_encode($value);
+      }
+      $query = db_select('vopros_question', 'q');
+      $query->join('vopros_migrate', 'm', 'm.entity_id = q.question_id');
+      $query->condition('m.entity_type', 'question');
+      $query->condition('m.migrate_id', $row->QuestionId);
+      $query->fields('q', array('question_id'));
+      $question_id = $query->execute()->fetchField();
+      $question = vopros_question_load($question_id);
+      // Bail out if question does not exist.
+      if (empty($question)) {
+        throw new VoprosQuestionDoesNotExist(t("Can't find question related to public question with id @id", array('@id' => $row->QAId)));
+      }
+      $public_question = _vopros_migrate_create_public_question($row, $question);
+      // Here the public question should be migrated to the public data storage.
+      // For now this feature is disabled.
+      if (FALSE) {
+        // Handle the failire of migration
+        if (!vopros_public_question_publish_question($public_question)) {
+          $public_question->delete();
+          throw new VoprosPublicQuestionCouldNotPublishQuestion(t('Could not create the public question at the data store'));
+        }
+      }
+      // Save the migration if all went well.
+      $migration = array(
+        'entity_id' => $public_question->public_question_id,
+        'entity_type' => 'public_question',
+        'migrate_id' => $row->QAId,
+        'created' => REQUEST_TIME,
+      );
+      drupal_write_record('vopros_migrate', $migration);
+
+      $context['results']['count'] += 1;
+    }
+    $context['sandbox']['progress'] += 51;
+    if ($context['sandbox']['progress'] < $context['sandbox']['max']) {
+      $context['finished'] = $context['results']['count'] / $count;
+    }
+    $context['message'] = t('Migrating question with id @id - current migration status: @num/@total', array('@id' => $context['sandbox']['progress'], '@num' => $context['results']['count'], '@total' => $count));
+  }
+}
+
+/**
+ * Create a public question from a MSSQL record.
+ */
+function _vopros_migrate_create_public_question($row, $question) {
+  $uid = db_select('vopros_migrate', 'v')
+    ->fields('v', array('entity_id'))
+    ->condition('migrate_id', $row->TransferedByUserId)
+    ->condition('entity_type', 'user')
+    ->execute()
+    ->fetchField();
+
+  $public_question = vopros_public_question_new(array(
+    'title' => $row->Title,
+    'answer_content' => $row->Answer,
+    'question_content' => $row->Question,
+    'question_id' => $question->question_id,
+    'uid' => $uid,
+  ));
+
+  // Set the subject on the public question.
+  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
+  $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+  $public_question_wrapper->vopros_public_question_subject = $question_wrapper->subject_catagory->value();
+  $public_question_wrapper->save();
+  return $public_question;
+}
+
 
 /**
  * Create a user from the data from the migration database.

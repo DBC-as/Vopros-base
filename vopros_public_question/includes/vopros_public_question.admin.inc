@@ -166,20 +166,7 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
   vopros_public_question_save($public_question);
 
-  // Format the question and answer content.
-  $public_question->answer_content = check_markup($public_question->answer_content, $public_question->answer_content_format);
-  $unformatted_question_content = $public_question->question_content;
-  $public_question->question_content = check_markup($public_question->question_content, $public_question->question_content_format);  
-
-  // Create the description from the question and answer. Used by osa_addi.
-  $public_question->description = $public_question->question_content . "\n\n" . $public_question->answer_content;
-  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
-  $public_question->subject = array();
-  foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
-    $public_question->subject[] = $term->name;
-  }
-  $result = osa_addi_create_object($public_question, $public_question->uuid);
-  if ($result['status'] == 'object_created') {
+  if (vopros_public_question_publish_question($public_question)) {
     drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
     $public_question->status = 'published';
     $public_question->question_content = $unformatted_question_content;

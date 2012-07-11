@@ -9,5 +9,6 @@ dependencies[] = vopros_base
 dependencies[] = vopros_question
 dependencies[] = osa_addi
 
-; Entity controller include:
+; Entity includes:
 files[] = includes/vopros_public_question.controller.inc
+files[] = includes/vopros_public_question.entity.inc

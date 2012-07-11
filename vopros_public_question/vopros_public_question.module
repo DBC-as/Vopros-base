@@ -18,6 +18,7 @@ function vopros_public_question_entity_info() {
   $return = array(
     'vopros_public_question' => array(
       'label' => t('Public question', array(), array('context' => 'a vopros question')),
+      'entity class' => 'VoprosPublicQuestion',
       'controller class' => 'VoprosPublicQuestionEntityController',
       'base table' => 'vopros_public_question',
       'revision table' => 'vopros_public_question_revision',
@@ -399,6 +400,34 @@ function vopros_public_question_vopros_question_activity_feed($question, &$feed)
       '#weight' => - $public_question->created,
     );
   }*/
+}
+
+/**
+ * Publish a public question.
+ *
+ * @param $public_question
+ *    A fully loaded public question.
+ *
+ * @return boolean indicator if the question was created or not.
+ */
+function vopros_public_question_publish_question($public_question) {
+  // Format the question and answer content.
+  $public_question->answer_content = check_markup($public_question->answer_content, $public_question->answer_content_format);
+  $unformatted_question_content = $public_question->question_content;
+  $public_question->question_content = check_markup($public_question->question_content, $public_question->question_content_format);
+
+  // Create the description from the question and answer. Used by osa_addi.
+  $public_question->description = $public_question->question_content . "\n\n" . $public_question->answer_content;
+  $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
+  $public_question->subject = array();
+  foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
+    $public_question->subject[] = $term->name;
+  }
+  $result = osa_addi_create_object($public_question, $public_question->uuid);
+  if ($result['status'] == 'object_created') {
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**

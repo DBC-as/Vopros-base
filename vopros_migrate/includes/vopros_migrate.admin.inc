@@ -230,3 +230,60 @@ function vopros_migrate_terms_batch_finished($success, $results, $operations) {
   }
   drupal_set_message($message);
 }
+
+/**
+ * Form to perform migration of public questions.
+ */
+function vopros_migrate_perform_migrate_public_questions($form, &$form_state) {
+  $form['count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of public questions to migrate'),
+  );
+
+  $form['migrate'] = array(
+    '#type' => 'submit',
+    '#value' => t('Migrate'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_public_questions_validate(&$form, &$form_state) {
+  if (!is_numeric($form_state['values']['count'])) {
+    form_set_error('count', t('Must be a number'));
+  }
+}
+
+/**
+ * Submit handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_perform_migrate_public_questions_submit(&$form, &$form_state) {
+  $count = $form_state['values']['count'];
+  $batch = array(
+    'title' => t('Importing taxonomy terms from external database'),
+    'operations' => array(
+      array('_vopros_migrate_perform_migrate_public_questions', array($count)),
+    ),
+    'finished' => 'vopros_migrate_public_questions_batch_finished',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+  );
+  batch_set($batch);
+}
+
+/**
+ * Callback for when public question import batch job is finished.
+ */
+function vopros_migrate_public_questions_batch_finished($success, $results, $operations) {
+  // The 'success' parameter means no fatal PHP errors were detected. All
+  // other error management should be handled using 'results'.
+  if ($success) {
+    $message = format_plural($results['count'], 'One term public question.', '@count public questions imported.');
+  }
+  else {
+    $message = t('Finished with an error.');
+  }
+  drupal_set_message($message);
+}
