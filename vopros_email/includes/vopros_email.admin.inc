@@ -203,10 +203,10 @@ function vopros_email_form_submit(&$form, &$form_state) {
     $email->answer_id = $form_state['values']['answer']->answer_id;
     $email->question_id = $form_state['values']['answer']->question_id;
   }
-  
+
   vopros_email_save($email);
   // Replace email tokens if any (only possible after the email is created).
-  $email->email_content = token_replace($email->email_content, array('vopros_email' => $email));
+  $email->email_content = token_replace($email->email_content, array('vopros_email' => $email), array('sanitize' => FALSE));
   vopros_email_save($email);
   if ($email->status != 'sent') {
     vopros_email_send($email);
@@ -219,7 +219,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
     $question->question_status = 'answered';
     vopros_question_save($question);
   }
-  
+
   $form_state['redirect'] = 'admin/vopros/questions';
   drupal_set_message(t('The answer has been sent to @receiver and the question !question is marked as answered.', array('@receiver' => $email->email, '!question' => '<em>' . l($question->question_title, 'admin/vopros/questions/' . $question->question_id) . '</em>')));
 }
@@ -298,13 +298,13 @@ function vopros_email_question_contact_form_macro($form, &$form_state) {
   $content_key = 'vopros_email_macro_' . $key;
   $content = variable_get($content_key, '');
   drupal_alter('vopros_email_question_contact_form_macro', $content, $form, $content_key);
-  $processed_content = token_replace($content, array('vopros_question' => $form_state['values']['question']));
+  $processed_content = token_replace($content, array('vopros_question' => $form_state['values']['question']), array('sanitize' => FALSE));
 
   $subject_key = 'vopros_email_subject_macro_' . $key;
   $subject = variable_get($subject_key, '');
   drupal_alter('vopros_email_question_contact_form_macro', $subject, $form, $subject_key);
-  $processed_subject = token_replace($subject, array('vopros_question' => $form_state['values']['question']));
-  
+  $processed_subject = token_replace($subject, array('vopros_question' => $form_state['values']['question']), array('sanitize' => FALSE));
+
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-subject', 'val', array($processed_subject));
   $commands[] = ajax_command_invoke('#edit-email-content', 'val', array($processed_content));

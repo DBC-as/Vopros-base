@@ -197,7 +197,7 @@ function vopros_editorial_form_vopros_sms_form_alter(&$form, &$form_state) {
       $form['form']['content_wrapper']['content']['#default_value'] = $content =  token_replace(variable_get('vopros_sms_answered_question_macro_' . $tid, ''), array(
          'vopros_answer' => $answer,
          'vopros_question' => $answer_wrapper->question->value(),
-       ));
+       ), array('sanitize' => FALSE));
     }
   }
 }
@@ -250,7 +250,6 @@ function vopros_editorial_form_vopros_email_settings_form_alter(&$form, &$form_s
             unset($form['contact_' . $term->tid][$reason][$key]);
           }
         }
-        
       }
     }
 
@@ -285,11 +284,11 @@ function vopros_editorial_form_vopros_email_form_alter(&$form, &$form_state) {
       $form['form']['subject']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_subject_macro_' . $tid, ''), array(
         'vopros_answer' => $answer,
         'vopros_question' => $answer_wrapper->question->value(),
-      ));
+      ), array('sanitize' => FALSE));
       $form['form']['email_content']['#default_value'] = token_replace(variable_get('vopros_email_answered_question_macro_' . $tid, ''), array(
         'vopros_answer' => $answer,
         'vopros_question' => $answer_wrapper->question->value(),
-      ));
+      ), array('sanitize' => FALSE));
     }
   }
 }

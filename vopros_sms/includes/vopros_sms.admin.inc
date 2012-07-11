@@ -141,11 +141,9 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
     '#value' => t('Send'),
     '#submit' => array('vopros_sms_form_submit'),
   );
-  
+
   $form['#after_build'] = array('vopros_sms_form_add_js');
 
-  
-  
   $form['answer'] = array(
     '#type' => 'value',
     '#value' => $answer,
@@ -171,8 +169,8 @@ function vopros_sms_form($form, &$form_state, $answer, $sms) {
   $content =  token_replace(variable_get('vopros_sms_answered_question_macro', ''), array(
      'vopros_answer' => $answer,
      'vopros_question' => $answer_wrapper->question->value(),
-   ));
-  
+   ), array('sanitize' => FALSE));
+
   if (strlen($content) <= 160) {
     $sms_count = 1;
   }
@@ -299,7 +297,7 @@ function vopros_sms_question_contact_form_macro($form, &$form_state) {
   $text = variable_get($key, '');
   drupal_alter('vopros_sms_question_contact_form_macro', $text, $form, $key);
 
-  $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']));
+  $processed_text = token_replace($text, array('vopros_question' => $form_state['values']['question']), array('sanitize' => FALSE));
 
   $commands = array();
   $commands[] = ajax_command_invoke('#edit-content', 'val', array($processed_text));
