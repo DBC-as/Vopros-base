@@ -4,6 +4,8 @@
  * @file
  */
 
+include_once('vopros_answer.features.inc');
+
 /**
  * Implementation of hook_init().
  */
@@ -352,16 +354,6 @@ function vopros_answer_revision_list($answer) {
     $revisions[$revision->revision_id] = $revision;
   }
   return $revisions;
-}
-
-/**
- * Implements hook_views_api().
- */
-function vopros_answer_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'vopros_answer') . '/includes/views',
-  );
 }
 
 /**

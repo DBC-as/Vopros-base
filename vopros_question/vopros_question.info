@@ -12,7 +12,6 @@ dependencies[] = vopros_base
 configure = admin/vopros/config/question
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
-features[rules_config][] = rules_vopros_question_list_cache_reset
 features[views_view][] = vopros_question_list
 features[views_view][] = vopros_question_list_admin
 features[views_view][] = vopros_question_published_list
