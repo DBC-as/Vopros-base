@@ -72,6 +72,9 @@ function vopros_answer_schema() {
     'unique keys' => array(
       'revision_id' => array('revision_id'),
     ),
+    'indexes' => array(
+      'question_id' => array('question_id'),
+    ),
     'foreign keys' => array(
       'current_revision' => array(
         'table' => 'vopros_answer_revision',
@@ -153,6 +156,9 @@ function vopros_answer_schema() {
       'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('revision_id'),
+    'indexes' => array(
+      'question_id' => array('question_id'),
+    ),
     'foreign keys' => array(
       'answer' => array(
         'table' => 'vopros_answer',
@@ -162,4 +168,14 @@ function vopros_answer_schema() {
   );
 
   return $schema;
+}
+
+/**
+ * Add indexes on vopros answer tables.
+ */
+function vopros_answer_update_7000(&$sandbox) {
+  // Add indexes on the main table.
+  db_add_index('vopros_answer', 'question_id', array('question_id'));
+  // Add indexes on the revision table.
+  db_add_index('vopros_answer_revision', 'question_id', array('question_id'));
 }
