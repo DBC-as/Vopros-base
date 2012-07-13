@@ -74,6 +74,7 @@ function vopros_answer_schema() {
     ),
     'indexes' => array(
       'question_id' => array('question_id'),
+      'uid' => array('uid'),
     ),
     'foreign keys' => array(
       'current_revision' => array(
@@ -158,6 +159,9 @@ function vopros_answer_schema() {
     'primary key' => array('revision_id'),
     'indexes' => array(
       'question_id' => array('question_id'),
+      'answer_id' => array('answer_id'),
+      'uid' => array('uid'),
+      'revision_uid' => array('revision_uid'),
     ),
     'foreign keys' => array(
       'answer' => array(
@@ -178,4 +182,16 @@ function vopros_answer_update_7000(&$sandbox) {
   db_add_index('vopros_answer', 'question_id', array('question_id'));
   // Add indexes on the revision table.
   db_add_index('vopros_answer_revision', 'question_id', array('question_id'));
+}
+
+/**
+ * Add indexes on vopros answer tables.
+ */
+function vopros_answer_update_7001(&$sandbox) {
+  // Add indexes on the main table.
+  db_add_index('vopros_answer', 'uid', array('uid'));
+  // Add indexes on the revision table.
+  db_add_index('vopros_answer_revision', 'answer_id', array('answer_id'));
+  db_add_index('vopros_answer_revision', 'uid', array('uid'));
+  db_add_index('vopros_answer_revision', 'revision_uid', array('revision_uid'));
 }

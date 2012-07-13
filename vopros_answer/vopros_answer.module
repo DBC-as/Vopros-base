@@ -111,6 +111,34 @@ function vopros_answer_entity_property_info_alter(&$info) {
  * Implements hook_views_data_alter().
  */
 function vopros_answer_views_data_alter(&$data) {
+  // Uid field on answers.
+  $data['vopros_answer']['uid'] = array(
+    'title' => 'Answer owner',
+    'help' => 'The user that owns the answer',
+    'field' => array(
+      'field' => 'uid',
+      'handler' => 'views_handler_field_user',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_user_uid',
+      'name field' => 'name', // display this field in the summary
+    ),
+    'filter' => array(
+      'title' => t('User given feedback'),
+      'handler' => 'views_handler_filter_user_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'handler' => 'views_handler_relationship',
+      'base' => 'users',
+      'field' => 'uid',
+      'label' => 'user',
+    ),
+  );
+
   $data['vopros_answer']['question_id']['relationship'] = array(
     'handler' => 'views_handler_relationship',
     'base' => 'vopros_question',
@@ -132,6 +160,14 @@ function vopros_answer_views_data_alter(&$data) {
     'label' => 'Answer revision',
   );
 
+  $data['vopros_answer']['answer_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_answer_revision',
+    'base field' => 'answer_id',
+    'field' => 'answer_id',
+    'label' => 'Answer revisions',
+  );
+
   // Add own questions.
   $data['vopros_question']['own_questions'] = array(
     'title' => t('Own questions'),
@@ -148,6 +184,45 @@ function vopros_answer_views_data_alter(&$data) {
       'handler' => 'vopros_answer_area_views_count',
     ),
   );
+
+  // Set timestamps as dates.
+  $data['vopros_answer']['created']['field']['handler'] =
+  $data['vopros_answer']['changed']['field']['handler']  = 'views_handler_field_date';
+  $data['vopros_answer']['created']['sort']['handler'] =
+  $data['vopros_answer']['changed']['sort']['handler'] =
+  $data['vopros_answer']['question_deadline_timestamp']['sort']['handler'] = 'views_handler_sort_date';
+  $data['vopros_answer']['created']['filter']['handler'] =
+  $data['vopros_answer']['changed']['filter']['handler'] =
+  $data['vopros_answer']['question_deadline_timestamp']['filter']['handler'] = 'views_handler_filter_date';
+
+  // Add revision table.
+  $data['vopros_answer_revision'] = $data['vopros_answer'];
+  $data['vopros_answer_revision']['table'] = array(
+    'group' => 'Answer revisions',
+    'base' => array(
+      'field' => 'revision_id',
+      'title' => 'Answer revisions',
+      'help' => '',
+    ),
+  );
+
+  $data['vopros_answer_revision']['uid']['title'] = t('Answer revision creator');
+
+  $data['vopros_answer_revision']['answer_id']['relationship'] = array(
+    'handler' => 'views_handler_relationship',
+    'base' => 'vopros_answer',
+    'field' => 'answer_id',
+    'label' => 'Answer',
+  );
+
+  $data['vopros_answer_revision']['revision_timestamp'] = $data['vopros_answer_revision']['created'];
+  unset($data['vopros_answer_revision']['created']);
+  unset($data['vopros_answer_revision']['changed']);
+  $data['vopros_answer_revision']['revision_timestamp']['title'] = t('Revision timestamp');
+  $data['vopros_answer_revision']['revision_timestamp']['field']['real field'] = 'revision_timestamp';
+  $data['vopros_answer_revision']['revision_timestamp']['sort']['real field'] = 'revision_timestamp';
+  $data['vopros_answer_revision']['revision_timestamp']['filter']['real field'] = 'revision_timestamp';
+  $data['vopros_answer_revision']['revision_timestamp']['argument']['real field'] = 'revision_timestamp';
 }
 
 /**
