@@ -273,9 +273,10 @@ function vopros_answer_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/vopros/questions/answer-overview';
-  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Answer overview';
   $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
   $export['vopros_answer_overview'] = $view;
 
