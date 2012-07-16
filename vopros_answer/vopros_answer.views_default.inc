@@ -111,6 +111,32 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['relationships']['profile']['field'] = 'profile';
   $handler->display->display_options['relationships']['profile']['relationship'] = 'uid';
   $handler->display->display_options['relationships']['profile']['required'] = 0;
+  /* Field: Question: Question ID */
+  $handler->display->display_options['fields']['question_id']['id'] = 'question_id';
+  $handler->display->display_options['fields']['question_id']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_id']['field'] = 'question_id';
+  $handler->display->display_options['fields']['question_id']['relationship'] = 'question_id';
+  $handler->display->display_options['fields']['question_id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['question_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_id']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_id']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_id']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_id']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['question_id']['separator'] = '';
+  $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
   /* Field: Question: Question_title */
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
@@ -118,7 +144,8 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['question_title']['relationship'] = 'question_id';
   $handler->display->display_options['fields']['question_title']['label'] = 'Question';
   $handler->display->display_options['fields']['question_title']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['question_title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_title']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['question_title']['alter']['path'] = 'admin/vopros/question/[question_id]';
   $handler->display->display_options['fields']['question_title']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['question_title']['alter']['external'] = 0;
   $handler->display->display_options['fields']['question_title']['alter']['replace_spaces'] = 0;
@@ -210,11 +237,12 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['vopros_user_library']['empty_zero'] = 0;
   $handler->display->display_options['fields']['vopros_user_library']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['vopros_user_library']['field_api_classes'] = 0;
-  /* Field: Answer: Created */
+  /* Field: Question: Created */
   $handler->display->display_options['fields']['created']['id'] = 'created';
-  $handler->display->display_options['fields']['created']['table'] = 'vopros_answer';
+  $handler->display->display_options['fields']['created']['table'] = 'vopros_question';
   $handler->display->display_options['fields']['created']['field'] = 'created';
-  $handler->display->display_options['fields']['created']['label'] = 'Answer created';
+  $handler->display->display_options['fields']['created']['relationship'] = 'question_id';
+  $handler->display->display_options['fields']['created']['label'] = 'Question created';
   $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['created']['alter']['absolute'] = 0;
@@ -233,7 +261,7 @@ function vopros_answer_views_default_views() {
   $handler->display->display_options['fields']['created']['hide_empty'] = 0;
   $handler->display->display_options['fields']['created']['empty_zero'] = 0;
   $handler->display->display_options['fields']['created']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['created']['date_format'] = 'long';
+  $handler->display->display_options['fields']['created']['date_format'] = 'short';
   /* Filter criterion: Question: Qanda_service_name */
   $handler->display->display_options['filters']['qanda_service_name']['id'] = 'qanda_service_name';
   $handler->display->display_options['filters']['qanda_service_name']['table'] = 'vopros_question';

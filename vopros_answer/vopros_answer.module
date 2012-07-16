@@ -519,6 +519,18 @@ function vopros_answer_form_vopros_question_question_frontend_form_alter(&$form,
 }
 
 /**
+ * Implements hook_views_pre_render()
+ */
+function vopros_answer_form_views_exposed_form_alter(&$form, &$form_state) {
+  // Since we can't set questions to have the open status, we set it, if no get params are set.
+  $view = $form_state['view'];
+  if ($view->name == 'vopros_answer_overview' && $view->current_display == 'page' && empty($_GET['uid'])) {
+    global $user;
+    $form_state['input']['uid'] = $user->name;
+  }
+}
+
+/**
  * Form to answer questions
  */
 function vopros_answer_question_view_form($form, &$form_state, $question) {
