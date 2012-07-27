@@ -343,23 +343,35 @@ function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
       // Get top question id:
       $result = mssql_fetch_object(mssql_query("SELECT TOP 1 QAId FROM QA ORDER BY QAId DESC"));
       $top_question_id = $result->QAId;
-      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'public_question';")->fetchCol();
+      $progress = db_query("SELECT MAX(migrate_id) FROM {vopros_migrate} WHERE entity_type = 'public_question';")->fetchField();
       // Set the current state of our import.
-      $context['sandbox']['progress'] = (int) $progress[0];
-      $context['sandbox']['max'] = min($top_question_id, $count + $progress[0]);
+      $context['sandbox']['progress'] = (int) $progress;
+      $context['sandbox']['max'] = min($top_question_id, $count);
       $context['results']['count'] = 0;
     }
     // Get top question id:
     $min_question_id = $context['sandbox']['progress'];
     $max_question_id = $context['sandbox']['progress'] + 50;
-    $query = mssql_query("SELECT q.* FROM QA AS q
+
+    $ms_query = mssql_query("SELECT q.* FROM QA AS q
                           WHERE q.QAId BETWEEN $min_question_id AND $max_question_id ORDER BY q.QAId DESC");
 
-    while ($row = mssql_fetch_object($query)) {
+    while ($row = mssql_fetch_object($ms_query)) {
       // Format data:
       foreach ((array) $row as $key => $value) {
         $row->$key = utf8_encode($value);
       }
+      $migrated = db_select('vopros_migrate', 'm')
+        ->fields('m', array('entity_id'))
+        ->condition('migrate_id', $row->QAId)
+        ->condition('entity_type', 'public_question')
+        ->execute()
+        ->fetchField();
+
+      if ($migrated) {
+        continue;
+      }
+
       $query = db_select('vopros_question', 'q');
       $query->join('vopros_migrate', 'm', 'm.entity_id = q.question_id');
       $query->condition('m.entity_type', 'question');
