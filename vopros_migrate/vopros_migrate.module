@@ -1,6 +1,7 @@
 <?php
 
 // Define a custom exeption.
+class VoprosQuestionDoesNotExist extends Exception {};
 class VoprosPublicQuestionQuestionDoesNotExist extends Exception {};
 class VoprosPublicQuestionCouldNotPublishQuestion extends Exception {};
 

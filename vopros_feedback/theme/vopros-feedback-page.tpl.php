@@ -11,7 +11,7 @@
 
 ?>
 
-<div id="vopros-feedback-page"<?php print $content_attributes; ?>>
+<div id="vopros-feedback-page" class="clearfix">
   <div id="vopros-feedback-page-inner" class="clearfix">
     <?php print $page['#children']; ?>
   </div>

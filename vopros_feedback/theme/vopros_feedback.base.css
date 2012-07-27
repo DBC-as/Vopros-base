@@ -3,16 +3,30 @@
 }
 
 #vopros-feedback-page {
-  width: 500px;
+  width: 100%;
 }
 
 #vopros-feedback-page .form-item {
   margin-bottom: 15px;
 }
 
-body #vopros-feedback-page #vopros-feedback-page-inner div {
+body #vopros-feedback-page #vopros-feedback-page-inner {
   min-width: 0;
   width: auto;
+  margin: auto;
+}
+
+body #vopros-feedback-page #vopros-feedback-page-inner .sidebar {
+  display: none;
+}
+
+body #vopros-feedback-page #vopros-feedback-page-inner #content,
+body #vopros-feedback-page #vopros-feedback-page-inner #main,
+body #vopros-feedback-page #vopros-feedback-page-inner #page-wrapper {
+  width: 100%;
+  float: none;
+  display: block;
+  min-width: 0;
 }
 
 #vopros-feedback-page #main {
