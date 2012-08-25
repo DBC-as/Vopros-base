@@ -280,6 +280,17 @@ function vopros_public_question_load($public_question_id, $revision_id = NULL, $
 }
 
 /**
+ * Loads an question by ID.
+ */
+function vopros_public_question_question_id_load($question_id, $reset = FALSE) {
+  $conditions = array('question_id' => $question_id);
+  $public_questions = vopros_public_question_load_multiple(FALSE, $conditions, $reset);
+  return $public_questions ? reset($public_questions) : FALSE;
+}
+
+
+
+/**
  * Loads a public question by question_id.
  */
 function vopros_public_question_load_by_question_id($question_id, $reset = FALSE) {

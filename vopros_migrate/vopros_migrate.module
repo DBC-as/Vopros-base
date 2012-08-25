@@ -381,7 +381,8 @@ function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
       $question = vopros_question_load($question_id);
       // Bail out if question does not exist.
       if (empty($question)) {
-        throw new VoprosQuestionDoesNotExist(t("Can't find question related to public question with id @id", array('@id' => $row->QAId)));
+        continue;
+        //throw new VoprosQuestionDoesNotExist(t("Can't find question related to public question with id @id", array('@id' => $row->QAId)));
       }
       if ($row->IsDeleted != 1 && $row->IsUnansweredQuestion != 1) {
         $public_question = _vopros_migrate_create_public_question($row, $question);
@@ -425,13 +426,22 @@ function _vopros_migrate_create_public_question($row, $question) {
     ->execute()
     ->fetchField();
 
-  $public_question = vopros_public_question_new(array(
-    'title' => $row->Title,
-    'answer_content' => $row->Answer,
-    'question_content' => $row->Question,
-    'question_id' => $question->question_id,
-    'uid' => $uid,
-  ));
+  $public_question = vopros_public_question_question_id_load($question->question_id);
+
+  if ($public_question) {
+    $public_question->title = $row->Title;
+    $public_question->answer_content = $row->Answer;
+    $public_question->question_content = $row->Question;
+  }
+  else {
+    $public_question = vopros_public_question_new(array(
+      'title' => $row->Title,
+      'answer_content' => $row->Answer,
+      'question_content' => $row->Question,
+      'question_id' => $question->question_id,
+      'uid' => $uid,
+    ));
+  }
 
   // Set the subject on the public question.
   $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);

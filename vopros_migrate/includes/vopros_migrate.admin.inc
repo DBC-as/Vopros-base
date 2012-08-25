@@ -263,7 +263,7 @@ function vopros_migrate_perform_migrate_public_questions_validate(&$form, &$form
 function vopros_migrate_perform_migrate_public_questions_submit(&$form, &$form_state) {
   $count = $form_state['values']['count'];
   $batch = array(
-    'title' => t('Importing taxonomy terms from external database'),
+    'title' => t('Importing public questions from external database'),
     'operations' => array(
       array('_vopros_migrate_perform_migrate_public_questions', array($count)),
     ),
