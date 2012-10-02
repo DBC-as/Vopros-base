@@ -309,7 +309,7 @@ function vopros_question_menu() {
     ),
     'vopros/question/create/service' => array(
       'page callback' => 'vopros_question_create_service',
-      'access arguments' => array('access content'),
+      'access arguments' => array('create question via web service'),
       'file' => 'includes/vopros_question.pages.inc',
     ),
     'vopros/question/create/sms' => array(
@@ -341,6 +341,9 @@ function vopros_question_menu_local_tasks_alter(&$data, $router_item, $root_path
  */
 function vopros_question_permission() {
   $permissions = array(
+    'create question via web service' => array(
+      'title' => t('Create question via web service'),
+    ),
     'administer questions' => array(
       'title' => t('Administer questions'),
       'restrict access' => TRUE,
