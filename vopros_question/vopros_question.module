@@ -399,7 +399,7 @@ function vopros_question_access($op, $question = NULL, $account = NULL) {
     return TRUE;
   }
 
-  if ($op == 'contact' && user_acccess('contact user about question')) {
+  if ($op == 'contact' && user_access('contact user about question')) {
     if ($question && $question->question_status == 'assigned' && $question->uid != $account->uid) {
       return FALSE;
     }
