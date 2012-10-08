@@ -101,16 +101,6 @@ function vopros_email_menu() {
        'type' => MENU_DEFAULT_LOCAL_TASK,
        'weight' => -10,
     ),
-    'admin/vopros/emails/%vopros_email/edit' => array(
-      'title' => 'Edit',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_email_form', 3),
-      'access callback' => 'vopros_email_access',
-      'access arguments' => array('edit'),
-      'file' => 'includes/vopros_email.admin.inc',
-      'type' => MENU_LOCAL_TASK,
-      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-    ),
     'admin/vopros/emails/%vopros_email/delete' => array(
       'title' => 'Delete',
       'page callback' => 'drupal_get_form',
