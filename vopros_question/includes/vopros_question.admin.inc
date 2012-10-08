@@ -199,6 +199,11 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#attributes' => array('class' => array('primary-action')),
   );
 
+  $form['form']['subject_catagory']['#type'] = 'fieldset';
+  $form['form']['subject_catagory']['#collapsible'] = TRUE;
+  $form['form']['subject_catagory']['#collapsed'] = TRUE;
+  $form['form']['subject_catagory']['#title'] = t('Subject categories');
+
   return $form;
 }
 
