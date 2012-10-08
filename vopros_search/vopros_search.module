@@ -35,6 +35,8 @@ function vopros_search_views_data_alter(&$data) {
       $profile_wrapper = entity_metadata_wrapper('profile2', $profile);
       $options[$profile->uid] = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value() . ' (' . $profile_wrapper->user->name->value() . ')';
     }
+    // Sort the options.
+    asort($options);
     $data['search_api_index_vopros_answer_question']['user']['filter']['options'] = $options;
   }
 }
