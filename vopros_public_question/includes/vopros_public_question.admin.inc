@@ -191,6 +191,7 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   $public_question->question_content = $form_state['values']['question_content']['value'];
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
   $public_question->uid = $user->uid;
+  field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
   vopros_public_question_save($public_question);
   $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
   $public_question->subject = array();
