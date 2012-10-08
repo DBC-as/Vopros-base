@@ -202,6 +202,15 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
     drupal_set_message(t("Question/answer has been saved and made public"));
     $form_state['redirect'] = 'admin/vopros/questions/list';
   }
+  elseif ($result['status'] == 'error_fetching_object_record') {
+    if (vopros_public_question_publish_question($public_question)) {
+      drupal_set_message(t("Question/answer was deleted ans has been recreated"));
+    }
+    else {
+      $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
+      drupal_set_message(t('Could not update question at service.'), 'error');
+    }
+  }
   else {
     $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
     drupal_set_message(t('Could not update question at service.'), 'error');
