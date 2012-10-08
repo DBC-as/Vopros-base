@@ -47,11 +47,7 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
     }
     else {
       $options = array(
-        t('Open') => array(
-          'open' => t('All open'),
-          'new' => $mapping['new'],
-          'active' => t('Active', array(), array('context' => 'plural form')),
-        ),
+        'open' => t('Open'),
         'assigned' => $mapping['assigned'],
         t('Closed') => array(
           'all_closed' => t('All closed'),
@@ -61,6 +57,5 @@ class vopros_question_status_views_handler_filter_in_operator extends views_hand
       );
       $this->value_options = $options;
     }
-    
   }
 }
