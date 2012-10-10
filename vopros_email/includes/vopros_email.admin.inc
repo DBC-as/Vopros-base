@@ -96,6 +96,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['action'] = array(
     '#prefix' => '<div class="action">',
     '#suffix' => '</div>',
+    '#weight' => -101,
   );
 
   $form['action']['send'] = array(
@@ -116,6 +117,7 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
   $form['form'] = array(
     '#prefix' => '<div class="form">',
     '#suffix' => '</div>',
+    '#weight' => -100,
   );
 
   $form['form']['email'] = array(
@@ -160,29 +162,29 @@ function vopros_email_form($form, &$form_state, $email, $answer = NULL) {
     ), array('sanitize' => FALSE));
   }
 
-  $form['form']['buttons'] = array(
+  $form['buttons'] = array(
     '#weight' => 100,
   );
 
-  $form['form']['buttons']['send'] = array(
+  $form['buttons']['send'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
     '#attributes' => array('class' => array('primary-action')),
   );
 
   if ($answer) {
-    $form['form']['buttons']['edit_answer'] = array(
+    $form['buttons']['edit_answer'] = array(
       '#markup' => l(t('Edit answer'), 'admin/vopros/answers/' . $answer->answer_id . '/edit'),
     );
   }
 
-  field_attach_form('vopros_email', $email, $form['form'], $form_state);
+  field_attach_form('vopros_email', $email, $form, $form_state);
   return $form;
 }
 
 function vopros_email_form_validate(&$form, &$form_state) {
   $email = $form_state['values']['vopros_email'];
-  field_attach_validate('vopros_email', $email, $form['form'], $form_state);
+  field_attach_validate('vopros_email', $email, $form, $form_state);
   $form_state['values']['vopros_email'] = $email;
 }
 
@@ -195,7 +197,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   $email->subject = $form_state['values']['subject'];
   $email->email_content = $form_state['values']['email_content'];
   $email->email = $form_state['values']['email'];
-  field_attach_submit('vopros_email', $email, $form['form'], $form_state);
+  field_attach_submit('vopros_email', $email, $form, $form_state);
   // Create the needed relations for later.
   $email->uid = $GLOBALS['user']->uid;
 
