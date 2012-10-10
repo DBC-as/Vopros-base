@@ -640,6 +640,7 @@ function vopros_question_views_data_alter(&$data) {
 
   // Add custom handlers for select fields.
   $data['vopros_question']['user_age']['field']['handler'] =
+  $data['vopros_question']['qanda_service_name']['field']['handler'] =
   $data['vopros_question']['question_status']['field']['handler'] =
   $data['vopros_question']['question_usage']['field']['handler'] = 'vopros_question_handler_field_vopros_question';
   $data['vopros_question']['question_deadline_timestamp']['field']['handler'] = 'vopros_question_handler_field_date';
