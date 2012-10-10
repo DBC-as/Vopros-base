@@ -59,10 +59,15 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
 
   // _filter_autop is used for creating <p> and <br /> tags instead of line breaks
   // _filter_url is used to create <a> tags for urls.
+  // Setup dummy filter object for _filter_url.
+  $filter = new stdClass();
+  $filter->settings = array(
+    'filter_url_length' => 100,
+  );
   $form['question_content'] = array(
     '#type' => 'text_format',
     '#title' => t('Question content'),
-    '#default_value' => $public_question->question_content ? $public_question->question_content : _filter_autop(_filter_url($question->question_content)),
+    '#default_value' => $public_question->question_content ? $public_question->question_content : _filter_autop(_filter_url($question->question_content, $filter)),
     '#format' => $public_question->question_content_format,
     '#rows' => 20,
   );
@@ -76,7 +81,7 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
   $form['answer_content'] = array(
     '#type' => 'text_format',
     '#title' => t('Answer content'),
-    '#default_value' => $public_question->answer_content ? $public_question->answer_content : _filter_autop(_filter_url(trim($answer_content))),
+    '#default_value' => $public_question->answer_content ? $public_question->answer_content : _filter_autop(_filter_url(trim($answer_content), $filter)),
     '#format' => $public_question->answer_content_format,
     '#rows' => 20,
   );
