@@ -15,7 +15,7 @@
 }
 
 .vopros-question-extra .label,
-.vopros-question-extra .field-label {
+.vopros-question .field .field-label {
   width: 125px;
   display: block;
   float: left;
