@@ -54,7 +54,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   );
 
   $question_build = vopros_question_page_view($question, 'teaser');
-  $question_build['question_title']['#suffix'] = '<span class="back-to-question">(' . l('See question', 'admin/vopros/questions/' . $question->question_id, array('attributes' => array('target' => '_blank'))) . ')</span>';
+  $question_build['question_title']['#suffix'] = '<span class="back-to-question">(' . l(t('See question (opens a new window)'), 'admin/vopros/questions/' . $question->question_id, array('attributes' => array('target' => '_blank'))) . ')</span>';
   $question_intro = array(
     $question_build['question_title'],
     $question_build['question_content'],
@@ -68,7 +68,6 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   $question_user_data = array(
     $question_build['ask'],
   );
-  
 
   $form['form']['question_intro'] = array(
     '#markup' => render($question_intro),
