@@ -207,7 +207,7 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   }
   elseif ($result['status'] == 'error_fetching_object_record') {
     if (vopros_public_question_publish_question($public_question)) {
-      drupal_set_message(t("Question/answer was deleted ans has been recreated"));
+      drupal_set_message(t("Question/answer was deleted and has been recreated"));
     }
     else {
       $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
