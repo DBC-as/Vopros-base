@@ -174,7 +174,7 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
   $answer->author_name = $GLOBALS['user']->name;
   field_attach_submit('vopros_answer', $answer, $form, $form_state);
   vopros_answer_save($answer);
-  drupal_set_message('Answer saved');
+  drupal_set_message(t('Answer saved'));
   $form_state['redirect'] = 'admin/vopros/answers/' . $answer->answer_id . '/edit';
 }
 
@@ -220,7 +220,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $answer->author_name = $GLOBALS['user']->name;
   field_attach_submit('vopros_answer', $answer, $form, $form_state);
   vopros_answer_save($answer);
-  drupal_set_message('Answer saved and question released for others to answer.');
+  drupal_set_message(t('Answer saved and question released for others to answer.'));
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
@@ -238,7 +238,7 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $answer->status = 'complete';
   $form_state['answer'] = $answer;
   vopros_answer_save($answer);
-  drupal_set_message('Answer saved and is ready to be submited to the user.');
+  drupal_set_message(t('Answer saved and is ready to be submited to the user.'));
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
