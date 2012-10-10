@@ -12,7 +12,9 @@
       $("#views-exposed-form-vopros-question-list-page input.form-submit").hide();
       $("#views-exposed-form-vopros-question-list-page select").change(function() {
         $("#views-exposed-form-vopros-question-list-page input.form-submit").click();
-        $("#views-exposed-form-vopros-question-list-page select").attr("disabled","disabled");
+        // We need to wait a little bit for IE to send the request and send
+        // the request before disabling the dropdowns.
+        setTimeout(function () {$("#views-exposed-form-vopros-question-list-page select").attr("disabled","disabled")}, 100);
       });
     }
   };
