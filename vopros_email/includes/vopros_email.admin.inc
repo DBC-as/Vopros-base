@@ -466,6 +466,8 @@ function vopros_email_transfer_form($form, &$form_state, $email) {
     return $form;
   }
 
+  // Ensure this include file is loaded when the form is rebuilt from the cache.
+  $form_state['build_info']['files']['form'] = drupal_get_path('module', 'vopros_question') . '/includes/vopros_question.admin.inc';
   module_load_include('inc', 'vopros_question', 'includes/vopros_question.admin');
   $question = vopros_question_new(array(
     'question_title' => $email->subject,
