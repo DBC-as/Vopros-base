@@ -24,6 +24,7 @@ function vopros_question_entity_info() {
   $return = array(
     'vopros_question' => array(
       'label' => t('Question', array(), array('context' => 'a vopros question')),
+      'entity class' => 'VoprosQuestion',
       'controller class' => 'VoprosQuestionEntityController',
       'base table' => 'vopros_question',
       'revision table' => 'vopros_question_revision',
@@ -1061,6 +1062,14 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   );
   // If the question is locked for answering, don't allow any action.
   if ($question->question_status == 'assigned') {
+    global $user;
+    if ($question->uid == $user->uid || user_access('administer questions')) {
+      $form['release_question'] = array(
+        '#type' => 'submit',
+        '#value' => t('Release question'),
+        '#submit' => array('vopros_question_handle_question_form_release_submit'),
+      );
+    }
     return $form;
   }
   // The question is closed, make it possible to open
@@ -1105,6 +1114,16 @@ function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) 
  */
 function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/close';
+}
+
+/**
+ * Submit handler for vopros_question_handle_question_form release action.
+ */
+function vopros_question_handle_question_form_release_submit(&$form, &$form_state) {
+  $question = $form['question']['#value'];
+  $question->uid = 0;
+  $question->save();
+  $form_state['redirect'] = 'admin/vopros/questions/list';
 }
 
 /**

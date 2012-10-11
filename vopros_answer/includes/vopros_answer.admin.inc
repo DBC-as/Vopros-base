@@ -116,7 +116,6 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   $form['form']['question_user_data']['content'] = array(
     '#markup' => render($question_user_data),
   );
-  
 
   $form['form']['save'] = array(
     '#type' => 'submit',
@@ -197,7 +196,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
     }
   }
   $question->uid = 0;
-  
+
   vopros_question_save($question);
   // Redirect to question overview page.
   $form_state['redirect'] = 'admin/vopros/questions/';

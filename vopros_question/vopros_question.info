@@ -16,6 +16,7 @@ features[views_view][] = vopros_question_list
 features[views_view][] = vopros_question_list_admin
 features[views_view][] = vopros_question_published_list
 files[] = includes/vopros_question.controller.inc
+files[] = includes/vopros_question.entity.inc
 files[] = includes/views/handlers/vopros_question_handler_field_vopros_question.inc
 files[] = includes/views/handlers/vopros_question_handler_field_date.inc
 files[] = includes/views/handlers/vopros_question_status_views_handler_filter_in_operator.inc

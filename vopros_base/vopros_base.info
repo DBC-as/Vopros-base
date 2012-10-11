@@ -8,6 +8,7 @@ dependencies[] = uuid
 dependencies[] = views
 
 files[] = includes/vopros_base.controller.inc
+files[] = includes/vopros_base.entity.inc
 
 ; Views includes:
 files[] = includes/views/handlers/vopros_base_taxonomy_tid_filter_handler.inc
