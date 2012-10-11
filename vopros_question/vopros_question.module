@@ -315,7 +315,7 @@ function vopros_question_menu() {
     ),
     'vopros/question/create/sms' => array(
       'page callback' => 'vopros_question_create_sms',
-      'access arguments' => array('access content'),
+      'access arguments' => array('create question via sms service'),
       'file' => 'includes/vopros_question.pages.inc',
     ),
   );
@@ -344,6 +344,9 @@ function vopros_question_permission() {
   $permissions = array(
     'create question via web service' => array(
       'title' => t('Create question via web service'),
+    ),
+    'create question via sms service' => array(
+      'title' => t('Create question via SMS service'),
     ),
     'administer questions' => array(
       'title' => t('Administer questions'),
