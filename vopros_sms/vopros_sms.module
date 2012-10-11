@@ -360,7 +360,6 @@ function vopros_sms_send($sms, $template = 'default') {
     'recipient' => $number,
     'username' => $user_name,
     'password' => $password,
-    'shortcode' => $short_code,
     'text' => $content,
     'price' => 0,
     'from' => $sender,
