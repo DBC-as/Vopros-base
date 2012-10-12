@@ -16,6 +16,24 @@ function vopros_question_settings_form($form, &$form_state) {
     '#default_value' => variable_get('vopros_question_qanda_service_options', ''),
   );
 
+  if (module_exists('vopros_editorial')) {
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+    $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+    $options = array('' => t('No default value'));
+    foreach ($terms as $tid => $term) {
+      $options[$tid] = $term->name;
+    }
+    $form['vopros_question_default_sms_editoral'] = array(
+      '#type' => 'select',
+      '#title' => t('Default sms editorial'),
+      '#options' => $options,
+      '#default_value' => variable_get('vopros_question_default_sms_editoral', ''),
+    );
+  }
+  else {
+    variable_set('vopros_question_default_sms_editoral', '');
+  }
+
   return system_settings_form($form);
 }
 

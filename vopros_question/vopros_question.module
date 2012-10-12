@@ -437,23 +437,6 @@ function vopros_question_new($values = array()) {
 }
 
 /**
- * Implements hook_entity_presave().
- */
-function vopros_question_entity_presave($entity, $type) {
-  // Set the calculated deadline timestamp.
-  if ($type == 'vopros_question' && $entity->created) {
-    if ($entity->question_deadline == -1) {
-      // We set the deadline quite high: 1 year from creation.
-      $entity->question_deadline_timestamp = 86400 * 365 + $entity->created;
-    }
-    else {
-      // Set the deadline to x hours from creation.
-      $entity->question_deadline_timestamp = 3600 * $entity->question_deadline + $entity->created;
-    }
-  }
-}
-
-/**
  * Save a question
  *
  * @param $question

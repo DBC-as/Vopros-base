@@ -81,12 +81,17 @@ function vopros_question_create_sms() {
   if ($message && $phone) {
     $words = explode(' ', $message);
     $keyword = array_shift($words);
-    $question->qanda_service_name = $keyword;
+    $question->qanda_service_name = 'sms';
     $question->question_content = implode(' ', $words);
     $question->user_mobile_phone = $phone;
+    $question->question_deadline = 2;
+    if (module_exists('vopros_editorial') && $tid = variable_get('vopros_question_default_sms_editoral', '')) {
+      $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+      $question_wrapper->vopros_editorial = $tid;
+    }
     vopros_question_save($question);
   }
-  $output = 
+  $output =
 '<?xml version="1.0" encoding="iso-8859-1"?>
   <action>
     <type>terminate</type>

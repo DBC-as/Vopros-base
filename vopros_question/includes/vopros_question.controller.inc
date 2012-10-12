@@ -7,11 +7,20 @@ module_load_include('inc', 'vopros_base', 'includes/vopros.controller');
  * Entity controller class for vopros question.
  */
 class VoprosQuestionEntityController extends VoprosAPIEntityController {
-  public function save($entity, DatabaseTransaction $transaction = NULL) {
-    if (in_array($entity->question_status, array('answered', 'closed'))) {
-      $entity->uid = 0;
+  public function save($question, DatabaseTransaction $transaction = NULL) {
+    if (in_array($question->question_status, array('answered', 'closed'))) {
+      $question->uid = 0;
     }
-    parent::save($entity, $transaction);
+    $created = !empty($question->created) ? $question->created : REQUEST_TIME;
+    if ($question->question_deadline == -1) {
+      // We set the deadline quite high: 1 year from creation.
+      $question->question_deadline_timestamp = 86400 * 365 + $created;
+    }
+    else {
+      // Set the deadline to x hours from creation.
+      $question->question_deadline_timestamp = 3600 * $question->question_deadline + $created;
+    }
+    parent::save($question, $transaction);
   }
 
 
