@@ -263,7 +263,7 @@ function vopros_question_menu() {
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
     'admin/vopros/questions/%vopros_question/edit' => array(
-      'title' => 'Edit',
+      'title' => 'Edit question',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_question_question_frontend_form', 3),
       'access callback' => 'vopros_question_access',
