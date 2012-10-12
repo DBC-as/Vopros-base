@@ -236,7 +236,7 @@ function vopros_sms_form_submit(&$form, &$form_state) {
   if ($sms->status != 'sent') {
     vopros_sms_send($sms);
   }
-  drupal_set_message(t('The answer has been sent to @receiver and the question !question is marked as answered.', array('@receiver' => $sms->phone_number, '!question' => '<em>' . l($sms_wrapper->question->question_title, 'admin/vopros/questions/' . $sms_wrapper->question->question_id) . '</em>')));
+  drupal_set_message(t('The answer has been sent to @receiver and the question !question is marked as answered.', array('@receiver' => $sms->phone_number, '!question' => '<em>' . l($sms_wrapper->question->question_title->value(), 'admin/vopros/questions/' . $sms_wrapper->question->question_id->value()) . '</em>')));
   $form_state['redirect'] = 'admin/vopros/questions/';
 }
 
