@@ -19,6 +19,7 @@ function vopros_question_settings_form($form, &$form_state) {
   $form['vopros_question_usage_default'] = array(
     '#type' => 'select',
     '#title' => t('Default usage value'),
+    '#description' => t('Setup the default value in the admin forms used for creating and editing questions.'),
     '#options' => _vopros_question_usage(),
     '#default_value' => variable_get('vopros_question_usage_default', ''),
   );
@@ -697,6 +698,13 @@ function vopros_question_close_question_form($form, &$form_state, $question) {
     '#ajax' => array(
       'callback' => 'vopros_question_close_question_form_ajax',
     ),
+  );
+
+  $form['close'] = array(
+    '#type' => 'submit',
+    '#value' => t('Close question'),
+    '#weight' => 100,
+    '#attributes' => array('class' => array('primary-action')),
   );
 
   return $form;
