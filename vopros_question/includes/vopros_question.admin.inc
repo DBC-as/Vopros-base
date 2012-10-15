@@ -16,6 +16,13 @@ function vopros_question_settings_form($form, &$form_state) {
     '#default_value' => variable_get('vopros_question_qanda_service_options', ''),
   );
 
+  $form['vopros_question_usage_default'] = array(
+    '#type' => 'select',
+    '#title' => t('Default usage value'),
+    '#options' => _vopros_question_usage(),
+    '#default_value' => variable_get('vopros_question_usage_default', ''),
+  );
+
   if (module_exists('vopros_editorial')) {
     $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
     $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
@@ -107,7 +114,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'select',
     '#title' => t('Usage'),
     '#options' => _vopros_question_usage(),
-    '#default_value' => !empty($question->question_usage) ? $question->question_usage : 'other',
+    '#default_value' => !empty($question->question_usage) ? $question->question_usage : variable_get('vopros_question_usage_default', ''),
   );
 
   $qanda = isset($question->qanda_service_name) ? $question->qanda_service_name : '';
