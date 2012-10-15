@@ -1108,6 +1108,8 @@ function vopros_question_handle_question_form_close_submit(&$form, &$form_state)
 function vopros_question_handle_question_form_release_submit(&$form, &$form_state) {
   $question = $form['question']['#value'];
   $question->uid = 0;
+  $question->question_status = 'active';
+  $question->question_status_reason = 'released';
   $question->save();
   $form_state['redirect'] = 'admin/vopros/questions/list';
 }
