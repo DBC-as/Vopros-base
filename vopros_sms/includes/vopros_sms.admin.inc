@@ -116,7 +116,7 @@ function vopros_sms_settings_form($form, &$form_state) {
  * Validate the sms_push_sender.
  */
 function vopros_sms_push_sender_validate(&$form, &$form_state) {
-  if (preg_match('/[^a-z0-9]/', $form_state['values']['vopros_sms_push_sender'])) {
+  if (preg_match('/[^a-zA-Z0-9]/', $form_state['values']['vopros_sms_push_sender'])) {
     form_set_error('vopros_sms_push_sender', t('Only alphanumeric chars (letters and numbers) allowed'));
   }
 }
