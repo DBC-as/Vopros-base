@@ -166,7 +166,7 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $answer = $v['answer'];
   $question = $v['question'];
-  vopros_question_save($question);
+  $question->save();
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;
@@ -197,7 +197,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   }
   $question->uid = 0;
 
-  vopros_question_save($question);
+  $question->save();
   // Redirect to question overview page.
   $form_state['redirect'] = 'admin/vopros/questions/';
 }
@@ -212,7 +212,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
   $question->question_status = 'active';
   $question->question_status_reason = 'released';
   $answer = $v['answer'];
-  vopros_question_save($question);
+  $question->save();
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;
@@ -228,7 +228,7 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
 function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $form_state['values']['question'];
-  vopros_question_save($question);
+  $question->save();
   $answer = $v['answer'];
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];

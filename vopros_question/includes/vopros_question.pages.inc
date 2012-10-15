@@ -89,7 +89,7 @@ function vopros_question_create_sms() {
       $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
       $question_wrapper->vopros_editorial = $tid;
     }
-    vopros_question_save($question);
+    $question->save();
   }
   $output =
 '<?xml version="1.0" encoding="iso-8859-1"?>

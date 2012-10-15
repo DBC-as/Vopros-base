@@ -219,7 +219,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   if ($email->question_id) {
     $question = vopros_question_load($email->question_id);
     $question->question_status = 'answered';
-    vopros_question_save($question);
+    $question->save();
   }
 
   $form_state['redirect'] = 'admin/vopros/questions';
@@ -344,7 +344,7 @@ function vopros_email_question_contact_form_submit(&$form, &$form_state) {
   }
   $question->question_status = 'closed';
   $question->question_status_reason = $v['reason'];
-  vopros_question_save($question);
+  $question->save();
   drupal_set_message(t('The e-mail has been sent to @receiver and the question !question is marked as closed without answer (@status_reason).',
     array(
       '@receiver' => $email->email,
@@ -447,7 +447,7 @@ function vopros_email_convert_to_question_form_validate(&$form, &$form_state) {
 function vopros_email_convert_to_question_form_submit(&$form, &$form_state) {
   $question = $form_state['question'];
   $question->question_status_reason = 'created from email';
-  vopros_question_save($question);
+  $question->save();
   $email = $form_state['values']['email'];
   $email->question_id = $question->question_id;
   vopros_email_save($email);
@@ -503,7 +503,7 @@ function vopros_email_transfer_form_submit(&$form, &$form_state) {
   );
   drupal_write_record('vopros_email_transfers', $record);
   $question->question_status_reason = 'created from email';
-  vopros_question_save($question);
+  $question->save();
   $email->question_id = $question->question_id;
   vopros_email_save($email);
 }

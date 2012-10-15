@@ -488,7 +488,7 @@ function vopros_email_entity_insert($entity, $type) {
     if ($question->question_status == 'closed' || $question->question_status == 'answered') {
       $question->question_status = 'active';
       $question->question_status_reason = 'reactivated by email';
-      vopros_question_save($question);
+      $question->save();
       // Since saving the question will be done by whatever user is the global
       // user, we change it to be the user 0 that did this.
       db_update('vopros_question_revision')

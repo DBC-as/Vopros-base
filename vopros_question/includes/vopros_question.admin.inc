@@ -257,7 +257,7 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
   field_attach_submit('vopros_question', $question, $form['form'], $form_state);
 
   // Save the product.
-  vopros_question_save($question);
+  $question->save();
   // Add the question to the $form_state for other modules to use.
   $form_state['question'] = $question;
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
@@ -733,7 +733,7 @@ function vopros_question_close_question_form_submit(&$form, &$form_state) {
     drupal_set_message(t('Question has been closed and wont be answered'), 'warning');
   }
 
-  vopros_question_save($question);
+  $question->save();
   $form_state['redirect'] = 'admin/vopros/questions';
 }
 

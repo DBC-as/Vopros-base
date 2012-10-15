@@ -576,7 +576,7 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
   $question->question_status = 'assigned';
   $question->question_status_reason = 'locked for answering';
   $question->uid = $GLOBALS['user']->uid;
-  vopros_question_save($question);
+  $question->save();
   $answers = vopros_answer_load_for_question($question->question_id);
   if (count($answers) !== 1) {
     $answer = vopros_answer_new();
