@@ -8,14 +8,15 @@ class VoprosFeedbackEntityController extends EntityAPIController {
    * Creates a new instance of a vopros_log entity.
    */
   public function create(array $values = array()) {
-    return (object) ($values + array(
+    $values = $values + array(
       'email_id' => 0,
       'question_id' => 0,
       'feedback_content' => '',
       'created' => '',
       'changed' => '',
       'is_new' => TRUE,
-    ));
+    );
+    return parent::create($values);
   }
 
   /**
@@ -40,5 +41,23 @@ class VoprosFeedbackEntityController extends EntityAPIController {
     parent::save($entity, $transaction);
     // Notify users about the rating.
       vopros_feedback_notify($entity);
+  }
+
+  /**
+   * Implements EntityAPIControllerInterface.
+   *
+   * @param $content
+   *   Optionally. Allows pre-populating the built content to ease overridding
+   *   this method.
+   */
+  function buildContent($feedback, $view_mode = 'full', $langcode = NULL, $content = array()) {
+    // Add extra fields
+    $content['feedback_content'] = array(
+      '#theme' => 'vopros_feedback_content',
+      '#feedback' => $feedback,
+      '#view_mode' => $view_mode,
+    );
+    // Let entity API handle the boring stuff.
+    return parent::buildContent($feedback, $view_mode, $langcode, $content);
   }
 }

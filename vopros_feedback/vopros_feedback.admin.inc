@@ -15,6 +15,13 @@ function vopros_feedback_settings_form($form, &$form_state) {
     '#default_value' => variable_get('vopros_feedback_secret', ''),
   );
 
+  $form['vopros_feedback_intro_text'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Intro text'),
+    '#description' => t('Setup intro text on feedback page when feedback has been saved.'),
+    '#default_value' => variable_get('vopros_feedback_intro_text', ''),
+  );
+
   return system_settings_form($form);
 }
 
@@ -78,23 +85,5 @@ function vopros_feedback_form_submit(&$form, &$form_state) {
  * Handle the display of an feedback.
  */
 function vopros_feedback_page_view($feedback, $view_mode = 'administrator', $langcode = NULL) {
-  $build = array();
-
-  // Populate $feedback->content with a render() array.
-  vopros_feedback_build_content($feedback, $view_mode, $langcode);
-
-  $build = $feedback->content + $build;
-  unset($feedback->content);
-
-  $build += array(
-    '#view_mode' => $view_mode,
-    '#theme' => 'vopros_feedback',
-    '#feedback' => $feedback,
-    '#language' => $langcode,
-  );
-
-  $type = 'vopros_feedback';
-  drupal_alter(array('vopros_feedback_view', 'entity_view'), $build, $type);
-
-  return $build;
+  return $feedback->view($view_mode, $langcode);
 }

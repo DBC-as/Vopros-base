@@ -13,3 +13,4 @@ dependencies[] = vopros_question
 
 ; Entity controller include:
 files[] = includes/vopros_feedback.controller.inc
+files[] = includes/vopros_feedback.entity.inc

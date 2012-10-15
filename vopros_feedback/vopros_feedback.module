@@ -12,6 +12,7 @@ function vopros_feedback_entity_info() {
     'vopros_feedback' => array(
       'label' => t('feedback', array(), array('context' => 'a vopros feedback')),
       'controller class' => 'VoprosFeedbackEntityController',
+      'entity class' => 'VoprosFeedback',
       'base table' => 'vopros_feedback',
       // No revisions, only store the users entry.
       'fieldable' => TRUE,
@@ -60,7 +61,7 @@ function vopros_feedback_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_feedback_settings_form'),
       'access arguments' => array('administer feedback'),
-      'file' => 'includes/vopros_feedback.admin.inc',
+      'file' => 'vopros_feedback.admin.inc',
     ),
     'admin/vopros/config/feedback/settings' => array(
       'title' => 'Settings',
@@ -73,7 +74,7 @@ function vopros_feedback_menu() {
       'page arguments' => array('vopros_feedback_form', vopros_feedback_new()),
       'access callback' => 'vopros_feedback_access',
       'access arguments' => array('create'),
-      'file' => 'includes/vopros_feedback.admin.inc',
+      'file' => 'vopros_feedback.admin.inc',
       'type' => MENU_LOCAL_TASK,
     ),
     'admin/vopros/feedback/%vopros_feedback' => array(
@@ -83,7 +84,7 @@ function vopros_feedback_menu() {
        'page arguments' => array(3),
        'access callback' => 'vopros_feedback_access',
        'access arguments' => array('view'),
-       'file' => 'includes/vopros_feedback.admin.inc',
+       'file' => 'vopros_feedback.admin.inc',
     ),
     'admin/vopros/feedback/%vopros_feedback/view' => array(
       'title' => 'View',
@@ -96,7 +97,7 @@ function vopros_feedback_menu() {
       'page arguments' => array('vopros_feedback_form', 3),
       'access callback' => 'vopros_feedback_access',
       'access arguments' => array('edit'),
-      'file' => 'includes/vopros_feedback.admin.inc',
+      'file' => 'vopros_feedback.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     ),
@@ -106,7 +107,7 @@ function vopros_feedback_menu() {
       'page arguments' => array('vopros_feedback_delete_confirm_form', 3),
       'access callback' => 'vopros_feedback_access',
       'access arguments' => array('delete'),
-      'file' => 'includes/vopros_feedback.admin.inc',
+      'file' => 'vopros_feedback.admin.inc',
     ),*/
     'vopros/feedback/%vopros_email/%' => array(
       'title' => 'Give feedback',
@@ -114,7 +115,7 @@ function vopros_feedback_menu() {
       'page arguments' => array(2),
       'access callback' => 'vopros_feedback_give_feedback_access',
       'access arguments' => array(2, 3),
-      'file' => 'includes/vopros_feedback.pages.inc',
+      'file' => 'vopros_feedback.pages.inc',
     ),
   );
 }
@@ -269,32 +270,15 @@ function vopros_feedback_field_extra_fields() {
       ),
     ),
     'display' => array(
-    )
+      'feedback_content' => array(
+        'label' => t('Feedback content'),
+        'description' => t('The actual feedback'),
+        'weight' => 0,
+      ),
+    ),
   );
 
   return $extra;
-}
-
-/**
- * Builds a structured array representing the feedback content.
- */
-function vopros_feedback_build_content($feedback, $view_mode = 'administrator', $langcode = NULL) {
-  $feedback->content = array();
-  field_attach_prepare_view('vopros_feedback', array($feedback->feedback_id => $feedback), $view_mode);
-  entity_prepare_view('vopros_feedback', array($feedback->feedback_id => $feedback));
-
-  // Add extra fields
-  $feedback->content['feedback_content'] = array(
-    '#theme' => 'vopros_feedback_content',
-    '#feedback' => $feedback,
-    '#view_mode' => $view_mode,
-  );
-
-  // Add fields
-  field_attach_prepare_view('vopros_feedback', array($feedback->feedback_id => $feedback), $view_mode, $langcode);
-  $feedback->content[] = field_attach_view('vopros_feedback', $feedback, $view_mode, $langcode);
-
-  module_invoke_all('entity_view', $feedback, 'vopros_feedback', $view_mode, $langcode);
 }
 
 /**
