@@ -76,7 +76,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#required' => TRUE,
-    '#default_value' => isset($question->question_title) ? $question->question_title : '',
+    '#default_value' => !empty($question->question_title) ? $question->question_title : '',
     '#weight' => -12,
   );
 
@@ -84,7 +84,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'textarea',
     '#title' => t('Question content'),
     '#required' => TRUE,
-    '#default_value' => isset($question->question_content) ? $question->question_content : '',
+    '#default_value' => !empty($question->question_content) ? $question->question_content : '',
     '#weight' => -11,
   );
 
@@ -92,7 +92,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'select',
     '#title' => t('Status'),
     '#options' => _vopros_question_status(),
-    '#default_value' => isset($question->question_status) ? $question->question_status : '',
+    '#default_value' => !empty($question->question_status) ? $question->question_status : '',
     '#weight' => -10,
   );
 
@@ -100,20 +100,20 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'select',
     '#title' => t('Deadline'),
     '#options' => _vopros_question_deadline(),
-    '#default_value' => isset($question->question_deadline) ? $question->question_deadline : -1,
+    '#default_value' => !empty($question->question_deadline) ? $question->question_deadline : -1,
   );
 
   $form['form']['question_usage'] = array(
     '#type' => 'select',
     '#title' => t('Usage'),
     '#options' => _vopros_question_usage(),
-    '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
+    '#default_value' => !empty($question->question_usage) ? $question->question_usage : 'other',
   );
 
   $qanda = isset($question->qanda_service_name) ? $question->qanda_service_name : '';
   $qanda_options = _vopros_question_qanda_serice_options();
   if ($qanda && !isset($qanda_options[$qanda])) {
-    $form['form']['question_usage'] = array(
+    $form['form']['qanda_service_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Q and A service'),
       '#default_value' => $qanda,
@@ -128,17 +128,10 @@ function vopros_question_question_form($form, &$form_state, $question) {
     );
   }
 
-  $form['form']['question_usage'] = array(
-    '#type' => 'select',
-    '#title' => t('Usage'),
-    '#options' => _vopros_question_usage(),
-    '#default_value' => isset($question->question_usage) ? $question->question_usage : '',
-  );
-
   $form['form']['question_note'] = array(
     '#type' => 'textarea',
     '#title' => t('Note about the question'),
-    '#default_value' => isset($question->question_note) ? $question->question_note : '',
+    '#default_value' => !empty($question->question_note) ? $question->question_note : '',
   );
 
   $form['form']['ask'] = array(
@@ -150,31 +143,31 @@ function vopros_question_question_form($form, &$form_state, $question) {
   $form['form']['ask']['user_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
-    '#default_value' => isset($question->user_name) ? $question->user_name : '',
+    '#default_value' => !empty($question->user_name) ? $question->user_name : '',
   );
 
   $form['form']['ask']['user_email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email'),
-    '#default_value' => isset($question->user_email) ? $question->user_email : '',
+    '#default_value' => !empty($question->user_email) ? $question->user_email : '',
   );
 
   $form['form']['ask']['user_postal_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Postal code'),
-    '#default_value' => isset($question->user_postal_code) ? $question->user_postal_code : '',
+    '#default_value' => !empty($question->user_postal_code) ? $question->user_postal_code : '',
   );
 
   $form['form']['ask']['user_mobile_phone'] = array(
     '#type' => 'textfield',
     '#title' => t('Mobile phone'),
-    '#default_value' => isset($question->user_mobile_phone) ? $question->user_mobile_phone : '',
+    '#default_value' => !empty($question->user_mobile_phone) ? $question->user_mobile_phone : '',
   );
 
   $form['form']['ask']['user_age'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
-    '#default_value' => isset($question->user_age) ? $question->user_age : '',
+    '#default_value' => !empty($question->user_age) ? $question->user_age : '',
     '#options' => _vopros_question_user_age(),
   );
 
@@ -182,19 +175,19 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#type' => 'select',
     '#title' => t('Gender'),
     '#options' => _vopros_question_user_gender(),
-    '#default_value' => isset($question->user_gender) ? $question->user_gender : '',
+    '#default_value' => !empty($question->user_gender) ? $question->user_gender : '',
   );
 
   $form['form']['ask']['user_field_of_study'] = array(
     '#type' => 'textfield',
     '#title' => t('Field of study'),
-    '#default_value' => isset($question->user_field_of_study) ? $question->user_field_of_study : '',
+    '#default_value' => !empty($question->user_field_of_study) ? $question->user_field_of_study : '',
   );
 
   $form['form']['ask']['user_library'] = array(
     '#type' => 'textfield',
     '#title' => t('Library'),
-    '#default_value' => isset($question->user_library) ? $question->user_library : '',
+    '#default_value' => !empty($question->user_library) ? $question->user_library : '',
   );
 
   $form['form']['ask']['user_answer_preference'] = array(
@@ -204,7 +197,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
       'mail' => t('Email'),
       'sms' => t('SMS'),
     ),
-    '#default_value' => isset($question->user_answer_preference) ? $question->user_answer_preference : '',
+    '#default_value' => !empty($question->user_answer_preference) ? $question->user_answer_preference : '',
   );
 
   $form['form']['buttons'] = array(
