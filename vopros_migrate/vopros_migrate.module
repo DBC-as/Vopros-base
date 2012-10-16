@@ -428,7 +428,6 @@ function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
  * Performs the actual cleaning up of public questions as a batch job.
  */
 function _vopros_migrate_clean_up_migrate_public_questions($count, &$context) {
-  dd('_vopros_migrate_clean_up_migrate_public_questions');
   if (empty($context['sandbox'])) {
     $progress = db_query("SELECT MAX(entity_id) FROM {vopros_migrate} WHERE entity_type = 'public_question_cleaned';")->fetchField();
     // Set the current state of our import.

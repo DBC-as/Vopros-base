@@ -8,11 +8,12 @@
  * - $page: The rendered page content.
  *
  */
-
 ?>
 
 <div id="vopros-feedback-page" class="clearfix">
   <div id="vopros-feedback-page-inner" class="clearfix">
-    <?php print $page['#children']; ?>
+    <?php if ($page['content']['system_main']): ?>
+      <?php print render($page['content']['system_main']); ?>
+    <?php endif ?>
   </div>
 </div>
