@@ -20,7 +20,7 @@ function vopros_migrate_setting_form($form, &$form_state) {
     '#collapsed' => $connect,
     '#access' => user_access('administer vopros_migrate'),
   );
-  
+
   $form['database_configuration']['vopros_migrate_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Host'),
@@ -97,7 +97,7 @@ function vopros_migrate_perform_migrate_questions_submit(&$form, &$form_state) {
       array('_vopros_migrate_perform_migrate_questions', array($count)),
     ),
     'finished' => 'vopros_migrate_questions_batch_finished',
-    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/vopros_migrate.admin.inc',
   );
   batch_set($batch);
 }
@@ -154,7 +154,7 @@ function vopros_migrate_perform_migrate_users_submit(&$form, &$form_state) {
       array('_vopros_migrate_perform_migrate_users', array($count)),
     ),
     'finished' => 'vopros_migrate_users_batch_finished',
-    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/vopros_migrate.admin.inc',
   );
   batch_set($batch);
 }
@@ -211,7 +211,7 @@ function vopros_migrate_perform_migrate_vocabolary_submit(&$form, &$form_state) 
       array('_vopros_migrate_perform_migrate_vocabolary', array($count)),
     ),
     'finished' => 'vopros_migrate_terms_batch_finished',
-    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/vopros_migrate.admin.inc',
   );
   batch_set($batch);
 }
@@ -268,7 +268,7 @@ function vopros_migrate_perform_migrate_public_questions_submit(&$form, &$form_s
       array('_vopros_migrate_perform_migrate_public_questions', array($count)),
     ),
     'finished' => 'vopros_migrate_public_questions_batch_finished',
-    'file' => drupal_get_path('module', 'vopros_migrate') . '/includes/vopros_migrate.admin.inc',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/vopros_migrate.admin.inc',
   );
   batch_set($batch);
 }
@@ -280,7 +280,64 @@ function vopros_migrate_public_questions_batch_finished($success, $results, $ope
   // The 'success' parameter means no fatal PHP errors were detected. All
   // other error management should be handled using 'results'.
   if ($success) {
-    $message = format_plural($results['count'], 'One term public question.', '@count public questions imported.');
+    $message = format_plural($results['count'], 'One public question imported.', '@count public questions imported.');
+  }
+  else {
+    $message = t('Finished with an error.');
+  }
+  drupal_set_message($message);
+}
+
+/**
+ * Form to clenaup migration of public questions.
+ */
+function vopros_migrate_clean_up_migrate_public_questions($form, &$form_state) {
+  $form['count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of public questions to clean up'),
+  );
+
+  $form['migrate'] = array(
+    '#type' => 'submit',
+    '#value' => t('Migrate'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_clean_up_migrate_public_questions_validate(&$form, &$form_state) {
+  if (!is_numeric($form_state['values']['count'])) {
+    form_set_error('count', t('Must be a number'));
+  }
+}
+
+/**
+ * Submit handler for vopros_migrate_perform_migrate_questions().
+ */
+function vopros_migrate_clean_up_migrate_public_questions_submit(&$form, &$form_state) {
+  $count = $form_state['values']['count'];
+  $batch = array(
+    'title' => t('Cleaning up public questions migrated from external database'),
+    'operations' => array(
+      array('_vopros_migrate_clean_up_migrate_public_questions', array($count)),
+    ),
+    'finished' => 'vopros_migrate_clean_up_public_questions_batch_finished',
+    'file' => drupal_get_path('module', 'vopros_migrate') . '/vopros_migrate.admin.inc',
+  );
+  batch_set($batch);
+}
+
+/**
+ * Callback for when public question import batch job is finished.
+ */
+function vopros_migrate_clean_up_public_questions_batch_finished($success, $results, $operations) {
+  // The 'success' parameter means no fatal PHP errors were detected. All
+  // other error management should be handled using 'results'.
+  if ($success) {
+    $message = format_plural($results['count'], 'One public question cleaned up.', '@count public questions cleaned up.');
   }
   else {
     $message = t('Finished with an error.');

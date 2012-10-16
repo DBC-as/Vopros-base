@@ -16,7 +16,7 @@ function vopros_migrate_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_setting_form'),
       'access arguments' => array('administer vopros_migrate'),
-      'file' => 'includes/vopros_migrate.admin.inc',
+      'file' => 'vopros_migrate.admin.inc',
     ),
     'admin/vopros/config/migrate/settings' => array(
       'title' => 'Settings',
@@ -28,7 +28,7 @@ function vopros_migrate_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_questions'),
       'access arguments' => array('administer vopros_migrate'),
-      'file' => 'includes/vopros_migrate.admin.inc',
+      'file' => 'vopros_migrate.admin.inc',
     ),
     'admin/vopros/migrate/migrate-questions' => array(
       'title' => 'Migrate questions',
@@ -40,7 +40,7 @@ function vopros_migrate_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_users'),
       'access arguments' => array('administer vopros_migrate'),
-      'file' => 'includes/vopros_migrate.admin.inc',
+      'file' => 'vopros_migrate.admin.inc',
     ),
     'admin/vopros/migrate/migrate-vocabolary' => array(
       'title' => 'Migrate vocabolary',
@@ -48,7 +48,7 @@ function vopros_migrate_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_vocabolary'),
       'access arguments' => array('administer vopros_migrate'),
-      'file' => 'includes/vopros_migrate.admin.inc',
+      'file' => 'vopros_migrate.admin.inc',
     ),
     'admin/vopros/migrate/migrate-public-question' => array(
       'title' => 'Migrate public questions',
@@ -56,7 +56,16 @@ function vopros_migrate_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_migrate_perform_migrate_public_questions'),
       'access arguments' => array('administer vopros_migrate'),
-      'file' => 'includes/vopros_migrate.admin.inc',
+      'file' => 'vopros_migrate.admin.inc',
+    ),
+    'admin/vopros/migrate/migrate-public-question' => array(
+      'title' => 'Clean up migrated public questions',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_migrate_clean_up_migrate_public_questions'),
+      'access arguments' => array('administer vopros_migrate'),
+      'file' => 'vopros_migrate.admin.inc',
+      'weight' => 10,
     ),
   );
 }
@@ -412,6 +421,57 @@ function _vopros_migrate_perform_migrate_public_questions($count, &$context) {
       $context['finished'] = $context['results']['count'] / $count;
     }
     $context['message'] = t('Migrating question with id @id - current migration status: @num/@total', array('@id' => $context['sandbox']['progress'], '@num' => $context['results']['count'], '@total' => $count));
+  }
+}
+
+/**
+ * Performs the actual cleaning up of public questions as a batch job.
+ */
+function _vopros_migrate_clean_up_migrate_public_questions($count, &$context) {
+  dd('_vopros_migrate_clean_up_migrate_public_questions');
+  if (empty($context['sandbox'])) {
+    $progress = db_query("SELECT MAX(entity_id) FROM {vopros_migrate} WHERE entity_type = 'public_question_cleaned';")->fetchField();
+    // Set the current state of our import.
+    $top_question_id = db_query("SELECT MAX(entity_id) FROM {vopros_migrate} WHERE entity_type = 'public_question';")->fetchField();
+    $context['sandbox']['progress'] = (int) $progress;
+    $context['sandbox']['max'] = min($top_question_id, $count);
+    $context['results']['count'] = 0;
+  }
+  $min_question_id = $context['sandbox']['progress'];
+  $result = db_query("SELECT entity_id FROM {vopros_migrate}
+            WHERE entity_type = 'public_question'
+            AND entity_id > :min_entity_id
+            ORDER BY entity_id
+            LIMIT 50;", array(':min_entity_id' => $context['sandbox']['progress']));
+
+  $public_question_ids = array();
+  foreach ($result as $row) {
+    $public_question_ids[] = $row->entity_id;
+  }
+  $public_questions = vopros_public_question_load_multiple($public_question_ids);
+  foreach ($public_questions as $key => $public_question) {
+    // _filter_autop is used for creating <p> and <br /> tags instead of line breaks
+    // _filter_url is used to create <a> tags for urls.
+    // Setup dummy filter object for _filter_url.
+    $filter = new stdClass();
+    $filter->settings = array(
+      'filter_url_length' => 100,
+    );
+    $public_question->question_content = _filter_autop(_filter_url($question->question_content, $filter));
+    $public_question->answer_content = _filter_autop(_filter_url(trim($answer_content), $filter));
+    $public_question->save();
+    // Save that the public question was cleaned up.
+    $migration = array(
+      'migrate_id' => $public_question->public_question_id,
+      'entity_id' => $public_question->public_question_id,
+      'entity_type' => 'public_question_cleaned',
+      'created' => REQUEST_TIME,
+    );
+    drupal_write_record('vopros_migrate', $migration);
+    $context['results']['count'] += 1;
+    $context['sandbox']['progress'] = $public_question->public_question_id;
+    $context['finished'] = $context['results']['count'] / $count;
+    $context['message'] = t('Cleaning up published questions: @num/@total', array('@id' => $context['sandbox']['progress'], '@num' => $context['results']['count'], '@total' => $count));
   }
 }
 
