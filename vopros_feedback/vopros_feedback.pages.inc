@@ -10,6 +10,7 @@ function vopros_feedback_public_feedback_page($email) {
   $vopros_feedback_hide_regions = TRUE;
   // Some styles needed to hide header and footer.
   drupal_add_css(drupal_get_path('module', 'vopros_feedback') . '/theme/vopros_feedback.base.css');
+  drupal_add_css(drupal_get_path('module', 'vopros_feedback') . '/theme/vopros_feedback.theme.css');
   // Hide the breadbrumb.
   drupal_set_breadcrumb('');
   $conditions = array(
@@ -58,7 +59,7 @@ function vopros_feedback_public_form($form, &$form_state, $feedback, $show_form 
   else {
     if ($text = variable_get('vopros_feedback_intro_text', '')) {
       $form['intro'] = array(
-        '#prefix' => '<p>',
+        '#prefix' => '<p class="intro-text">',
         '#suffix' => '</p>',
         '#markup' => check_plain(variable_get('vopros_feedback_intro_text', '')),
       );
