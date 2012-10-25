@@ -456,8 +456,8 @@ function _vopros_migrate_clean_up_migrate_public_questions($count, &$context) {
     $filter->settings = array(
       'filter_url_length' => 100,
     );
-    $public_question->question_content = _filter_autop(_filter_url($question->question_content, $filter));
-    $public_question->answer_content = _filter_autop(_filter_url(trim($answer_content), $filter));
+    $public_question->question_content = _filter_autop(_filter_url($public_question->question_content, $filter));
+    $public_question->answer_content = _filter_autop(_filter_url(trim($public_question->answer_content), $filter));
     $public_question->save();
     // Save that the public question was cleaned up.
     $migration = array(
