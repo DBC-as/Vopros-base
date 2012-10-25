@@ -58,7 +58,7 @@ function vopros_migrate_menu() {
       'access arguments' => array('administer vopros_migrate'),
       'file' => 'vopros_migrate.admin.inc',
     ),
-    'admin/vopros/migrate/migrate-public-question' => array(
+    'admin/vopros/migrate/cleanup-migrate-public-question' => array(
       'title' => 'Clean up migrated public questions',
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
