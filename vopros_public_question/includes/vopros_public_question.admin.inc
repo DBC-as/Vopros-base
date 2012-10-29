@@ -177,7 +177,7 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
   $public_question->uid = $user->uid;
   field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
-  vopros_public_question_save($public_question);
+  $public_question->save();
 
   if (vopros_public_question_publish_question($public_question)) {
     drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
@@ -205,7 +205,8 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
   $public_question->uid = $user->uid;
   field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
-  vopros_public_question_save($public_question);
+  $public_question->save();
+
   $public_question_wrapper = entity_metadata_wrapper('vopros_public_question', $public_question);
   $public_question->subject = array();
   foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
@@ -238,5 +239,10 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
 function vopros_public_question_form_delete_submit(&$form, &$form_state) {
   $public_question = $form_state['public_question'];
   // Delete the question in the data store.
-  $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
+  $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'deleteObjectRequest');
+  if ($result['status'] == 'error_fetching_object_record') {
+    drupal_set_message(t('Could not find question - is already deleted'), 'error');
+  }
+  $public_question->status = 'unpublished';
+  $public_question->save();
 }
