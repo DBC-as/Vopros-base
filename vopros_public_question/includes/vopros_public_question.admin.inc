@@ -120,6 +120,12 @@ function vopros_public_question_form($form, &$form_state, $question = NULL, $pub
       '#value' => t('Save and update'),
       '#submit' => array('vopros_public_question_form_update_submit'),
     );
+
+    $form['delete_published_data'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete published data'),
+      '#submit' => array('vopros_public_question_form_delete_submit'),
+    );
   }
 
   $form_state['public_question'] = $public_question;
@@ -223,4 +229,14 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
     $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
     drupal_set_message(t('Could not update question at service.'), 'error');
   }
+}
+
+/**
+ * Submit handler for vopros_public_question_form().
+ * Used for deleting the published data.
+ */
+function vopros_public_question_form_delete_submit(&$form, &$form_state) {
+  $public_question = $form_state['public_question'];
+  // Delete the question in the data store.
+  $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
 }
