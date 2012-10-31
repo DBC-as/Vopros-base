@@ -256,6 +256,6 @@ function vopros_public_question_form_delete_submit(&$form, &$form_state) {
     );
     return;
   }
-  $public_question->status = 'unpublished';
-  $public_question->save();
+  $public_question->delete();
+  $form_state['redirect'] = 'admin/vopros/questions/' . $public_question->question_id;
 }
