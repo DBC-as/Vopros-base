@@ -13,6 +13,7 @@ function vopros_log_entity_info() {
     'vopros_log' => array(
       'label' => t('Log', array(), array('context' => 'a vopros log')),
       'controller class' => 'VoprosLogEntityController',
+      'entity class' => 'VoprosLog',
       'base table' => 'vopros_log',
       // No revision table needed for logs.
       // Logs are simple and can't and shouldn't have fields.

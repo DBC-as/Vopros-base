@@ -1,6 +1,6 @@
 <?php
 
 /**
- * Entity class for vopros question.
+ * Entity class for vopros feedback.
  */
 class VoprosFeedback extends VoprosEntity {}

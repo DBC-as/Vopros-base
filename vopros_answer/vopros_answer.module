@@ -21,6 +21,7 @@ function vopros_answer_entity_info() {
     'vopros_answer' => array(
       'label' => t('Answer', array(), array('context' => 'a vopros answer')),
       'controller class' => 'VoprosAnswerEntityController',
+      'entity class' => 'VoprosAnswer',
       'base table' => 'vopros_answer',
       'revision table' => 'vopros_answer_revision',
       'fieldable' => TRUE,

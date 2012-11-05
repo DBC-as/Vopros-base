@@ -11,6 +11,7 @@ dependencies[] = vopros_answer
 
 ; Entity controller include:
 files[] = includes/vopros_email.controller.inc
+files[] = includes/vopros_email.entity.inc
 
 ; Views includes:
 files[] = includes/views/handlers/vopros_email_handler_field_vopros_email.inc
