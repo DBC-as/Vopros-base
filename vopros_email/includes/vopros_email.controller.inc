@@ -20,6 +20,6 @@ class VoprosEmailEntityController extends VoprosAPIEntityController {
       'changed' => '',
       'is_new' => TRUE,
     );
-    return parent::create($value);
+    return parent::create($values);
   }
 }
