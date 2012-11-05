@@ -8,7 +8,7 @@ class VoprosAnswerEntityController extends VoprosAPIEntityController {
    * Creates a new instance of a vopros_question entity.
    */
   public function create(array $values = array()) {
-    return (object) ($values + array(
+    $values = $values + array(
       'question_id' => 0,
       'uid' => 0,
       'answer_content' => '',
@@ -18,5 +18,6 @@ class VoprosAnswerEntityController extends VoprosAPIEntityController {
       'created' => NULL,
       'changed' => NULL,
     ));
+    return parent::create($values);
   }
 }

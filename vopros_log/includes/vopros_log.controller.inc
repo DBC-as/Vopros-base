@@ -8,7 +8,7 @@ class VoprosLogEntityController extends EntityAPIController {
    * Creates a new instance of a vopros_log entity.
    */
   public function create(array $values = array()) {
-    return (object) ($values + array(
+    $values = $values + array(
       'answer_id' => 0,
       'question_id' => 0,
       'uid' => 0,
@@ -17,6 +17,7 @@ class VoprosLogEntityController extends EntityAPIController {
       'changed' => '',
       'is_new' => TRUE,
     ));
+    return parent::create($values);
   }
 
   /**
