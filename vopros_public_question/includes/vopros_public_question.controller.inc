@@ -25,7 +25,7 @@ class VoprosPublicQuestionEntityController extends VoprosAPIEntityController {
       'created' => '',
       'changed' => '',
       'is_new' => TRUE,
-    ));
+    );
     return parent::create($values);
   }
 }

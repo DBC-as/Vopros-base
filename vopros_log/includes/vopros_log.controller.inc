@@ -16,7 +16,7 @@ class VoprosLogEntityController extends EntityAPIController {
       'created' => '',
       'changed' => '',
       'is_new' => TRUE,
-    ));
+    );
     return parent::create($values);
   }
 
