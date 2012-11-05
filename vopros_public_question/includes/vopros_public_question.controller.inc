@@ -11,7 +11,7 @@ class VoprosPublicQuestionEntityController extends VoprosAPIEntityController {
    * Creates a new instance of a vopros_log entity.
    */
   public function create(array $values = array()) {
-    return (object) ($values + array(
+    return parent::create($values + array(
       'question_id' => 0,
       'uid' => 0,
       'title' => '',

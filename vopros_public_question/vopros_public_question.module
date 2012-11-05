@@ -255,19 +255,6 @@ function vopros_public_question_new($values = array()) {
 }
 
 /**
- * Save a question
- *
- * @param $public_question
- *    The public question object
- * @param $revision
- *    Bolean indicator, if a new revision should be created.
- */
-function vopros_public_question_save($public_question, $revision = 1) {
-  $public_question->revision = $revision;
-  entity_save('vopros_public_question', $public_question);
-}
-
-/**
  * Loads an question by ID.
  */
 function vopros_public_question_load($public_question_id, $revision_id = NULL, $reset = FALSE) {

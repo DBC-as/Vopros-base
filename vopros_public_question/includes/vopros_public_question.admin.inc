@@ -156,7 +156,7 @@ function vopros_public_question_form_save_submit(&$form, &$form_state) {
   $public_question->question_content_format = $form_state['values']['question_content']['format'];
   $public_question->uid = $user->uid;
   field_attach_submit('vopros_public_question', $public_question, $form, $form_state);
-  vopros_public_question_save($public_question);
+  $public_question->save();
   $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
   drupal_set_message(t("Question/answer has been saved but haven't been made public"), 'warning');
 }
@@ -183,7 +183,7 @@ function vopros_public_question_form_publish_submit(&$form, &$form_state) {
     drupal_set_message(t('Question has been published !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
     $public_question->status = 'published';
     $public_question->question_content = $unformatted_question_content;
-    vopros_public_question_save($public_question);
+    $public_question->save();
     $form_state['redirect'] = 'admin/vopros/questions/list';
   }
   else {
