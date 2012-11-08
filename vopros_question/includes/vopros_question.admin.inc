@@ -49,6 +49,9 @@ function vopros_question_settings_form($form, &$form_state) {
  * Form to edit or create a question
  */
 function vopros_question_question_form($form, &$form_state, $question) {
+  if (empty($question)) {
+    $question = vopros_question_new();
+  }
   $form['action'] = array(
     '#weight' => -1000,
     '#prefix' => '<div class="action">',

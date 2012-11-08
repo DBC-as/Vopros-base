@@ -234,7 +234,7 @@ function vopros_question_menu() {
     'admin/vopros/questions/add' => array(
       'title' => 'Add a question',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('vopros_question_question_form', vopros_question_new()),
+      'page arguments' => array('vopros_question_question_form', NULL),
       'access callback' => 'vopros_question_access',
       'access arguments' => array('create'),
       'file' => 'includes/vopros_question.admin.inc',
