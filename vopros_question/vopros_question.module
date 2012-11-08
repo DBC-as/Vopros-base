@@ -881,6 +881,7 @@ function _vopros_question_user_answer_preference() {
   return array(
     'mail' => t('Email'),
     'sms' => t('SMS'),
+    'telephone' => t('Telephone'),
   );
 }
 

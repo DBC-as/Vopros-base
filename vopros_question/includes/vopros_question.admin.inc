@@ -201,10 +201,7 @@ function vopros_question_question_form($form, &$form_state, $question) {
   $form['form']['ask']['user_answer_preference'] = array(
     '#type' => 'select',
     '#title' => t('How to recieve answer'),
-    '#options' => array(
-      'mail' => t('Email'),
-      'sms' => t('SMS'),
-    ),
+    '#options' => _vopros_question_user_answer_preference(),
     '#default_value' => !empty($question->user_answer_preference) ? $question->user_answer_preference : '',
   );
 

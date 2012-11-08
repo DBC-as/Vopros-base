@@ -43,7 +43,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $form['action']['save_submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save and send'),
+    '#value' => $question->user_answer_preference == 'telephone' ? t('Save telephone answer') : t('Save and send'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
   );
@@ -133,7 +133,7 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $form['form']['save_submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save and send'),
+    '#value' => $question->user_answer_preference == 'telephone' ? t('Save telephone answer') : t('Save and send'),
     '#submit' => array('vopros_answer_form_save_submit_submit'),
     '#validate' => array('vopros_answer_form_submit_validate'),
     '#attributes' => array('class' => array('primary-action')),
@@ -166,7 +166,9 @@ function vopros_answer_form_save_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $answer = $v['answer'];
   $question = $v['question'];
-  $question->save();
+  if (empty($question->question_id)) {
+    $question->save();
+  }
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
   $answer->author_name = $GLOBALS['user']->name;
@@ -228,7 +230,9 @@ function vopros_answer_form_save_release_submit(&$form, &$form_state) {
 function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $v = $form_state['values'];
   $question = $form_state['values']['question'];
-  $question->save();
+  if (empty($question->question_id)) {
+    $question->save();
+  }
   $answer = $v['answer'];
   $answer->question_id = $question->question_id;
   $answer->answer_content = $v['answer_content'];
@@ -236,7 +240,13 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   $answer->status = 'complete';
   $form_state['answer'] = $answer;
   vopros_answer_save($answer);
-  drupal_set_message(t('Answer saved and is ready to be submited to the user.'));
+  if ($question->user_answer_preference == 'telephone') {
+    $question->question_status = 'answered';
+    $question->save();
+  }
+  else {
+    drupal_set_message(t('Answer saved and is ready to be submited to the user.'));
+  }
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
 }
 
