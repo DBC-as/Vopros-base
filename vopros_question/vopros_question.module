@@ -277,7 +277,7 @@ function vopros_question_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_question_revisions_form', 3),
       'access callback' => 'vopros_question_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'file' => 'includes/vopros_question.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
@@ -288,7 +288,7 @@ function vopros_question_menu() {
       'page arguments' => array(3, 6, 7),
       'type' => MENU_LOCAL_TASK,
       'access callback' => 'vopros_question_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'tab_parent' => 'admin/vopros/questions/%/revisions',
       'file' => 'includes/vopros_question.admin.inc',
     ),
@@ -297,7 +297,7 @@ function vopros_question_menu() {
       'page callback' => 'vopros_question_revision_revert',
       'page arguments' => array(3, 5),
       'access callback' => 'vopros_question_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
     'admin/vopros/questions/%vopros_question/close' => array(
@@ -364,6 +364,9 @@ function vopros_question_permission() {
     'contact user about question' => array(
       'title' => t('Contact user about question'),
     ),
+    'access and use revisions for questions' => array(
+      'title' => t('Access and use revisions'),
+    ),
   );
 
   return $permissions;
@@ -373,8 +376,8 @@ function vopros_question_permission() {
  * Checks question access for various operations.
  *
  * @param $op
- *   The operation being performed. One of 'view', 'update', 'create' or
- *   'delete'.
+ *   The operation being performed. One of 'view', 'update', 'create',
+ *   'delete' or 'revision'.
  * @param $account
  *   The user to check for. Leave it to NULL to check for the current user.
  */
@@ -400,6 +403,10 @@ function vopros_question_access($op, $question = NULL, $account = NULL) {
   }
 
   if (($op == 'update' || $op == 'delete') && user_access('edit any question', $account)) {
+    return TRUE;
+  }
+
+  if ($op == 'revision' && user_access('access and use revisions for questions', $account)) {
     return TRUE;
   }
 

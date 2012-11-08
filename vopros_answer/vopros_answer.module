@@ -274,7 +274,7 @@ function vopros_answer_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_answer_revisions_form', 3),
       'access callback' => 'vopros_answer_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'file' => 'includes/vopros_answer.admin.inc',
       'type' => MENU_LOCAL_TASK,
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
@@ -285,7 +285,7 @@ function vopros_answer_menu() {
       'page arguments' => array(3, 6, 7),
       'type' => MENU_LOCAL_TASK,
       'access callback' => 'vopros_answer_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'tab_parent' => 'admin/vopros/answerss/%/revisions',
       'file' => 'includes/vopros_answer.admin.inc',
     ),
@@ -294,7 +294,7 @@ function vopros_answer_menu() {
       'page callback' => 'vopros_answer_revision_revert',
       'page arguments' => array(3, 5),
       'access callback' => 'vopros_answer_access',
-      'access arguments' => array('update'),
+      'access arguments' => array('revision'),
       'file' => 'includes/vopros_answer.admin.inc',
     ),
   );
@@ -325,6 +325,9 @@ function vopros_answer_permission() {
     'view own answers' => array(
       'title' => t('View own answers'),
     ),
+    'access and use revisions for answers' => array(
+      'title' => t('Access and use revisions'),
+    )
   );
 
   return $permissions;
@@ -597,8 +600,8 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
  * Checks answer access for various operations.
  *
  * @param $op
- *   The operation being performed. One of 'view', 'update', 'create' or
- *   'delete'.
+ *   The operation being performed. One of 'view', 'update', 'create',
+ *   'delete' or 'revision'.
  * @param $answer
  *   Optionally an anwer to check access for.
  * @param $account
@@ -628,13 +631,19 @@ function vopros_answer_access($op, $answer = NULL, $account = NULL) {
     return TRUE;
   }
 
-  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+  if ($op == 'update' || $op == 'delete') {
     if (user_access('edit any answer', $account)) {
       return TRUE;
     }
 
     // Others either don't have any access or must match the uid.
     if ($account->uid && user_access('edit own answers', $account) && $answer->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'revision') {
+    if (user_access('access and use revisions for answers', $account)) {
       return TRUE;
     }
   }
