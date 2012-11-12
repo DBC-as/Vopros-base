@@ -19,6 +19,11 @@
   margin: 10px 0;
 }
 
+.vopros-email-display .body .field {
+  float: left;
+  clear: left;
+}
+
 .vopros-email-display .body img.preview {
   border: 1px solid black;
 }

@@ -521,7 +521,7 @@ function vopros_email_build_content($email, $view_mode = 'administrator', $langc
     '#prefix' => '<div class="vopros-email-display ' . $email->type . '">',
     '#suffix' => '</div>',
     'body' => array(
-      '#prefix' => '<div class="body">',
+      '#prefix' => '<div class="body clearfix">',
       '#weight' => 0,
       '#suffix' => '</div>',
     ),
