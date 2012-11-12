@@ -49,7 +49,7 @@ function vopros_question_create_service() {
   $validation = vopros_question_validate_data($question);
     if ($validation['status'] == 'valid') {
       $question_wrapper->save();
-      print t('Question created');
+      print 'Question created';
       exit();
     }
     drupal_add_http_header('Status', '400');
@@ -59,7 +59,7 @@ function vopros_question_create_service() {
     }
     watchdog('vopros_question', 'Could not create vopros question, invalid data for: %fields. Validation object: %validation, POST data: %post', array('%fields' => implode(', ', $errors), '%validation' => print_r($validation, TRUE), '%post' => print_r($_POST, TRUE)), WATCHDOG_ERROR);
   }
-  print t('Question not created');
+  print 'Question not created';
   exit();
 }
 
