@@ -410,6 +410,7 @@ function vopros_public_question_vopros_question_activity_feed($question, &$feed)
  */
 function vopros_public_question_publish_question($public_question) {
   // Format the question and answer content.
+  $unformatted_answer_content = $public_question->answer_content;
   $public_question->answer_content = check_markup($public_question->answer_content, $public_question->answer_content_format);
   $unformatted_question_content = $public_question->question_content;
   $public_question->question_content = check_markup($public_question->question_content, $public_question->question_content_format);
@@ -422,9 +423,14 @@ function vopros_public_question_publish_question($public_question) {
     $public_question->subject[] = $term->name;
   }
   $result = osa_addi_create_object($public_question, $public_question->uuid);
+  $public_question->question_content = $unformatted_question_content;
+  $public_question->answer_content = $unformatted_answer_content;
   if ($result['status'] == 'object_created') {
+    $public_question->status = 'published';
+    $public_question->save();
     return TRUE;
   }
+  $public_question->save();
   return FALSE;
 }
 
