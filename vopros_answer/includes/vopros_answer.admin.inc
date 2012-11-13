@@ -67,6 +67,11 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
 
   $question_user_data = array(
     $question_build['ask'],
+    array(
+      '#theme' =>  'vopros_question_user_credentials',
+      '#question' => $question,
+      '#view_mode' => 'teaser',
+    ),
   );
 
   $form['form']['question_intro'] = array(

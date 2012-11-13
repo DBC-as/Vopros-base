@@ -193,6 +193,30 @@ function theme_vopros_question_user_data($variables) {
 }
 
 /**
+ * Theme user credentials.
+ */
+function theme_vopros_question_user_credentials($variables) {
+  $question = $variables['question']['#question'];
+  $output .= '<div class="question-user-credentials">';
+
+  if ($question->user_email) {
+    $output .= '<div class="question-user-email vopros-question-extra">';
+    $output .= '<span class="label">' . t('Email:') .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->user_email) .  '</span>';
+    $output .= '</div>';
+  }
+  if ($question->user_mobile_phone) {
+    $output .= '<div class="question-user-mobile-phone vopros-question-extra">';
+    $output .= '<span class="label">' . t('Mobile phone:') .  '</span>';
+    $output .= '<span class="value">' . check_plain($question->user_mobile_phone) .  '</span>';
+    $output .= '</div>';
+  }
+
+  $output .= '</div>';
+  return $output;
+}
+
+/**
  * Theme function for the question log
  */
 function theme_vopros_question_log($variables) {
