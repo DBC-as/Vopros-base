@@ -219,6 +219,7 @@ function vopros_email_form_submit(&$form, &$form_state) {
   if ($email->question_id) {
     $question = vopros_question_load($email->question_id);
     $question->question_status = 'answered';
+    $question->question_status_reason = '';
     $question->save();
   }
 

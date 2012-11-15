@@ -247,6 +247,7 @@ function vopros_answer_form_save_submit_submit(&$form, &$form_state) {
   vopros_answer_save($answer);
   if ($question->user_answer_preference == 'telephone') {
     $question->question_status = 'answered';
+    $question->question_status_reason = '';
     $question->save();
   }
   else {
