@@ -89,6 +89,9 @@ function vopros_question_create_sms() {
       $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
       $question_wrapper->vopros_editorial = $tid;
     }
+    if (!trim($question->question_content)) {
+      $question->question_content = t('Empty question - no content delivered from SMS service.');
+    }
     $question->save();
   }
   $output =
