@@ -209,7 +209,9 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   foreach ($public_question_wrapper->vopros_public_question_subject->value() as $term) {
     $public_question->subject[] = $term->name;
   }
-  $result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
+  // The below code works, but the service that is integrates to, doesn't, so
+  // we use a workaround. Instead of updating the question, we delete it and republish it.
+  /**$result = osa_addi_create_object($public_question, $public_question->uuid, array(), 'updateObjectRequest');
   if ($result['status'] == 'object_updated') {
     drupal_set_message(t("Question/answer has been saved and made public"));
     $form_state['redirect'] = 'admin/vopros/questions/list';
@@ -226,6 +228,14 @@ function vopros_public_question_form_update_submit(&$form, &$form_state) {
   else {
     $form_state['redirect'] = 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit';
     drupal_set_message(t('Could not update question at service.'), 'error');
+  }*/
+  osa_addi_create_object($public_question, $public_question->uuid, array(), 'deleteObjectRequest');
+  if (vopros_public_question_publish_question($public_question)) {
+    drupal_set_message(t('Question/answer has been updated in external data store, !link', array('!link' => l(t('see public question'), 'admin/vopros/public-questions/' . $public_question->public_question_id . '/edit'))));
+    $form_state['redirect'] = 'admin/vopros/questions/list';
+  }
+  else {
+    drupal_set_message(t('Could not create question at service, but question was deleted.'), 'error');
   }
 }
 
