@@ -85,7 +85,7 @@ function vopros_email_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('vopros_email_form', vopros_email_new(), 3),
       'access callback' => 'vopros_answer_access',
-      'access arguments' => array(3),
+      'access arguments' => array('update', 3),
       'file' => 'includes/vopros_email.admin.inc',
     ),
     'admin/vopros/emails/%vopros_email' => array(

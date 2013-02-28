@@ -256,7 +256,7 @@ function vopros_answer_menu() {
       'page callback' => 'vopros_answer_answer_page',
       'page arguments' => array(3, vopros_answer_new()),
       'access callback' => 'vopros_answer_question_access',
-      'access arguments' => array(3),
+      'access arguments' => array('update', 3),
       'file' => 'includes/vopros_answer.admin.inc',
     ),
     'admin/vopros/answers/%vopros_answer/edit' => array(
