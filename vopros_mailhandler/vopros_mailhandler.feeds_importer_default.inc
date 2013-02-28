@@ -10,7 +10,7 @@
 function vopros_mailhandler_feeds_importer_default() {
   $export = array();
 
-  $feeds_importer = new stdClass;
+  $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
   $feeds_importer->id = 'vopros_mailhandler';
@@ -20,20 +20,13 @@ function vopros_mailhandler_feeds_importer_default() {
     'fetcher' => array(
       'plugin_key' => 'MailhandlerFetcher',
       'config' => array(
-        'filter' => 'all',
+        'filter' => 'MailhandlerFilters',
       ),
     ),
     'parser' => array(
       'plugin_key' => 'VoprosMailhandlerParser',
       'config' => array(
-        'if_auth_fails' => 'remove',
-        'default_commands' => 'status: 1',
         'available_commands' => 'status',
-        'command_plugin' => array(
-          0 => 'MailhandlerCommandsDefault',
-          1 => 'MailhandlerCommandsFiles',
-          2 => 'MailhandlerCommandsHeaders',
-        ),
         'authenticate_plugin' => 'MailhandlerAuthenticateDefault',
       ),
     ),
@@ -57,7 +50,7 @@ function vopros_mailhandler_feeds_importer_default() {
             'unique' => FALSE,
           ),
           3 => array(
-            'source' => 'origbody',
+            'source' => 'body_text',
             'target' => 'email_content',
             'unique' => FALSE,
           ),
@@ -67,8 +60,9 @@ function vopros_mailhandler_feeds_importer_default() {
             'unique' => FALSE,
           ),
         ),
-        'update_existing' => 0,
-        'input_format' => NULL,
+        'update_existing' => '0',
+        'input_format' => 'wysiwyg',
+        'skip_hash_check' => 0,
       ),
     ),
     'content_type' => '',
