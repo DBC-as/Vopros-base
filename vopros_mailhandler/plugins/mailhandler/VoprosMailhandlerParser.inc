@@ -45,18 +45,8 @@ class VoprosMailhandlerParser extends MailhandlerParser {
     $result = new FeedsParserResult();
     if (!empty($fetched['messages'])) {
       foreach ($fetched['messages'] as $mid => &$message) {
-        $this->authenticate($message, $mailbox);
         if ($class = mailhandler_plugin_load_class('mailhandler', $mailbox->settings['retrieve'], 'retrieve', 'handler')) {
           $class->purge_message($mailbox, $message);
-        }
-        if ($message['authenticated_uid'] == 0) {
-          // User was not authenticated
-          module_invoke_all('mailhandler_auth_failed', $message);
-          $source_config = $source->getConfigFor($this);
-          if ($source_config['auth_required']) {
-            watchdog('mailhandler', 'User could not be authenticated. Please check your Mailhandler authentication plugin settings.');
-            continue;
-          }
         }
         $this->commands($message, $source);
         $subject = imap_mime_header_decode($message['subject']);
