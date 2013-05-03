@@ -1,7 +1,0 @@
-name = Vopros Editorial
-description = Creates editorial seperation for question.
-package = Vopros
-core = 7.x
-
-dependencies[] = vopros_base
-dependencies[] = vopros_question
