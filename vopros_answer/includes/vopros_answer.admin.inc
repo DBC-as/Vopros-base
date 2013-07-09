@@ -193,6 +193,7 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
   $question = $form_state['values']['question'];
   $answers = vopros_answer_load_for_question($question->question_id);
   $question->question_status = 'active';
+  $question->question_status_reason = 'released';
   if (count($answers) == 0) {
     $question->question_status = 'new';
   }
@@ -201,6 +202,9 @@ function vopros_answer_form_cancel_submit(&$form, &$form_state) {
     if (empty($answer->answer_content)) {
       $question->question_status = 'new';
     }
+  }
+  if ($question->question_status == 'new') {
+    $question->question_status_reason = '';
   }
   $question->uid = 0;
 
