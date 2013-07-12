@@ -943,3 +943,14 @@ function vopros_question_notify_user_form_submit($form, &$form_state) {
     }
   }
 }
+
+/**
+ * Callback to release a question.
+ */
+function vopros_question_release_question($question) {
+  $question->uid = 0;
+  $question->question_status = 'active';
+  $question->question_status_reason = '';
+  $question->save();
+  drupal_goto('admin/vopros/questions');
+}

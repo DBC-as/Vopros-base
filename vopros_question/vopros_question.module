@@ -316,6 +316,14 @@ function vopros_question_menu() {
       'access arguments' => array('update'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
+    'admin/vopros/questions/%vopros_question/release' => array(
+      'title' => 'Release question',
+      'page callback' => 'vopros_question_release_question',
+      'page arguments' => array(3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
     'vopros/question/create/service' => array(
       'page callback' => 'vopros_question_create_service',
       'access arguments' => array('create question via web service'),
@@ -691,6 +699,14 @@ function vopros_question_views_data_alter(&$data) {
     'base' => 'vopros_question',
     'field' => 'question_id',
     'label' => 'Question',
+  );
+
+  $data['vopros_question']['release_link'] = array(
+    'field' => array(
+      'title' => t('Release question link'),
+      'help' => t('Creates a link for releasing a question assigned to a user.'),
+      'handler' => 'vopros_question_handler_field_vopros_quesiton_release_link',
+    ),
   );
 }
 
