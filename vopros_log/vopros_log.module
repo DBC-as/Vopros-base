@@ -180,7 +180,9 @@ function vopros_log_access($op, $log = NULL, $account = NULL) {
   return FALSE;
 }
 
-function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL) {
+function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, $answer_id = NULL, $show_messages = FALSE) {
+  $form_state['show_messages'] = $show_messages;
+
   $form['question_id'] = array(
     '#type' => 'value',
     '#value' => $question_id,
@@ -205,6 +207,28 @@ function vopros_log_form($form, &$form_state, $log = NULL, $question_id = NULL, 
     )
   );
 
+  if ($show_messages) {
+    $form['log_messages'] = array(
+      '#prefix' => '<div id="vopros-log-messages">',
+      '#suffix' => '</div>',
+    );
+    $conditions = array();
+    if ($question_id) {
+      $conditions['question_id'] = $question_id;
+    }
+    if ($answer_id) {
+      $conditions['answer_id'] = $answer_id;
+    }
+    $log_messages = vopros_log_load_multiple(array(), $conditions);
+
+    foreach ($log_messages as $log_message) {
+      $form['log_messages'][] = array(
+        '#log' => $log_message,
+        '#theme' => 'vopros_log_question_feed',
+      );
+    }
+  }
+
   return $form;
 }
 
@@ -227,11 +251,15 @@ function vopros_log_form_ajax_submit(&$form, &$form_state) {
     $commands[] = ajax_command_invoke('#edit-log-content', 'val', array(''));
     $commands[] = ajax_command_invoke('#log-status-message', 'remove', array(''));
     $commands[] = ajax_command_invoke('#edit-save-log-message', 'before', array('<div id="log-status-message"><div class="messages status">' . t('Log message created') . '</div></div>'));
+    if ($form_state['show_messages']) {
+      $log_message = theme('vopros_log_question_feed', array('log' => $log));
+      $commands[] = ajax_command_invoke('#vopros-log-messages', 'append', array($log_message));
+    }
   }
   else {
     $commands[] = ajax_command_invoke('#edit-save-log-message', 'before', array('<div id="log-status-message"><div class="messages error">' . t('Log message not created, cannot create an empty log message') . '</div></div>'));
   }
-  
+
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -240,7 +268,7 @@ function vopros_log_form_ajax_submit(&$form, &$form_state) {
  */
 function vopros_log_entity_view($entity, $type, $view_mode, $langcode) {
   if ($type == 'vopros_question' && $view_mode == 'administrator') {
-    $entity->content['right']['log_form'] = drupal_get_form('vopros_log_form', NULL, $entity->question_id);
+    $entity->content['right']['log_form'] = drupal_get_form('vopros_log_form', NULL, $entity->question_id, NULL, TRUE);
   }
 }
 
