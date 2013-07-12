@@ -308,6 +308,14 @@ function vopros_question_menu() {
       'access arguments' => array('update'),
       'file' => 'includes/vopros_question.admin.inc',
     ),
+    'admin/vopros/questions/%vopros_question/notify' => array(
+      'title' => 'Notify user',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_question_notify_user_form', 3),
+      'access callback' => 'vopros_question_access',
+      'access arguments' => array('update'),
+      'file' => 'includes/vopros_question.admin.inc',
+    ),
     'vopros/question/create/service' => array(
       'page callback' => 'vopros_question_create_service',
       'access arguments' => array('create question via web service'),
@@ -371,6 +379,22 @@ function vopros_question_permission() {
 
   return $permissions;
 }
+
+/**
+ * Implements hook_mail().
+ */
+function vopros_question_mail($key, &$message, $params) {
+  if ($key == 'notify_user') {
+    $message['subject'] = t('[@site] Question notification', array('@site' => variable_get('site_name', 'Vopros')));
+    $message['body'][] = t('You have been notified about a question.');
+    if ($params['message']) {
+      $message['body'][] = $params['message'];
+    }
+    $message['body'][] = t('You can see the quesiton here: !link.', array('!link' => url('admin/vopros/questions/' . $params['question']->question_id, array('absolute' => TRUE))));
+  }
+}
+
+
 
 /**
  * Checks question access for various operations.
@@ -939,7 +963,7 @@ function _vopros_question_status() {
  * Utility function to get the question status reason options.
  */
 function _vopros_question_status_reason() {
-  return array(
+  $reasons = array(
     'spam' => t('Spam'),
     'problem question' => t('Problem question'),
     'already answered' => t('Already answered'),
@@ -955,6 +979,8 @@ function _vopros_question_status_reason() {
     'released' => t('Released'),
     'no contact info' => t('No contact info'),
   );
+  drupal_alter('vopros_question_status_reasons', $reasons);
+  return $reasons;
 }
 
 /**
@@ -1091,6 +1117,12 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
       '#value' => t('Close question'),
       '#submit' => array('vopros_question_handle_question_form_close_submit'),
     );
+
+    $form['notify'] = array(
+      '#type' => 'submit',
+      '#value' => t('Notify user'),
+      '#submit' => array('vopros_question_handle_question_form_notify_submit'),
+    );
   }
   $form['edit'] = array(
     '#type' => 'submit',
@@ -1113,6 +1145,13 @@ function vopros_question_handle_question_form_edit_submit(&$form, &$form_state) 
  */
 function vopros_question_handle_question_form_close_submit(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/close';
+}
+
+/**
+ * Submit handler for vopros_question_handle_question_form close action.
+ */
+function vopros_question_handle_question_form_notify_submit(&$form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/notify';
 }
 
 /**

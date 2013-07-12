@@ -269,7 +269,6 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
  */
 function vopros_question_title_form($form, &$form_state, $question) {
   $form_state['build_info']['files']['form'] = drupal_get_path('module', 'vopros_question') . '/includes/vopros_question.admin.inc';
-  
   $form['title'] = array(
     '#type' => 'textfield',
     '#default_value' => $question->question_title,
@@ -312,6 +311,7 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   drupal_add_js(array('vopros_question_id' => $question->question_id), 'setting');
 
   // View mode is needed to sort the build array.
+  // TODO: Use the view() method on the Entity class for this instead.
   $build = array('right' => array());
 
   $build[] = array(
@@ -846,7 +846,6 @@ function vopros_question_question_frontend_form($form, &$form_state, $question) 
   }
 
   $form['form']['buttons']['save']['#submit'] = array('vopros_question_frontend_save_submit');
-  
 
   $form['form']['buttons']['contact'] = array(
     '#value' => t('Contact user'),
@@ -879,5 +878,68 @@ function vopros_question_frontend_save_submit(&$form, &$form_state) {
   }
   $form_state['redirect'] = 'admin/vopros/questions/list';
   drupal_set_message(t('Question has been saved'));
-  
+}
+
+/**
+ * Form for notifying a user about a question.
+ */
+function vopros_question_notify_user_form($form, &$form_state, $question) {
+  $profiles = profile2_load_multiple(FALSE, array('type' => 'vopros_user_librarian'));
+  $options = array();
+  foreach ($profiles as $profile) {
+    $profile_wrapper = entity_metadata_wrapper('profile2', $profile);
+    $options[$profile->uid] = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value();
+  }
+
+  asort($options);
+
+  $form['uid'] = array(
+    '#type' => 'select',
+    '#title' => t('User'),
+    '#description' => t('Select the user you want to notify.'),
+    '#required' => TRUE,
+    '#options' => $options,
+  );
+
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+  );
+
+  $form['assign'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Assign question to the user'),
+    '#default_value' => 0,
+  );
+
+  $form['notify'] = array(
+    '#type' => 'submit',
+    '#value' => t('Notify'),
+  );
+
+  $form_state['question'] = $question;
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_question_notify_user_form().
+ */
+function vopros_question_notify_user_form_submit($form, &$form_state) {
+  $question = $form_state['question'];
+  $account = user_load($form_state['values']['uid']);
+
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
+
+  if ($account) {
+    drupal_mail('vopros_question', 'notify_user', $account->mail, NULL, array('question' => $question, 'message' => $form_state['values']['message']));
+
+    if ($form_state['values']['assign']) {
+      $question->uid = $account->uid;
+      $question->question_status = 'assigned';
+      $question->question_status_reason = 'locked for answering';
+      $question->save();
+      $form_state['redirect'] = 'admin/vopros/questions';
+    }
+  }
 }
