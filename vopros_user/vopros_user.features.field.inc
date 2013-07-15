@@ -606,15 +606,15 @@ function vopros_user_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Description');
+  t('Expertise');
   t('First name');
+  t('Image');
   t('Last name');
   t('Library');
   t('Notes');
   t('Phone number');
   t('Shortcut links');
-  t('Description');
-  t('Efternavn');
-  t('Expertise');
 
   return $fields;
 }
