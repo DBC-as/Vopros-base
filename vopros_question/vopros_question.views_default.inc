@@ -35,72 +35,74 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['style_options']['columns'] = array(
     'question_id' => 'question_id',
     'question_title' => 'question_title',
-    'subject_catagory' => 'subject_catagory',
+    'qanda_service_name' => 'qanda_service_name',
     'question_usage' => 'question_usage',
     'question_status' => 'question_status',
     'question_deadline_timestamp' => 'question_deadline_timestamp',
     'changed' => 'changed',
     'created' => 'created',
-    'vopros_feedback_rating' => 'vopros_feedback_rating',
   );
-  $handler->display->display_options['style_options']['default'] = 'created';
+  $handler->display->display_options['style_options']['default'] = 'changed';
   $handler->display->display_options['style_options']['info'] = array(
     'question_id' => array(
       'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'question_title' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
-    'subject_catagory' => array(
+    'qanda_service_name' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'question_usage' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'question_status' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'question_deadline_timestamp' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'changed' => array(
       'sortable' => 1,
-      'default_sort_order' => 'asc',
+      'default_sort_order' => 'desc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
     ),
     'created' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-    ),
-    'vopros_feedback_rating' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
+      'empty_column' => 0,
     ),
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
-  $handler->display->display_options['style_options']['order'] = 'desc';
   $handler->display->display_options['style_options']['empty_table'] = 0;
   /* Header: Question: Own questions */
   $handler->display->display_options['header']['own_questions']['id'] = 'own_questions';
@@ -139,6 +141,29 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_id']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['question_id']['separator'] = '';
   $handler->display->display_options['fields']['question_id']['format_plural'] = 0;
+  /* Field: Question: Question_status_reason */
+  $handler->display->display_options['fields']['question_status_reason']['id'] = 'question_status_reason';
+  $handler->display->display_options['fields']['question_status_reason']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['question_status_reason']['field'] = 'question_status_reason';
+  $handler->display->display_options['fields']['question_status_reason']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['question_status_reason']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['question_status_reason']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['question_status_reason']['hide_alter_empty'] = 1;
   /* Field: Question: Question_title */
   $handler->display->display_options['fields']['question_title']['id'] = 'question_title';
   $handler->display->display_options['fields']['question_title']['table'] = 'vopros_question';
@@ -162,32 +187,29 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['question_title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['question_title']['hide_alter_empty'] = 0;
-  /* Field: Question: Subject */
-  $handler->display->display_options['fields']['subject_catagory']['id'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['table'] = 'field_data_subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['field'] = 'subject_catagory';
-  $handler->display->display_options['fields']['subject_catagory']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['hide_alter_empty'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['type'] = 'taxonomy_term_reference_plain';
-  $handler->display->display_options['fields']['subject_catagory']['group_rows'] = 1;
-  $handler->display->display_options['fields']['subject_catagory']['delta_offset'] = '0';
-  $handler->display->display_options['fields']['subject_catagory']['delta_reversed'] = 0;
-  $handler->display->display_options['fields']['subject_catagory']['field_api_classes'] = 0;
+  /* Field: Question: Qanda_service_name */
+  $handler->display->display_options['fields']['qanda_service_name']['id'] = 'qanda_service_name';
+  $handler->display->display_options['fields']['qanda_service_name']['table'] = 'vopros_question';
+  $handler->display->display_options['fields']['qanda_service_name']['field'] = 'qanda_service_name';
+  $handler->display->display_options['fields']['qanda_service_name']['label'] = 'Received from';
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['qanda_service_name']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['qanda_service_name']['hide_alter_empty'] = 1;
   /* Field: Question: Question_usage */
   $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
   $handler->display->display_options['fields']['question_usage']['table'] = 'vopros_question';
@@ -200,10 +222,12 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['fields']['question_usage']['alter']['replace_spaces'] = 0;
   $handler->display->display_options['fields']['question_usage']['alter']['trim_whitespace'] = 0;
   $handler->display->display_options['fields']['question_usage']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['max_length'] = '35';
   $handler->display->display_options['fields']['question_usage']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['question_usage']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['question_usage']['alter']['more_link'] = 0;
   $handler->display->display_options['fields']['question_usage']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['question_usage']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['question_usage']['alter']['trim'] = 1;
   $handler->display->display_options['fields']['question_usage']['alter']['html'] = 0;
   $handler->display->display_options['fields']['question_usage']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['question_usage']['element_default_classes'] = 1;
@@ -313,7 +337,7 @@ function vopros_question_views_default_views() {
   );
   $handler->display->display_options['filters']['question_status']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_status']['expose']['operator_id'] = 'question_status_op';
-  $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Show all';
+  $handler->display->display_options['filters']['question_status']['expose']['label'] = 'Status';
   $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['identifier'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['expose']['remember'] = 1;
@@ -324,20 +348,19 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['question_usage']['field'] = 'question_usage';
   $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
   $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
-  $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'questions used for';
+  $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'Usage';
   $handler->display->display_options['filters']['question_usage']['expose']['operator'] = 'question_usage_op';
   $handler->display->display_options['filters']['question_usage']['expose']['identifier'] = 'question_usage';
   $handler->display->display_options['filters']['question_usage']['expose']['remember'] = 1;
   $handler->display->display_options['filters']['question_usage']['expose']['reduce'] = 0;
-  /* Filter criterion: Question: Editorial (vopros_editorial) */
+  /* Filter criterion: Question: Redaktion (vopros_editorial) */
   $handler->display->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
   $handler->display->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
   $handler->display->display_options['filters']['vopros_editorial_tid']['field'] = 'vopros_editorial_tid';
   $handler->display->display_options['filters']['vopros_editorial_tid']['group'] = 0;
   $handler->display->display_options['filters']['vopros_editorial_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['operator_id'] = 'vopros_editorial_tid_op';
-  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'with the editorial';
-  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['use_operator'] = FALSE;
+  $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['label'] = 'Editorial';
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['operator'] = 'vopros_editorial_tid_op';
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['identifier'] = 'vopros_editorial_tid';
   $handler->display->display_options['filters']['vopros_editorial_tid']['expose']['remember'] = 1;
@@ -348,23 +371,17 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['filters']['qanda_service_name']['field'] = 'qanda_service_name';
   $handler->display->display_options['filters']['qanda_service_name']['exposed'] = TRUE;
   $handler->display->display_options['filters']['qanda_service_name']['expose']['operator_id'] = 'qanda_service_name_op';
-  $handler->display->display_options['filters']['qanda_service_name']['expose']['label'] = 'from the service';
+  $handler->display->display_options['filters']['qanda_service_name']['expose']['label'] = 'Received from';
   $handler->display->display_options['filters']['qanda_service_name']['expose']['operator'] = 'qanda_service_name_op';
   $handler->display->display_options['filters']['qanda_service_name']['expose']['identifier'] = 'qanda_service_name';
   $handler->display->display_options['filters']['qanda_service_name']['expose']['reduce'] = 0;
-  /* Filter criterion: Question: Subject (subject_catagory) */
-  $handler->display->display_options['filters']['subject_catagory_tid']['id'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['table'] = 'field_data_subject_catagory';
-  $handler->display->display_options['filters']['subject_catagory_tid']['field'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator_id'] = 'subject_catagory_tid_op';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['label'] = 'with the subject';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['operator'] = 'subject_catagory_tid_op';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['identifier'] = 'subject_catagory_tid';
-  $handler->display->display_options['filters']['subject_catagory_tid']['expose']['multiple'] = FALSE;
 
   /* Display: List */
   $handler = $view->new_display('page', 'List', 'page');
+  $handler->display->display_options['defaults']['exposed_form'] = FALSE;
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = 1;
+  $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = 1;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['path'] = 'admin/vopros/questions/list';
   $handler->display->display_options['menu']['type'] = 'default tab';
@@ -376,6 +393,36 @@ function vopros_question_views_default_views() {
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
   $export['vopros_question_list'] = $view;
+
+  $translatables['vopros_question_list'] = array(
+    t('Master'),
+    t('Question list'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
+    t('question'),
+    t('Question ID'),
+    t('.'),
+    t('Title'),
+    t('Received from'),
+    t('Usage'),
+    t('Status'),
+    t('Deadline'),
+    t('Updated'),
+    t('Created'),
+    t('Editorial'),
+    t('List'),
+  );
 
   $view = new view;
   $view->name = 'vopros_question_list_admin';
