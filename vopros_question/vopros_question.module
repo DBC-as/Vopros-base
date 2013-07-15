@@ -995,7 +995,9 @@ function _vopros_question_status_reason() {
     'released' => t('Released'),
     'no contact info' => t('No contact info'),
   );
+
   drupal_alter('vopros_question_status_reasons', $reasons);
+
   return $reasons;
 }
 
@@ -1185,7 +1187,7 @@ function vopros_question_handle_question_form_release_submit(&$form, &$form_stat
 /**
  * Submit handler for vopros_question_handle_question_form open action.
  */
-function vopros_question_handle_question_form_open_submit(&$form, &$form_state) {
+function vopros_question_handle_question_form_open_submit(&$form, &$form_state, $alter = TRUE) {
   $question = $form['question']['#value'];
   $question->question_status = 'active';
   $question->question_status_reason = 'reopened by user';
@@ -1219,6 +1221,13 @@ function vopros_question_get_reasons($type = 'contact_mail') {
         'message for user' => t('Message for user'),
       );
   }
+
+  $options = variable_get('vopros_question_status_reason_' . $type, $options);
+  if (!$alter) {
+    return $options;
+  }
+
+  drupal_alter('vopros_question_status_reason_options', $type, $options);
   return $options;
 }
 

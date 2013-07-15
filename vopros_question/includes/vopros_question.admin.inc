@@ -24,6 +24,32 @@ function vopros_question_settings_form($form, &$form_state) {
     '#default_value' => variable_get('vopros_question_usage_default', ''),
   );
 
+  $status_reason_types = array(
+    'close' => t('Close'),
+    'contact_sms' => t('Contact user by SMS'),
+    'contact_mail' => t('Contact user by Email'),
+  );
+
+  $form['status_reasons'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Setup status reasons'),
+    '#collapsible' => FALSE,
+  );
+
+  foreach ($status_reason_types as $status_reason_type => $label) {
+    $default_value_options = vopros_question_get_reasons($status_reason_type, FALSE);
+    $default_value = '';
+    foreach ($default_value_options as $key => $value) {
+      $default_value .= $key . '|' . $value . "\n";
+    }
+    $form['status_reasons']['vopros_question_status_reason_' . $status_reason_type] = array(
+      '#type' => 'textarea',
+      '#title' => $label,
+      '#default_value' => $default_value,
+      '#description' => t('Enter values, one value per line in the format key|value'),
+    );
+  }
+
   if (module_exists('vopros_editorial')) {
     $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
     $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
@@ -43,6 +69,33 @@ function vopros_question_settings_form($form, &$form_state) {
   }
 
   return system_settings_form($form);
+}
+
+function vopros_question_settings_form_validate($form, &$form_state) {
+  $status_reason_types = array(
+    'close' => t('Close'),
+    'contact_sms' => t('Contact user by SMS'),
+    'contact_mail' => t('Contact user by Email'),
+  );
+  foreach ($status_reason_types as $status_reason_type => $label) {
+    $values = $form_state['values']['vopros_question_status_reason_' . $status_reason_type];
+    $values = explode("\n", $values);
+    $options = array();
+    foreach ($values as $value) {
+      if (empty($value)) {
+        continue;
+      }
+      if (substr_count($value, '|') !== 1) {
+        form_set_error('vopros_question_status_reason_' . $status_reason_type, t('Invalid formatted text'));
+        break;
+      }
+      list($key, $label) = explode('|', $value);
+      if (!empty($key) && !empty($label)) {
+        $options[$key] = $label;
+      }
+    }
+    form_set_value($form['status_reasons']['vopros_question_status_reason_' . $status_reason_type], $options, $form_state);
+  }
 }
 
 /**
