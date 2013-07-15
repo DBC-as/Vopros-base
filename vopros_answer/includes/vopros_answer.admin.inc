@@ -54,7 +54,6 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   );
 
   $question_build = vopros_question_page_view($question, 'teaser');
-  $question_build['question_title']['#suffix'] = '<span class="back-to-question">(' . l(t('See question (opens a new window)'), 'admin/vopros/questions/' . $question->question_id, array('attributes' => array('target' => '_blank'))) . ')</span>';
   $question_intro = array(
     $question_build['question_title'],
     $question_build['question_content'],
@@ -121,6 +120,30 @@ function vopros_answer_form($form, &$form_state, $question, $answer) {
   $form['form']['question_user_data']['content'] = array(
     '#markup' => render($question_user_data),
   );
+
+  $form['form']['question_feed'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Question history'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $feed = array();
+  // Handle invoking the hook ourself, as we need to pass by reference.
+  $hook = 'vopros_question_activity_feed';
+  foreach (module_implements($hook) as $module) {
+    $function = $module . '_' . $hook;
+    if (function_exists($function)) {
+      $function($question, $feed);
+    }
+  }
+  foreach ($feed as $key => $value) {
+    if (strpos($key, 'answer') !== FALSE) {
+      unset($feed[$key]);
+    }
+  }
+  $form['form']['question_feed'][] = $feed;
+
 
   $form['form']['save'] = array(
     '#type' => 'submit',
