@@ -104,12 +104,3 @@ function vopros_user_form_user_profile_form_alter(&$form, &$form_state) {
     $form['profile_vopros_user_librarian']['vopros_user_shortcuts']['#access'] = $access;
   }
 }
-
-/**
- * Implements hook_views_api().
- */
-function vopros_user_views_api() {
-  return array(
-    'api' => 3,
-  );
-}
