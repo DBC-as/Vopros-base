@@ -45,3 +45,15 @@
   background-color: #E0E9F1;
 }
 
+.vopros-question .feed .vopros-answer .see-more {
+  color: #0074BD;
+}
+
+.vopros-question .feed .vopros-answer .see-more:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.vopros-question .feed .vopros-answer .rest {
+  display: none;
+}

@@ -28,13 +28,19 @@
   border: 1px solid black;
 }
 
-.vopros-email-display .body .email-content .label {
-  display: none;
+.vopros-email-display .body .email-content .see-more {
+  color: #0074BD;
 }
+
+.vopros-email-display .body .email-content .see-more:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .vopros-email-display .body .email-content .value {
   clear: left;
-  display: block;
+  display: none;
 }
 
 .feed .vopros-email-display {

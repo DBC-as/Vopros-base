@@ -38,7 +38,7 @@ function theme_vopros_email_subject($variables) {
 function theme_vopros_email_content($variables) {
   $email = $variables['email']['#email'];
   $output = '<div class="email-content vopros-email-extra">';
-  $output .= '<span class="label">' . t('Content:') .  '</span>';
+  $output .= '<span class="see-more">' . t('See mail content') .  '</span>';
   $output .= '<span class="value">' . str_replace("\n", '<br />', filter_xss($email->email_content)) .  '</span>';
   $output .= '</div>';
   return $output;
