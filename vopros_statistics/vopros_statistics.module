@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function vopros_statistics_menu() {
+  $items['admin/vopros/statistics'] = array(
+    'title' => 'Statistics',
+    'description' => 'Display statistics about vopros questions and answers',
+    'page callback' => 'vopros_statistics_year_view',
+    'access arguments' => array('access vopros statistics'),
+    'file' => 'vopros_statistics.admin.inc',
+  );
+
+  $items['admin/vopros/statistics/year'] = array(
+    'title' => 'Year',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_statistics_permission() {
+  return array(
+    'access vopros statistics' =>  array(
+      'title' => t('Access statistics'),
+      'description' => '',
+    ),
+  );
+}
+

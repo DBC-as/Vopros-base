@@ -1,0 +1,8 @@
+name = Vopros Statistics
+description = Allows users to access statistics information about Vopros
+package = Vopros
+core = 7.x
+
+dependencies[] = vopros_base
+dependencies[] = vopros_answer
+dependencies[] = vopros_question
