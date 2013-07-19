@@ -101,7 +101,7 @@ function vopros_question_settings_form_validate($form, &$form_state) {
 /**
  * Form to edit or create a question
  */
-function vopros_question_question_form($form, &$form_state, $question) {
+function vopros_question_question_form($form, &$form_state, $question, $add_question = FALSE) {
   if (empty($question)) {
     $question = vopros_question_new();
   }
@@ -152,6 +152,15 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#weight' => -11,
   );
 
+  if ($add_question) {
+    $form['form']['answer_content'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Answer'),
+      '#description' => t('The answwer for this question.'),
+      '#weight' => -11,
+    );
+  }
+
   $form['form']['question_status'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
@@ -159,6 +168,10 @@ function vopros_question_question_form($form, &$form_state, $question) {
     '#default_value' => !empty($question->question_status) ? $question->question_status : '',
     '#weight' => -10,
   );
+
+  if ($add_question && empty($question->question_id)) {
+    $form['form']['question_status']['#default_value'] = 'answered';
+  }
 
   $form['form']['question_deadline'] = array(
     '#type' => 'select',
@@ -312,6 +325,17 @@ function vopros_question_question_form_submit(&$form, &$form_state) {
 
   // Save the product.
   $question->save();
+
+  if (!empty($form_state['values']['answer_content'])) {
+    $answers = vopros_answer_load_multiple(FALSE, array('question_id' => $question->question_id));
+    if (!empty($answers)) {
+      $answer = array_shift($answers);
+      $answer->answer_content = $form_state['values']['answer_content'];
+      global $user;
+      $answer->uid = $user->uid;
+      $answer->save();
+    }
+  }
   // Add the question to the $form_state for other modules to use.
   $form_state['question'] = $question;
   $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id;
