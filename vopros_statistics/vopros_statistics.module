@@ -17,6 +17,23 @@ function vopros_statistics_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
+
+  $min_created = db_query("SELECT MIN(created) FROM {vopros_question}")->fetchField();
+
+  foreach (range(date('Y', $min_created), date('Y', REQUEST_TIME)) as $year) {
+    $items['admin/vopros/statistics/year/' . $year] = array(
+      'title' => $year,
+      'page callback' => 'vopros_statistics_year_view',
+      'page arguments' => array(4),
+      'access arguments' => array('access vopros statistics'),
+      'file' => 'vopros_statistics.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'weight' => -$year,
+    );
+  }
+
+  $items['admin/vopros/statistics/year/' . $year]['type'] = MENU_DEFAULT_LOCAL_TASK;
+
   $items['admin/vopros/statistics/time'] = array(
     'title' => 'Time',
     'page callback' => 'vopros_statistics_time_view',
