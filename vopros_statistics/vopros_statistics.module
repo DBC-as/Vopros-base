@@ -17,6 +17,14 @@ function vopros_statistics_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
+  $items['admin/vopros/statistics/time'] = array(
+    'title' => 'Time',
+    'page callback' => 'vopros_statistics_time_view',
+    'access arguments' => array('access vopros statistics'),
+    'file' => 'vopros_statistics.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
   return $items;
 }
 

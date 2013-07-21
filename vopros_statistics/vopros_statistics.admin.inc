@@ -56,3 +56,79 @@ function vopros_statistics_year_view($year = NULL) {
 
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
+
+/**
+ * Display count of created questions devided by the time it was created
+ */
+function vopros_statistics_time_view($start = NULL, $end = NULL) {
+  if (!$end) {
+    $end = REQUEST_TIME;
+  }
+  if (!$start) {
+    $start = REQUEST_TIME - 86400 * 7;
+  }
+
+  $result = db_query("SELECT HOUR(FROM_UNIXTIME(q.created)) AS created_hour, COUNT(*) AS questions FROM {vopros_question} AS q
+            WHERE created < :end
+            AND created > :start
+            GROUP BY created_hour
+            ORDER BY created_hour", array(':end' => $end, ':start' => $start))->fetchAllKeyed(0, 1);
+
+
+  $header = array(t('Time'), t('Questions created'));
+  $rows = array();
+  // Create a unix timestamp for a random date that has the time 00:00:00.
+  $start_time = strtotime('2000-12-12 00:00:00');
+  foreach ($result as $time => $count) {
+    $rows[] = array(date('H:i:s', $start_time + $time*3600) . ' - ' . date('H:i:s', $start_time + $time*3600 + 3599), $count);
+  }
+
+  $build = array(
+    'form' => drupal_get_form('vopros_statistics_time_form', $start, $end),
+    'table' => array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+    ),
+  );
+  return $build;
+}
+
+/**
+ * Form for selecting the date range for the time statistics page.
+ */
+function vopros_statistics_time_form($form, &$form_state, $start, $end) {
+  $form['start'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Start for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $start),
+    '#required' => TRUE,
+  );
+
+  $form['end'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('End for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $end),
+    '#required' => TRUE,
+  );
+
+  $form['get'] = array(
+    '#type' => 'submit',
+    '#value' => t('Get statistics'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_statistics_time_form()
+ */
+function vopros_statistics_time_form_submit($form, &$form_state) {
+  $start = strtotime($form_state['values']['start']);
+  $end = strtotime($form_state['values']['end']);
+  $form_state['redirect'] = "admin/vopros/statistics/time/$start/$end";
+}
