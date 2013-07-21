@@ -42,6 +42,14 @@ function vopros_statistics_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
+  $items['admin/vopros/statistics/qanda_service_name'] = array(
+    'title' => 'Q and A service name',
+    'page callback' => 'vopros_statistics_qanda_service_name_view',
+    'access arguments' => array('access vopros statistics'),
+    'file' => 'vopros_statistics.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
   return $items;
 }
 

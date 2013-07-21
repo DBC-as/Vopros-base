@@ -132,3 +132,106 @@ function vopros_statistics_time_form_submit($form, &$form_state) {
   $end = strtotime($form_state['values']['end']);
   $form_state['redirect'] = "admin/vopros/statistics/time/$start/$end";
 }
+
+/**
+ * Display statistics based on Q and A service names.
+ */
+function vopros_statistics_qanda_service_name_view($start = NULL, $end = NULL) {
+  if (!$end) {
+    $end = REQUEST_TIME;
+  }
+  if (!$start) {
+    $start = REQUEST_TIME - 86400 * 7;
+  }
+  $qanda_service_names = _vopros_question_qanda_serice_options();
+
+  // Get the total questions for each Q and A service name.
+  $total_count = db_query("SELECT COUNT(*), qanda_service_name FROM {vopros_question}
+                           WHERE created < :end
+                           AND created > :start
+                           GROUP BY qanda_service_name", array(':end' => $end, ':start' => $start))->fetchAllKeyed(1, 0);
+
+  $header = array(t('Q and A service name'), t('Total questions'));
+
+  // If we have editorial, get it for each editorial as well.
+  if (module_exists('vopros_editorial')) {
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+    $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+    $editorials = array();
+    foreach ($terms as $tid => $term) {
+      $header[] = $term->name;
+      $editorials[$tid] = db_query("SELECT COUNT(*) as questions, q.qanda_service_name FROM {field_data_vopros_editorial} AS f
+                              INNER JOIN vopros_question AS q ON q.question_id = f.entity_id
+                              WHERE f.vopros_editorial_tid = :tid
+                              AND created < :end
+                              AND created > :start
+                              GROUP BY q.qanda_service_name", array(':tid' => $tid, ':end' => $end, ':start' => $start))->fetchAllKeyed(1, 0);
+    }
+  }
+  $rows = array();
+  foreach ($qanda_service_names as $key => $label) {
+    $row = array(
+      $label,
+      isset($total_count[$key]) ? $total_count[$key] : 0,
+    );
+    if (!empty($terms)) {
+      foreach ($terms as $tid => $term) {
+        if (isset($editorials[$tid][$key])) {
+          $row[] = $editorials[$tid][$key];
+        }
+        else {
+          $row[] = 0;
+        }
+      }
+    }
+    $rows[] = $row;
+  }
+  $build = array(
+    'form' => drupal_get_form('vopros_statistics_qanda_service_name_form', $start, $end),
+    'table' => array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+    ),
+  );
+  return $build;
+}
+
+/**
+ * Form for selecting the date range for the time statistics page.
+ */
+function vopros_statistics_qanda_service_name_form($form, &$form_state, $start, $end) {
+  $form['start'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Start for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $start),
+    '#required' => TRUE,
+  );
+
+  $form['end'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('End for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $end),
+    '#required' => TRUE,
+  );
+
+  $form['get'] = array(
+    '#type' => 'submit',
+    '#value' => t('Get statistics'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_statistics_time_form()
+ */
+function vopros_statistics_qanda_service_name_form_submit($form, &$form_state) {
+  $start = strtotime($form_state['values']['start']);
+  $end = strtotime($form_state['values']['end']);
+  $form_state['redirect'] = "admin/vopros/statistics/qanda_service_name/$start/$end";
+}
