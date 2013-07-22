@@ -34,6 +34,14 @@ function vopros_statistics_menu() {
 
   $items['admin/vopros/statistics/year/' . $year]['type'] = MENU_DEFAULT_LOCAL_TASK;
 
+  $items['admin/vopros/statistics/week'] = array(
+    'title' => 'Week day',
+    'page callback' => 'vopros_statistics_week_view',
+    'access arguments' => array('access vopros statistics'),
+    'file' => 'vopros_statistics.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
   $items['admin/vopros/statistics/time'] = array(
     'title' => 'Time',
     'page callback' => 'vopros_statistics_time_view',

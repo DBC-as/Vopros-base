@@ -60,6 +60,111 @@ function vopros_statistics_year_view($year = NULL) {
 /**
  * Display count of created questions devided by the time it was created
  */
+function vopros_statistics_week_view($start = NULL, $end = NULL) {
+  if (!$end) {
+    $end = REQUEST_TIME;
+  }
+  if (!$start) {
+    $start = REQUEST_TIME - 86400 * 7;
+  }
+
+  $result = db_query("SELECT DAYNAME(FROM_UNIXTIME(q.created)) AS day_name, COUNT(*) AS questions FROM {vopros_question} AS q
+            WHERE created < :end
+            AND created > :start
+            GROUP BY day_name", array(':end' => $end, ':start' => $start))->fetchAllKeyed(0, 1);
+            dpm($result);
+
+
+  $header = array(t('Week day'), t('Total questions created'));
+  $rows = array();
+  // Create a unix timestamp for a random date that has the time 00:00:00.
+  $weeks = array(
+    'Monday' => t('Monday'),
+    'Tuesday' => t('Tuesday'),
+    'Wednesday' => t('Wednesday'),
+    'Thursday' => t('Thursday'),
+    'Friday' => t('Friday'),
+    'Saturday' => t('Saturday'),
+    'Sunday' => t('Sunday'),
+  );
+
+  // Create the total count
+  foreach ($weeks as $week_day => $label) {
+    $rows[$week_day] = array($label, isset($result[$week_day]) ? $result[$week_day] : 0);
+  }
+
+  // Get statistics for each editorial.
+  if (module_exists('vopros_editorial')) {
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+    $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+    foreach ($terms as $tid => $term) {
+      $header[] = $term->name;
+      $result = db_query("SELECT DAYNAME(FROM_UNIXTIME(q.created)) AS day_name, COUNT(*) AS questions FROM {vopros_question} AS q
+                                              INNER JOIN {field_data_vopros_editorial} AS f ON f.entity_id = q.question_id
+                                              WHERE q.created < :end
+                                              AND q.created > :start
+                                              AND f.vopros_editorial_tid = :tid
+                                              GROUP BY day_name", array(':tid' => $tid, ':end' => $end, ':start' => $start))->fetchAllKeyed(0, 1);
+                                              dpm($result);
+      foreach ($weeks as $week_day => $label) {
+        $rows[$week_day][] = isset($result[$week_day]) ? $result[$week_day] : 0;
+      }
+    }
+  }
+
+  $build = array(
+    'form' => drupal_get_form('vopros_statistics_week_form', $start, $end),
+    'table' => array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+    ),
+  );
+  return $build;
+}
+
+/**
+ * Form for selecting the date range for the time statistics page.
+ */
+function vopros_statistics_week_form($form, &$form_state, $start, $end) {
+  $form['start'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Start for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $start),
+    '#required' => TRUE,
+  );
+
+  $form['end'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('End for time range'),
+    '#date_format' => 'd-m-Y',
+    '#date_year_range' => '-10:+1',
+    '#default_value' => date('Y-m-d', $end),
+    '#required' => TRUE,
+  );
+
+  $form['get'] = array(
+    '#type' => 'submit',
+    '#value' => t('Get statistics'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for vopros_statistics_time_form()
+ */
+function vopros_statistics_week_form_submit($form, &$form_state) {
+  $start = strtotime($form_state['values']['start']);
+  $end = strtotime($form_state['values']['end']);
+  $form_state['redirect'] = "admin/vopros/statistics/week/$start/$end";
+}
+
+/**
+ * Display count of created questions devided by the time it was created
+ */
 function vopros_statistics_time_view($start = NULL, $end = NULL) {
   if (!$end) {
     $end = REQUEST_TIME;
