@@ -266,6 +266,7 @@ function vopros_email_permission() {
  *   'delete'.
  * @param $email
  *   Optionally an anwer to check access for.
+ *    - Required for checking edit and delete access.
  * @param $account
  *   The user to check for. Leave it to NULL to check for the current user.
  */
@@ -293,7 +294,7 @@ function vopros_email_access($op, $email = NULL, $account = NULL) {
     return TRUE;
   }
 
-  if (isset($order) && ($op == 'update' || $op == 'delete')) {
+  if (isset($email) && ($op == 'update' || $op == 'delete')) {
     if (user_access('edit any email', $account)) {
       return TRUE;
     }
