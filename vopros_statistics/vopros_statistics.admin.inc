@@ -184,8 +184,27 @@ function vopros_statistics_time_view($start = NULL, $end = NULL) {
   $rows = array();
   // Create a unix timestamp for a random date that has the time 00:00:00.
   $start_time = strtotime('2000-12-12 00:00:00');
-  foreach ($result as $time => $count) {
-    $rows[] = array(date('H:i:s', $start_time + $time*3600) . ' - ' . date('H:i:s', $start_time + $time*3600 + 3599), $count);
+  foreach (range(0, 23) as $time) {
+    $count = isset($result[$time]) ? $result[$time] : 0;
+    $rows[$time] = array(date('H:i:s', $start_time + $time*3600) . ' - ' . date('H:i:s', $start_time + $time*3600 + 3599), $count);
+  }
+
+  if (module_exists('vopros_editorial')) {
+    $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+    $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+    foreach ($terms as $tid => $term) {
+      $header[] = $term->name;
+      $result = db_query("SELECT HOUR(FROM_UNIXTIME(q.created)) AS created_hour, COUNT(*) AS questions FROM {vopros_question} AS q
+                          INNER JOIN {field_data_vopros_editorial} AS f ON f.entity_id = q.question_id
+                          WHERE created < :end
+                          AND created > :start
+                          AND f.vopros_editorial_tid = :tid
+                          GROUP BY created_hour
+                          ORDER BY created_hour", array(':end' => $end, ':start' => $start, ':tid' => $tid))->fetchAllKeyed(0, 1);
+      foreach (range(0, 23) as $time) {
+        $rows[$time][] = isset($result[$time]) ? $result[$time] : 0;
+      }
+    }
   }
 
   $build = array(
