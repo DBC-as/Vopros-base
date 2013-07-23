@@ -52,6 +52,7 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#type' => 'textfield',
     '#title' => t('URL'),
     '#description' => t('The base URL for vopros service.'),
+    '#default_value' => $service->url,
     '#size' => 40,
     '#maxlength' => 255,
   );
