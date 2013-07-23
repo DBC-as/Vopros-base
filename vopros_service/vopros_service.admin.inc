@@ -38,7 +38,7 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
 
   $form['machine_name'] = array(
     '#type' => 'machine_name',
-    '#default_value' => isset($service->machine_name) ? $profile_type->machine_name : '',
+    '#default_value' => isset($service->machine_name) ? $service->machine_name : '',
     '#maxlength' => 32,
     '#disabled' => empty($service->is_new),
     '#machine_name' => array(
