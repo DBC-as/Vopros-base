@@ -79,16 +79,14 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#default_value' => $service->allow_ingoing,
   );
 
-  $form['allow_outgoing_help'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Allow to ask for help'),
-    '#default_value' => $service->allow_outgoing_help,
-  );
-
-  $form['allow_outgoing_turn_over'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Allow to turn over questions'),
-    '#default_value' => $service->allow_outgoing_turn_over,
+  $form['allow_outgoing_type'] = array(
+    '#type' => 'radios',
+    '#title' => t('Service type'),
+    '#options' => array(
+      'help' => t('Ask for help'),
+      'turn_over' => t('Turn over questions'),
+    ),
+    '#default_value' => $service->allow_outgoing_turn_over ?  'turn_over' : 'help',
   );
 
   $form['actions'] = array('#type' => 'actions');
@@ -122,8 +120,8 @@ function vopros_service_form_submit($form, &$form_state) {
   $service->auth_key = $form_state['values']['auth_key'];
   $service->auth_type = $form_state['values']['auth_type'];
   $service->allow_ingoing = $form_state['values']['allow_ingoing'];
-  $service->allow_outgoing_help = $form_state['values']['allow_outgoing_help'];
-  $service->allow_outgoing_turn_over = $form_state['values']['allow_outgoing_turn_over'];
+  $service->allow_outgoing_help = ($form_state['values']['allow_outgoing_type'] == 'help');
+  $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_turn_over'] == 'turn_over');
   $service->save();
 }
 
