@@ -130,7 +130,7 @@ function vopros_service_form_submit($form, &$form_state) {
   $service->auth_type = $form_state['values']['auth_type'];
   $service->allow_ingoing = $form_state['values']['allow_ingoing'];
   $service->allow_outgoing_help = ($form_state['values']['allow_outgoing_type'] == 'help');
-  $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_turn_over'] == 'turn_over');
+  $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_type'] == 'turn_over');
   $service->save();
 }
 
