@@ -1,0 +1,171 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function vopros_service_entity_info() {
+  $return = array(
+    'vopros_service' => array(
+      'label' => t('Vopros Service'),
+      'controller class' => 'VoprosServiceEntityController',
+      'entity class' => 'VoprosService',
+      'base table' => 'vopros_service',
+      'revision table' => 'vopros_service_revision',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'service_id',
+        'revision' => 'revision_id',
+      ),
+      'bundles' => array(
+        'vopros_email' => array(
+          'label' => t('Vopros Service'),
+          'admin' => array(
+            'path' => 'admin/vopros/config/service',
+            'access arguments' => array('administer vopros services'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_service_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'module' => 'vopros_service',
+      'access callback' => 'vopros_service_access',
+      // Allow default views controller to create view data integration
+      'views controller class' => 'EntityDefaultViewsController',
+      // Enable the entity API's admin UI.
+      'admin ui' => array(
+        'path' => 'admin/vopros/services',
+        'file' => 'vopros_service.admin.inc',
+        'controller class' => 'VoprosServiceUIController',
+      ),
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vopros_service_permission() {
+  $permissions = array(
+    'administer vopros services' => array(
+      'title' => t('Administer vopros services'),
+      'restrict access' => TRUE,
+    ),
+    'access vopros services' => array(
+      'title' => t('Access lists of vopros services, primarily for viewing and referencing'),
+    ),
+    'create vopros services' => array(
+      'title' => t('Create vopros services'),
+    ),
+    'edit vopros services' => array(
+      'title' => t('Edit and delete vopros services'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Checks email access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $service
+ *   Optionally a vopros service to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_service_access($op, $service = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any vopros service for administrators.
+  if (user_access('administer vopros services', $account)) {
+    return TRUE;
+  }
+
+  // Grant view access to users with the administrative access orders permission
+  // or to a user's own orders with the view own orders permission.
+  if ($op == 'view') {
+    if (user_access('access vopros services', $account)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create vopros services', $account)) {
+    return TRUE;
+  }
+
+  if ($op == 'update' || $op == 'delete') {
+    if (user_access('edit vopros services', $account)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Create a new vopros service object
+ */
+function vopros_service_new($values = array()) {
+  return entity_create('vopros_email', $values);
+}
+
+/**
+ * Loads a vopros service by ID.
+ */
+function vopros_service_load($service_id, $reset = FALSE) {
+  $services = vopros_service_load_multiple(array($service_id), array(), $reset);
+  return $services ? reset($services) : FALSE;
+}
+
+/**
+ * Loads a vopros service by machine name.
+ */
+function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
+  $services = vopros_service_load_multiple(FALSE, array('machine_name' => $machine_name), (bool) $reset);
+  return $services ? reset($services) : FALSE;
+}
+
+/**
+ * Loads multiple vopros services by ID or based on a set of matching conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $service_ids
+ *   An array of email IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_service} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal email loading cache.
+ *
+ * @return
+ *   An array of email objects indexed by email_id.
+ */
+function vopros_service_load_multiple($service_ids = array(), $conditions = array(), $reset = FALSE) {
+  dpm(get_defined_vars());
+  return entity_load('vopros_service', $service_ids, $conditions, $reset);
+}
+
+/**
+ * Defines the possible auth types
+ */
+function vopros_service_auth_types() {
+  return array(
+    'secret_key' => t('Secret key'),
+  );
+}

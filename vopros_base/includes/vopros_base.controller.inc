@@ -114,3 +114,10 @@ class VoprosAPIEntityController extends EntityAPIController {
     }
   }
 }
+
+/**
+ * Entity UI controller API class for vopros entities.
+ *
+ * Extends the EntityDefaultUIController class.
+ */
+class VoprosUIController extends EntityDefaultUIController {}
