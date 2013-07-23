@@ -26,6 +26,9 @@ class VoprosAPIEntityController extends EntityAPIController {
     if (!isset($entity->revision)) {
       $entity->revision = 1;
     }
+    if (!isset($entity->log)) {
+      $entity->log = '';
+    }
     $entity->changed = REQUEST_TIME;
     return parent::save($entity, $transaction);
   }
