@@ -1214,15 +1214,23 @@ function vopros_question_handle_question_form_open_submit(&$form, &$form_state, 
   drupal_set_message(t("Question has been reopened"));
 }
 
-function vopros_question_get_reasons($type = 'contact_mail') {
+/**
+ * Get possible reasons for question state.
+ *
+ * @param string $type
+ *   the state for reasons.
+ * @param bool $alter
+ *   whether to let modules alter the reasons.
+ */
+function vopros_question_get_reasons($type = 'contact_mail', $alter = TRUE) {
   switch ($type) {
     case 'close':
-     $options = array(
-      'spam' => t('Spam'),
-      'problem question' => t('Problem question'),
-      'answered' => t('Already answered'),
-      'no contact info' => t('No contact info'),
-     );
+      $options = array(
+        'spam' => t('Spam'),
+        'problem question' => t('Problem question'),
+        'answered' => t('Already answered'),
+        'no contact info' => t('No contact info'),
+      );
      break;
     case 'contact_sms':
       $options = array(
