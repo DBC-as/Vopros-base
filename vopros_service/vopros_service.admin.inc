@@ -110,6 +110,15 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
 }
 
 /**
+ * Validate handler for vopros_service_form().
+ */
+function vopros_service_form_validate($form, &$form_state) {
+  if (!valid_url($form_state['values']['url'], TRUE)) {
+    form_error($form['url'], t('Invalid service URL.'));
+  }
+}
+
+/**
  * Submit handler for vopros_service_form().
  */
 function vopros_service_form_submit($form, &$form_state) {
