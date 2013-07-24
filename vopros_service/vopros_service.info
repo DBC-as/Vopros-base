@@ -6,7 +6,8 @@ core = 7.x
 configure = admin/vopros/config/service
 
 dependencies[] = vopros_base
-
+dependencies[] = services
+dependencies[] = rest_server
 
 ; Entity controller include:
 files[] = vopros_service.admin.inc

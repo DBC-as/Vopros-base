@@ -391,8 +391,9 @@ function vopros_question_page_view($question, $view_mode = 'administrator', $lan
   // TODO: Use the view() method on the Entity class for this instead.
   $build = array('right' => array());
 
+  $form = drupal_get_form('vopros_question_title_form', $question);
   $build[] = array(
-    '#markup' => '<div class="hidden title-form">' . drupal_render(drupal_get_form('vopros_question_title_form', $question)) . '</div>',
+    '#markup' => '<div class="hidden title-form">' . drupal_render($form) . '</div>',
   );
 
   // Populate $vopros_question->content with a render() array.

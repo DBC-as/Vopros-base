@@ -118,6 +118,97 @@ function vopros_service_question_access($op, $question = NULL, $account = NULL) 
 }
 
 /**
+ * Implements hook_services_resources().
+ */
+function vopros_service_services_resources() {
+  return array(
+    'vopros' => array(
+      'operations' => array(
+        'create' => array(
+          'help' => 'Create a new question transfer.',
+          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'callback' => '_vopros_service_resource_retrieve',
+          'args' => array(
+            array(
+              'name' => 'type',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'string',
+              'description' => 'Type of question "help" or "turn_over".',
+            ),
+            array(
+              'name' => 'uuid',
+              'optional' => FALSE,
+              'source' => array('path' => 1),
+              'type' => 'string',
+              'description' => 'UUID of the original question.',
+            ),
+            array(
+              'name' => 'question',
+              'optional' => FALSE,
+              'source' => 'data',
+              'type' => 'array',
+              'description' => 'The question to create.',
+            ),
+          ),
+        ),
+      ),
+      'targeted_actions' => array(
+        'send_answer' => array(
+          'help' => 'Send an answer or message to the questioner.',
+          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'callback' => '_vopros_service_resource_send_answer',
+          'args' => array(
+            array(
+              'name' => 'uuid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'string',
+              'description' => 'UUID of the original question.',
+            ),
+            array(
+              'name' => 'message',
+              'optional' => FALSE,
+              'source' => array('data' => 'message'),
+              'type' => 'string',
+              'description' => 'Message text.',
+            ),
+            array(
+              'name' => 'answer',
+              'optional' => TRUE,
+              'source' => array('data' => 'answer'),
+              'type' => 'string',
+              'description' => 'Answer text, optional.',
+            ),
+          ),
+        ),
+        'send_message' => array(
+          'help' => 'Send a message to the helper.',
+          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'callback' => '_vopros_service_resource_send_message',
+          'args' => array(
+            array(
+              'name' => 'uuid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'string',
+              'description' => 'UUID of the original question.',
+            ),
+            array(
+              'name' => 'message',
+              'optional' => FALSE,
+              'source' => array('data' => 'message'),
+              'type' => 'string',
+              'description' => 'Message text.',
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
  * Checks email access for various operations.
  *
  * @param $op
