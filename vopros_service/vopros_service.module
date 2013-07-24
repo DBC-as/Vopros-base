@@ -122,7 +122,7 @@ function vopros_service_question_access($op, $question = NULL, $account = NULL) 
  */
 function vopros_service_services_resources() {
   return array(
-    'vopros' => array(
+    'question' => array(
       'operations' => array(
         'create' => array(
           'help' => 'Create a new question transfer.',
