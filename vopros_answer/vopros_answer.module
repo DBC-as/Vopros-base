@@ -526,7 +526,7 @@ function vopros_answer_form_vopros_question_handle_question_form_alter(&$form, &
         $label = t('Edit answer');
       }
     }
-    $form['answer_question'] = array(
+    $form['actions']['answer_question'] = array(
       '#type' => 'submit',
       '#value' => $label,
       '#validate' => array('vopros_answer_question_view_form_validate'),

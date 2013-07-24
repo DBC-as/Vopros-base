@@ -133,3 +133,133 @@ function vopros_service_form_submit($form, &$form_state) {
 function vopros_service_form_submit_delete(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/services/' . $form_state['vopros_service']->service_id . '/delete';
 }
+
+/**
+ * Form for sending a question to an external service.
+ */
+function vopros_service_question_service_form($form, &$form_state, $question) {
+  $form_state['question'] = $question;
+
+  $form['#attached'] = array(
+    'css' => array(drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css'),
+  );
+
+  $form['sidebar'] = array(
+    '#prefix' => '<div class="sidebar">',
+    '#suffix' => '</div>',
+  );
+  $form['sidebar']['send'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send to external'),
+  );
+
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['question_title'] = array(
+    '#prefix' => '<h2>',
+    '#suffix' => '</h2>',
+    '#markup' => $question->question_title,
+  );
+
+  $form['form']['question_content'] = array(
+    '#markup' => $question->question_content,
+  );
+
+  $form['form']['message'] = array(
+    '#type' => 'textarea',
+    '#rows' => 5,
+    '#title' => t('Message'),
+  );
+
+  $form['form']['send_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Way of sending'),
+    '#options' => array(
+      'allow_outgoing_help' => t('Ask for help'),
+      'allow_outgoing_turn_over' => t('Turn over the question'),
+    ),
+    '#required' => TRUE,
+    '#ajax' => array(
+      'callback' => 'vopros_service_question_service_form_ajax',
+      'wrapper' => 'service-options',
+      'method' => 'replace',
+      'effect' => 'fade',
+    ),
+  );
+
+  $services = vopros_service_load_multiple();
+  $form_state['services'] = $services;
+  $service_options = array();
+
+  foreach ($services as $service_id => $service) {
+    if ($service->allow_outgoing_help || $service->allow_outgoing_turn_over) {
+      $service_options[$service_id] = $service->label();
+    }
+  }
+
+  $form['form']['service'] = array(
+    '#prefix' => '<div id="service-options">',
+    '#suffix' => '</div>',
+    '#type' => 'select',
+    '#title' => t('Service to send to'),
+    '#options' => $service_options,
+    '#required' => TRUE,
+  );
+
+  $form['form']['actions'] = array('#type' => 'actions');
+
+  $form['form']['actions']['send'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send to external'),
+    '#attributes' => array('class' => array('primary-action')),
+    '#submit' => array('vopros_service_question_service_form_send_submit'),
+  );
+
+  $form['form']['actions']['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#submit' => array('vopros_service_question_service_form_cancel_submit'),
+    '#limit_validation_errors' => array(),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for canceling sending a question to external service.
+ */
+function vopros_service_question_service_form_cancel_submit($form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['question']->question_id;
+}
+
+/**
+ * Ajax callback for vopros_service_question_service_form().
+ */
+function vopros_service_question_service_form_ajax($form, &$form_state) {
+  $type = $form_state['triggering_element']['#value'];
+  $service_options = array();
+
+  foreach ($form_state['services'] as $service_id => $service) {
+    if ($service->{$type}) {
+      $service_options[$service_id] = $service->label();
+    }
+  }
+  $form['form']['service']['#options'] = $service_options;
+  return $form['form']['service'];
+}
+
+/**
+ * Submit handler for vopros_service_question_service_form().
+ */
+function vopros_service_question_service_form_send_submit($form, &$form_state) {
+  $question = $form_state['question'];
+  if ($form_state['values']['send_type'] == 'allow_outgoing_turn_over') {
+    $question->question_status = 'closed';
+    $question->question_status_reason = 'turned over to external service';
+    drupal_set_message('The question @title has been turned over to an external service', array('@title' => $question->question_title), 'notice');
+    $form_state['redirect'] = 'admin/vopros/questions';
+  }
+}

@@ -19,6 +19,7 @@ function vopros_service_entity_info() {
       'entity keys' => array(
         'id' => 'service_id',
         'revision' => 'revision_id',
+        'label' => 'label',
       ),
       'bundles' => array(
         'vopros_email' => array(
@@ -71,9 +72,49 @@ function vopros_service_permission() {
       'title' => t('Edit and delete vopros services'),
       'restrict access' => TRUE,
     ),
+    'send question to external service' => array(
+      'title' => t('Send question to external service'),
+    ),
   );
 
   return $permissions;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function vopros_service_menu() {
+  $items['admin/vopros/questions/%vopros_question/service'] = array(
+    'title' => 'Send to external',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vopros_service_question_service_form', 3),
+    'access callback' => 'vopros_service_question_access',
+    'access arguments' => array('service', 3),
+    'file' => 'vopros_service.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Access callback.
+ */
+function vopros_service_question_access($op, $question = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any question for administrators.
+  if (user_access('administer questions', $account)) {
+    return TRUE;
+  }
+
+  if (user_access('send question to external service')) {
+    if ($question && $question->question_status == 'assigned' && $question->uid != $account->uid) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
@@ -156,8 +197,7 @@ function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
  * @return
  *   An array of email objects indexed by email_id.
  */
-function vopros_service_load_multiple($service_ids = array(), $conditions = array(), $reset = FALSE) {
-  dpm(get_defined_vars());
+function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_service', $service_ids, $conditions, $reset);
 }
 
@@ -168,4 +208,32 @@ function vopros_service_auth_types() {
   return array(
     'secret_key' => t('Secret key'),
   );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function vopros_service_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
+  $form['actions']['service'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send to external service'),
+    '#weight' => 1,
+    '#submit' => array('vopros_service_form_vopros_question_handle_question_form'),
+  );
+}
+
+/**
+ * Submit handler for vopros_question_handle_question_form().
+ */
+function vopros_service_form_vopros_question_handle_question_form($form, &$form_state) {
+  $question = $form_state['values']['question'];
+
+  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id . '/service';
+}
+
+/**
+ * Implements hook_vopros_question_status_reasons_alter().
+ */
+function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
+  $reasons['turned over to external service'] = t('Turned over to external service');
 }

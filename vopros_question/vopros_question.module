@@ -1118,6 +1118,8 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
     '#type' => 'value',
     '#value' => $question,
   );
+
+  $form['actions'] = array('#type' => 'actions');
   // If the question is locked for answering, don't allow any action.
   if ($question->question_status == 'assigned') {
     global $user;
@@ -1132,7 +1134,7 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   }
   // The question is closed, make it possible to open
   if (in_array($question->question_status, array('answered', 'closed'))) {
-    $form['open'] = array(
+    $form['actions']['open'] = array(
       '#type' => 'submit',
       '#value' => t('Open question'),
       '#submit' => array('vopros_question_handle_question_form_open_submit'),
@@ -1140,27 +1142,29 @@ function vopros_question_handle_question_form($form, &$form_state, $question) {
   }
   // The question is open, make it possible to close it
   else {
-    $form['contact'] = array(
+    $form['actions']['contact'] = array(
       '#type' => 'submit',
       '#value' => t('Contact user'),
     );
 
-    $form['close'] = array(
+    $form['actions']['close'] = array(
       '#type' => 'submit',
       '#value' => t('Close question'),
       '#submit' => array('vopros_question_handle_question_form_close_submit'),
     );
 
-    $form['notify'] = array(
+    $form['actions']['notify'] = array(
       '#type' => 'submit',
-      '#value' => t('Notify user'),
+      '#value' => t('Notify librarian'),
       '#submit' => array('vopros_question_handle_question_form_notify_submit'),
+      '#weight' => 3,
     );
   }
-  $form['edit'] = array(
+  $form['actions']['edit'] = array(
     '#type' => 'submit',
     '#value' => t('Edit question'),
     '#submit' => array('vopros_question_handle_question_form_edit_submit'),
+    '#weight' => 5,
   );
 
   return $form;

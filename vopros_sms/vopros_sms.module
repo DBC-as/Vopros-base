@@ -422,7 +422,7 @@ function vopros_sms_form_vopros_answer_form_submit(&$form, &$form_state) {
  */
 function vopros_sms_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
   if ($form['question']['#value']->user_answer_preference == 'sms') {
-    $form['contact']['#submit'][] = 'vopros_sms_form_vopros_question_contact_user_submit';
+    $form['actions']['contact']['#submit'][] = 'vopros_sms_form_vopros_question_contact_user_submit';
   }
 }
 
