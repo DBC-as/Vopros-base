@@ -80,14 +80,22 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#default_value' => $service->allow_ingoing,
   );
 
+  $current_type = '';
+  if ($service->allow_outgoing_help) {
+    $current_type = 'help';
+  }
+  elseif ($service->allow_outgoing_turn_over) {
+    $current_type = 'turn_over';
+  }
   $form['allow_outgoing_type'] = array(
     '#type' => 'radios',
-    '#title' => t('Service type'),
+    '#title' => t('Outgoing service type'),
     '#options' => array(
+      '' => t('None'),
       'help' => t('Ask for help'),
       'turn_over' => t('Turn over questions'),
     ),
-    '#default_value' => $service->allow_outgoing_turn_over ?  'turn_over' : 'help',
+    '#default_value' => $current_type,
   );
 
   $form['actions'] = array('#type' => 'actions');
