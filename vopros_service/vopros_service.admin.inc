@@ -141,6 +141,8 @@ function vopros_service_form_submit($form, &$form_state) {
   $service->allow_outgoing_help = ($form_state['values']['allow_outgoing_type'] == 'help');
   $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_type'] == 'turn_over');
   $service->save();
+
+  $form_state['redirect'] = 'admin/vopros/services';
 }
 
 /**
