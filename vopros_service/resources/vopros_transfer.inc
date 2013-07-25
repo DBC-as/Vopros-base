@@ -58,7 +58,36 @@ function _vopros_service_resource_retrieve($type, $data) {
   }
 
   if ($type == 'turn_over') {
-    services_error('Not implemented.', 501);
+    // I believe most of these are optional.
+    if (!empty($data['user_name'])) {
+      $question->user_name = $data['user_name'];
+    }
+    if (!empty($data['user_email'])) {
+      $question->user_email = $data['user_email'];
+    }
+    if (!empty($data['user_postal_code'])) {
+      $question->user_postal_code = $data['user_postal_code'];
+    }
+    if (!empty($data['user_mobile_phone'])) {
+      $question->user_mobile_phone = $data['user_mobile_phone'];
+    }
+    if (!empty($data['user_age'])) {
+      $question->user_age = $data['user_age'];
+    }
+    if (!empty($data['user_gender'])) {
+      $question->user_gender = $data['user_gender'];
+    }
+    if (!empty($data['user_field_of_study'])) {
+      $question->user_field_of_study = $data['user_field_of_study'];
+    }
+    if (!empty($data['user_library'])) {
+      $question->user_library = $data['user_library'];
+    }
+    if (!empty($data['user_answer_preference'])) {
+      $question->user_answer_preference = $data['user_answer_preference'];
+    }
+
+    // @todo should send mail to user, notifying them about the transfer.
   }
   else {
     $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));

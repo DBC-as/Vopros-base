@@ -174,6 +174,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
     if ($form_state['selected_service']->allow_outgoing_turn_over) {
       $question->question_status = 'closed';
       $question->question_status_reason = 'handed over to external service';
+      entity_save('vopros_question', $question);
       $form_state['redirect'] = 'admin/vopros/questions';
     }
   }
