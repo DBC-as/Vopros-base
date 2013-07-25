@@ -50,7 +50,6 @@ function vopros_service_forward_form($form, &$form_state, $question) {
       'help' => t('Ask for help'),
       'turn_over' => t('Turn over the question'),
     ),
-    '#default_value' => 'help',
     '#required' => TRUE,
     '#ajax' => array(
       'callback' => 'vopros_service_forward_form_ajax',
@@ -68,10 +67,14 @@ function vopros_service_forward_form($form, &$form_state, $question) {
 
   $form_state['services'] = $query->execute()->fetchAllAssoc('machine_name');
 
+  /*
+   * Show the selector initially with all possible options, so core validation
+   * can see them on submit.
+   */
   $form['form']['service'] = array(
     '#type' => 'select',
     '#title' => t('Service'),
-    '#options' => _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help'),
+    '#options' => _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help') + _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over'),
     '#required' => TRUE,
     '#prefix' => '<div id="service-options">',
     '#suffix' => '</div>',
@@ -150,7 +153,7 @@ function vopros_service_forward_form_ajax($form, &$form_state) {
 function vopros_service_forward_form_forward_validate($form, &$form_state) {
   // If the service is empty, core will set the error, but we need to bail out
   // ourselves.
-  if (empty($form_state['values']['service'])) {
+  if (form_get_errors()) {
     return;
   }
   $question = $form_state['question'];
