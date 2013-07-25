@@ -55,23 +55,6 @@ function vopros_service_entity_info() {
 }
 
 /**
- * Implements hook_menu().
- */
-function vopros_service_menu() {
-  $items['admin/vopros/questions/%vopros_question/forward'] = array(
-    'title' => 'Forward question',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('vopros_service_forward_form', 3),
-    'access callback' => 'user_access',
-    'access arguments' => array('forward vopros questions'),
-    'file' => 'vopros_service.pages.inc',
-  );
-
-  return $items;
-}
-
-
-/**
  * Implements hook_permission().
  */
 function vopros_service_permission() {
@@ -98,17 +81,18 @@ function vopros_service_permission() {
   return $permissions;
 }
 
+
 /**
  * Implements hook_menu().
  */
 function vopros_service_menu() {
-  $items['admin/vopros/questions/%vopros_question/service'] = array(
-    'title' => 'Send to external',
+  $items['admin/vopros/questions/%vopros_question/forward'] = array(
+    'title' => 'Forward question',
     'page callback' => 'drupal_get_form',
+    'page arguments' => array('vopros_service_forward_form', 3),
     'page arguments' => array('vopros_service_question_service_form', 3),
     'access callback' => 'vopros_service_question_access',
-    'access arguments' => array('service', 3),
-    'file' => 'vopros_service.admin.inc',
+    'file' => 'vopros_service.pages.inc',
   );
 
   return $items;
@@ -126,7 +110,7 @@ function vopros_service_question_access($op, $question = NULL, $account = NULL) 
     return TRUE;
   }
 
-  if (user_access('send question to external service')) {
+  if (user_access('forward vopros questions')) {
     if ($question && $question->question_status == 'assigned' && $question->uid != $account->uid) {
       return FALSE;
     }
@@ -257,9 +241,10 @@ function vopros_service_form_vopros_question_handle_question_form_alter(&$form, 
   // For now we only allow forwarding when the question when the question isn't
   // already forwarded. This might be changed later.
   if (empty($forwards)) {
-    $form['forward_question'] = array(
+    $form['actions']['forward'] = array(
       '#type' => 'submit',
       '#value' => t('Forward question'),
+      '#weight' => 1,
       '#submit' => array('vopros_service_question_view_form_submit'),
     );
   }
@@ -369,27 +354,6 @@ function vopros_service_auth_types() {
   return array(
     'secret_key' => t('Secret key'),
   );
-}
-
-/**
- * Implements hook_form_alter().
- */
-function vopros_service_form_vopros_question_handle_question_form_alter(&$form, &$form_state) {
-  $form['actions']['service'] = array(
-    '#type' => 'submit',
-    '#value' => t('Send to external service'),
-    '#weight' => 1,
-    '#submit' => array('vopros_service_form_vopros_question_handle_question_form'),
-  );
-}
-
-/**
- * Submit handler for vopros_question_handle_question_form().
- */
-function vopros_service_form_vopros_question_handle_question_form($form, &$form_state) {
-  $question = $form_state['values']['question'];
-
-  $form_state['redirect'] = 'admin/vopros/questions/' . $question->question_id . '/service';
 }
 
 /**
