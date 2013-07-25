@@ -158,14 +158,31 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
   $form_state['selected_service'] = $form_state['services'][$service_name];
   $message = $form_state['values']['message'];
   if (_vopros_service_forward_question($form_state['selected_service'], $form_state['values']['send_type'], $question, $message)) {
-    if ($form_state['selected_services']->allow_outgoing_turn_over) {
+    // Note that the question was forwarded.
+    db_insert('vopros_service_question')
+      ->fields(array(
+          'machine_name' => $form_state['selected_service']->machine_name,
+          'type' => 'outgoing_' . $form_state['values']['send_type'],
+          'uuid' => $question->uuid,
+      ))
+    ->execute();
+
+    // Close question if it was turned over.
+    if ($form_state['selected_service']->allow_outgoing_turn_over) {
       $question->question_status = 'closed';
       $question->question_status_reason = 'turned over to external service';
       $form_state['redirect'] = 'admin/vopros/questions';
     }
   }
   else {
-    form_error($form, t('Could not forward question to service.'));
+    // Assignment on purpose.
+    if ($error = _vopros_service_forward_question_error()) {
+      $message = t('Could not forward question to service, it said: @message', array('@message' => $error));
+    }
+    else {
+      $message = t('Could not forward question to service.');
+    }
+    form_error($form, $message);
   }
 }
 

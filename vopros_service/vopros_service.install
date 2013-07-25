@@ -205,7 +205,7 @@ function vopros_service_schema() {
         'not null' => TRUE,
       ),
       'type' => array(
-        'description' => 'The type service "incoming", "help", "turn_over, etc".',
+        'description' => 'The type service "incoming_help", "incoming_turn_over" "outgoing_help", "outgoing_turn_over, etc".',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,

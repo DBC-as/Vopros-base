@@ -469,7 +469,24 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     return TRUE;
   }
   else {
-    dpm($res, $res->error);
+    $error = drupal_json_decode($res->data);
+    if (!empty($error[0])) {
+      _vopros_service_forward_question_error($error[0]);
+    }
+    else {
+      _vopros_service_forward_question_error($res->data);
+    }
     return FALSE;
   }
+}
+
+/**
+ * Returns the last error from _vopros_service_forward_question.
+ */
+function _vopros_service_forward_question_error($new = NULL) {
+  $error = &drupal_static(__FILE__, NULL);
+  if ($new) {
+    $error = $new;
+  }
+  return $error;
 }
