@@ -197,7 +197,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
  */
 function vopros_service_forward_form_forward_submit($form, &$form_state) {
   if ($form_state['values']['send_type']  == 'turn_over') {
-    drupal_set_message('The question "@title" has been handed over to an external service', array('@title' => $form_state['question']->question_title), 'notice');
+    drupal_set_message(t('The question "@title" has been handed over to an external service', array('@title' => $form_state['question']->question_title)), 'notice');
   }
 }
 
