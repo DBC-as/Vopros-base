@@ -1250,11 +1250,10 @@ function vopros_question_get_reasons($type = 'contact_mail', $alter = TRUE) {
   }
 
   $options = variable_get('vopros_question_status_reason_' . $type, $options);
-  if (!$alter) {
-    return $options;
+  if ($alter) {
+    drupal_alter('vopros_question_status_reason_options', $type, $options);
   }
 
-  drupal_alter('vopros_question_status_reason_options', $type, $options);
   return $options;
 }
 
