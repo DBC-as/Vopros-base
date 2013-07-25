@@ -1,11 +1,11 @@
 /** Form for sending question to external service **/
 
-#vopros-service-question-service-form .sidebar {
+#vopros-service-forward-form .sidebar {
   float: right;
   width: 30%;
 }
 
-#vopros-service-question-service-form .sidebar .form-submit {
+#vopros-service-forward-form .sidebar .form-submit {
   font-size: 2em;
   background: #E5E5E5;
   padding: 10px 30px;
@@ -14,6 +14,6 @@
   border-radius: 40px;
 }
 
-#vopros-service-question-service-form .form {
+#vopros-service-forward-form .form {
   width: 65%;
 }
