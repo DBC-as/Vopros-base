@@ -228,6 +228,65 @@ function vopros_service_resource_access() {
 }
 
 /**
+ * Implementation of hook_services_authentication_info().
+ */
+function vopros_service_services_authentication_info() {
+  return array(
+    'title'             => t('Vopros service authentication'),
+    'description'       => t("Use Vopros service authentication."),
+    'authenticate_call' => '_vopros_service_authenticate_call',
+  );
+}
+
+/**
+ * Services authentication callback.
+ *
+ * Checks the request token and sets the current definition if found.
+ */
+function _vopros_service_authenticate_call($settings, $controller, $args) {
+  $headers = getallheaders();
+  if (empty($headers['X-Vopros-Shared-Token'])) {
+    return 'Missing auth token.';
+  }
+  // Find service definition.
+  $service_id = db_select('vopros_service', 'v')
+    ->fields('v', array('service_id'))
+    ->condition('auth_key', $headers['X-Vopros-Shared-Token'])
+    ->execute()
+    ->fetchField();
+  if (empty($service_id)) {
+    return "Unknown auth token.";
+  }
+  $service = vopros_service_load($service_id);
+
+  switch ($controller['callback']) {
+    case '_vopros_service_resource_retrieve':
+      // Incoming.
+      if (!$service->allow_ingoing) {
+        return "Incoming not allowed.";
+      }
+      break;
+
+    default:
+      return "Internal error, auth doesn't know resource.";
+  }
+
+  vopros_service_current($service);
+}
+
+/**
+ * Returns the current service definition.
+ */
+function vopros_service_current($new = NULL) {
+  $current = &drupal_static(__FUNCTION__, NULL);
+  if ($new) {
+    $current = $new;
+  }
+
+  return $current;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function vopros_service_form_vopros_question_handle_question_form_alter(&$form, $form_state) {
@@ -399,6 +458,7 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     'method' => 'POST',
     'headers' => array(
       'Content-Type' => 'application/json',
+      'X-Vopros-Shared-Token'  => $service->auth_key,
     ),
     'data' => drupal_json_encode($data),
   );
