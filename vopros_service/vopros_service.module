@@ -409,7 +409,7 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     'headers' => array(
       'Content-Type' => 'application/json',
     ),
-    'data' => json_encode($data),
+    'data' => drupal_json_encode($data),
   );
 
   $res = drupal_http_request($url, $options);
