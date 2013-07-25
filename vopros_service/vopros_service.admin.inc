@@ -57,21 +57,40 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#maxlength' => 255,
   );
 
-  $form['auth_key'] = array(
+  // Auth type is not configurable at the moment, when implemented, we need to
+  // refactor auth_key out of the service definition and let the authentication
+  // plugin deal with settings and form.
+  $form['auth_type'] = array(
+    '#type' => 'value',
+    '#value' => 'shared_token',
+  );
+
+  $form['auth_token'] = array(
+    '#prefix' => '<div class="auth-token">',
+    '#suffix' => '</div>',
+  );
+
+  $form['auth_token']['auth_key'] = array(
+    '#prefix' => '<div id="auth-key">',
+    '#suffix' => '</div>',
     '#type' => 'textfield',
     '#title' => t('Auth key'),
-    '#description' => t('The secret key or auth token used for authentications.'),
+    '#description' => t("Shared token. Must be the same on both ends, and unique across all services. Use regenerate to generate a random token that's not already used."),
     '#default_value' => $service->auth_key,
     '#size' => 40,
     '#maxlength' => 255,
   );
 
-  $form['auth_type'] = array(
-    '#type' => 'select',
-    '#title' => t('Auth type'),
-    '#description' => t('The type of authentication used for the vopros server.'),
-    '#options' => vopros_service_auth_types(),
-    '#default_value' => $service->auth_type,
+  $form['auth_token']['regenerate'] = array(
+    '#type' => 'button',
+    '#value' => t('Regenerate'),
+    '#ajax' => array(
+      'callback' => 'vopros_service_form_ajax',
+      'wrapper' => 'auth-key',
+      'method' => 'replace',
+      'effect' => 'fade',
+    ),
+
   );
 
   $form['allow_ingoing'] = array(
@@ -116,6 +135,18 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
   }
 
   return $form;
+}
+
+/**
+ * Ajax callback for vopros_service_form().
+ *
+ * Generates a new service token.
+ */
+function vopros_service_form_ajax($form, &$form_state) {
+  // We're using drupal_get_token to get a random and very unlikely to collide,
+  // token. We don't need to validate it.
+  $form['auth_token']['auth_key']['#value'] = drupal_get_token(REQUEST_TIME);
+  return $form['auth_token']['auth_key'];
 }
 
 /**

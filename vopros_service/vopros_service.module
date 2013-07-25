@@ -348,15 +348,6 @@ function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(
 }
 
 /**
- * Defines the possible auth types
- */
-function vopros_service_auth_types() {
-  return array(
-    'secret_key' => t('Secret key'),
-  );
-}
-
-/**
  * Implements hook_vopros_question_status_reasons_alter().
  */
 function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
