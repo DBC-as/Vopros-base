@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Module for transfering questions in Vopros.
  */
 
 /**
@@ -39,7 +40,7 @@ function vopros_service_entity_info() {
       ),
       'module' => 'vopros_service',
       'access callback' => 'vopros_service_access',
-      // Allow default views controller to create view data integration
+      // Allow default views controller to create view data integration.
       'views controller class' => 'EntityDefaultViewsController',
       // Enable the entity API's admin UI.
       'admin ui' => array(
@@ -143,7 +144,11 @@ function vopros_service_services_resources() {
       'operations' => array(
         'create' => array(
           'help' => 'Create a new question transfer.',
-          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'file' => array(
+            'type' => 'inc',
+            'module' => 'vopros_service',
+            'name' => 'resources/vopros_transfer',
+          ),
           'callback' => '_vopros_service_resource_retrieve',
           'access callback' => 'vopros_service_resource_access',
           'args' => array(
@@ -167,7 +172,11 @@ function vopros_service_services_resources() {
       'targeted_actions' => array(
         'send_answer' => array(
           'help' => 'Send an answer or message to the questioner.',
-          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'file' => array(
+            'type' => 'inc',
+            'module' => 'vopros_service',
+            'name' => 'resources/vopros_transfer',
+          ),
           'callback' => '_vopros_service_resource_send_answer',
           'access callback' => 'vopros_service_resource_access',
           'args' => array(
@@ -196,7 +205,11 @@ function vopros_service_services_resources() {
         ),
         'send_message' => array(
           'help' => 'Send a message to the helper.',
-          'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
+          'file' => array(
+            'type' => 'inc',
+            'module' => 'vopros_service',
+            'name' => 'resources/vopros_transfer',
+          ),
           'callback' => '_vopros_service_resource_send_message',
           'access callback' => 'vopros_service_resource_access',
           'args' => array(
@@ -306,7 +319,7 @@ function vopros_service_access($op, $service = NULL, $account = NULL) {
 }
 
 /**
- * Create a new vopros service object
+ * Create a new vopros service object.
  */
 function vopros_service_new($values = array()) {
   return entity_create('vopros_email', $values);
@@ -329,12 +342,13 @@ function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
 }
 
 /**
- * Loads multiple vopros services by ID or based on a set of matching conditions.
+ * Loads multiple vopros services by ID or based on a set of matching
+ * conditions.
  *
  * @see entity_load()
  *
  * @param $service_ids
- *   An array of email IDs.
+ *   An array of service IDs.
  * @param $conditions
  *   An array of conditions on the {vopros_service} table in the form
  *     'field' => $value.
