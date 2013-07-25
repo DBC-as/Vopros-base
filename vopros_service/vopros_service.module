@@ -54,6 +54,23 @@ function vopros_service_entity_info() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function vopros_service_menu() {
+  $items['admin/vopros/questions/%vopros_question/forward'] = array(
+    'title' => 'Forward question',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vopros_service_forward_form', 3),
+    'access callback' => 'user_access',
+    'access arguments' => array('forward vopros questions'),
+    'file' => 'vopros_service.pages.inc',
+  );
+
+  return $items;
+}
+
+
+/**
  * Implements hook_permission().
  */
 function vopros_service_permission() {
@@ -72,8 +89,8 @@ function vopros_service_permission() {
       'title' => t('Edit and delete vopros services'),
       'restrict access' => TRUE,
     ),
-    'send question to external service' => array(
-      'title' => t('Send question to external service'),
+    'forward vopros questions' => array(
+      'title' => t('Forward questions'),
     ),
   );
 
@@ -128,6 +145,7 @@ function vopros_service_services_resources() {
           'help' => 'Create a new question transfer.',
           'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
           'callback' => '_vopros_service_resource_retrieve',
+          'access callback' => 'vopros_service_resource_access',
           'args' => array(
             array(
               'name' => 'type',
@@ -135,13 +153,6 @@ function vopros_service_services_resources() {
               'source' => array('path' => 0),
               'type' => 'string',
               'description' => 'Type of question "help" or "turn_over".',
-            ),
-            array(
-              'name' => 'uuid',
-              'optional' => FALSE,
-              'source' => array('path' => 1),
-              'type' => 'string',
-              'description' => 'UUID of the original question.',
             ),
             array(
               'name' => 'question',
@@ -158,6 +169,7 @@ function vopros_service_services_resources() {
           'help' => 'Send an answer or message to the questioner.',
           'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
           'callback' => '_vopros_service_resource_send_answer',
+          'access callback' => 'vopros_service_resource_access',
           'args' => array(
             array(
               'name' => 'uuid',
@@ -186,6 +198,7 @@ function vopros_service_services_resources() {
           'help' => 'Send a message to the helper.',
           'file' => array('type' => 'inc', 'module' => 'vopros_service', 'name' => 'resources/vopros_transfer'),
           'callback' => '_vopros_service_resource_send_message',
+          'access callback' => 'vopros_service_resource_access',
           'args' => array(
             array(
               'name' => 'uuid',
@@ -206,6 +219,49 @@ function vopros_service_services_resources() {
       ),
     ),
   );
+}
+
+/**
+ * Access check for resource.
+ *
+ * @todo Currently allows all access, that wont do for production.
+ */
+function vopros_service_resource_access() {
+  return TRUE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vopros_service_form_vopros_question_handle_question_form_alter(&$form, $form_state) {
+  $question = $form['question']['#value'];
+  $forwards = db_select('vopros_service_question', 'v')
+    ->fields('v')
+    ->condition('uuid', $question->uuid)
+    ->execute()
+    ->fetchAllAssoc('type');
+
+  // For now we only allow forwarding when the question when the question isn't
+  // already forwarded. This might be changed later.
+  if (empty($forwards)) {
+    $form['forward_question'] = array(
+      '#type' => 'submit',
+      '#value' => t('Forward question'),
+      '#submit' => array('vopros_service_question_view_form_submit'),
+    );
+  }
+}
+
+/**
+ * Submit handler for the forward button.
+ *
+ * Redirects to the forward form.
+ */
+function vopros_service_question_view_form_submit($form, &$form_state) {
+  $question = $form['question']['#value'];
+  $url = entity_uri('vopros_question', $question);
+  $url['path'] .= '/forward';
+  $form_state['redirect'] = array($url['path'] , $url['options']);
 }
 
 /**
@@ -327,4 +383,45 @@ function vopros_service_form_vopros_question_handle_question_form($form, &$form_
  */
 function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
   $reasons['turned over to external service'] = t('Turned over to external service');
+}
+
+/**
+ * Forward a question to another Vopros installation.
+ *
+ * @param VoprosService $service
+ *   The service definition.
+ * @param VoprosQuestion $question
+ *   The question to forward.
+ * @param string $message
+ *   A message for the receiver.
+ *
+ * @return bool
+ *   Whether the question was successfully submitted.
+ */
+function _vopros_service_forward_question($service, $question, $message) {
+  if ($service->allow_outgoing_help) {
+    $type = 'help';
+  }
+  elseif ($service->allow_outgoing_turn_over) {
+    $type = 'turn_over';
+  }
+
+  $url = trim($service->url, '/') . '/question/' . $type;
+  $options = array(
+    'method' => 'POST',
+    'headers' => array(
+      'Content-Type' => 'application/json',
+    ),
+    'data' => json_encode($question),
+  );
+
+  $res = drupal_http_request($url, $options);
+
+  if ($res->code == 200) {
+    return TRUE;
+  }
+  else {
+    dpm($res, $res->error);
+    return FALSE;
+  }
 }
