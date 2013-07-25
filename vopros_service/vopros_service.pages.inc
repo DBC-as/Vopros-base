@@ -47,10 +47,10 @@ function vopros_service_forward_form($form, &$form_state, $question) {
     '#type' => 'radios',
     '#title' => t('Way of sending'),
     '#options' => array(
-      'allow_outgoing_help' => t('Ask for help'),
-      'allow_outgoing_turn_over' => t('Turn over the question'),
+      'help' => t('Ask for help'),
+      'turn_over' => t('Turn over the question'),
     ),
-    '#default_value' => 'allow_outgoing_help',
+    '#default_value' => 'help',
     '#required' => TRUE,
     '#ajax' => array(
       'callback' => 'vopros_service_forward_form_ajax',
@@ -62,12 +62,7 @@ function vopros_service_forward_form($form, &$form_state, $question) {
 
   // Find service definitions.
   $query = db_select('vopros_service', 'v')
-    ->fields('v', array(
-        'machine_name',
-        'label',
-        'allow_outgoing_help',
-        'allow_outgoing_turn_over',
-      ))
+    ->fields('v')
     ->where('v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over = 1')
     ->orderBy('label');
 
@@ -135,7 +130,7 @@ function _vopros_service_forward_form_options($services, $type) {
 function vopros_service_forward_form_ajax($form, &$form_state) {
   $type = $form_state['triggering_element']['#value'];
 
-  $form['form']['service']['#options'] = _vopros_service_forward_form_options($form_state['services'], $type);
+  $form['form']['service']['#options'] = _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_' . $type);
   if (empty($form['form']['service']['#options'])) {
     return array(
       '#markup' => t('No services configured for this way of sending.'),
@@ -153,14 +148,16 @@ function vopros_service_forward_form_ajax($form, &$form_state) {
  * Validates the form and attempts to forward the question.
  */
 function vopros_service_forward_form_forward_validate($form, &$form_state) {
+  // If the service is empty, core will set the error, but we need to bail out
+  // ourselves.
   if (empty($form_state['values']['service'])) {
-    form_error($form['service'], t('Please select a service to forward to.'));
+    return;
   }
   $question = $form_state['question'];
   $service_name = $form_state['values']['service'];
-  $form_state['selected_services'] = $form_state['services'][$service_name];
+  $form_state['selected_service'] = $form_state['services'][$service_name];
   $message = $form_state['values']['message'];
-  if (_vopros_service_forward_question($form_state['selected_services'], $question, $message)) {
+  if (_vopros_service_forward_question($form_state['selected_service'], $form_state['values']['send_type'], $question, $message)) {
     if ($form_state['selected_services']->allow_outgoing_turn_over) {
       $question->question_status = 'closed';
       $question->question_status_reason = 'turned over to external service';
@@ -179,7 +176,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
  * question and the shared submit handler handles redirection.
  */
 function vopros_service_forward_form_forward_submit($form, &$form_state) {
-  if ($form_state['selected_services']->allow_outgoing_turn_over) {
+  if ($form_state['values']['send_type']  == 'turn_over') {
     drupal_set_message('The question "@title" has been turned over to an external service', array('@title' => $form_state['question']->question_title), 'notice');
   }
   dpm('forward_submit');

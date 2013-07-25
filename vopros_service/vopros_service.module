@@ -368,6 +368,8 @@ function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
  *
  * @param VoprosService $service
  *   The service definition.
+ * @param string $type
+ *   The type of the forward, 'help' or 'turn_over'.
  * @param VoprosQuestion $question
  *   The question to forward.
  * @param string $message
@@ -376,12 +378,7 @@ function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
  * @return bool
  *   Whether the question was successfully submitted.
  */
-function _vopros_service_forward_question($service, $question, $message) {
-  if ($service->allow_outgoing_help) {
-    $type = 'help';
-  }
-  elseif ($service->allow_outgoing_turn_over) {
-    $type = 'turn_over';
+function _vopros_service_forward_question($service, $type, $question, $message) {
   }
 
   $url = trim($service->url, '/') . '/question/' . $type;
