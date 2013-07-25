@@ -410,7 +410,7 @@ function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(
  * Implements hook_vopros_question_status_reasons_alter().
  */
 function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
-  $reasons['turned over to external service'] = t('Turned over to external service');
+  $reasons['handed over to external service'] = t('Handed over to external service');
 }
 
 /**

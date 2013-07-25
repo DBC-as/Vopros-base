@@ -207,8 +207,8 @@ function vopros_service_question_service_form_send_submit($form, &$form_state) {
   $question = $form_state['question'];
   if ($form_state['values']['send_type'] == 'allow_outgoing_turn_over') {
     $question->question_status = 'closed';
-    $question->question_status_reason = 'turned over to external service';
-    drupal_set_message('The question @title has been turned over to an external service', array('@title' => $question->question_title), 'notice');
+    $question->question_status_reason = 'handed over to external service';
+    drupal_set_message('The question @title has been handed over to an external service', array('@title' => $question->question_title), 'notice');
     $form_state['redirect'] = 'admin/vopros/questions';
   }
 }
