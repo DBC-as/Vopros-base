@@ -379,15 +379,37 @@ function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
  *   Whether the question was successfully submitted.
  */
 function _vopros_service_forward_question($service, $type, $question, $message) {
+  $url = trim($service->url, '/') . '/question/' . $type;
+  // Prepare data. Basic data.
+  $data = array(
+    'uuid' => $question->uuid,
+    'question_title' => $question->question_title,
+    'question_content' => $question->question_content,
+    'question_deadline' => $question->question_deadline,
+    'question_deadline_timestamp' => $question->question_deadline_timestamp,
+    'question_usage' => $question->question_usage,
+    'message' => $message,
+  );
+
+  if ($type == 'turn_over') {
+    // Add in user data.
+    $data['user_name'] = $question->user_name;
+    $data['user_email'] = $question->user_email;
+    $data['user_postal_code'] = $question->user_postal_code;
+    $data['user_mobile_phone'] = $question->user_mobile_phone;
+    $data['user_age'] = $question->user_age;
+    $data['user_gender'] = $question->user_gender;
+    $data['user_field_of_study'] = $question->user_field_of_study;
+    $data['user_library'] = $question->user_library;
+    $data['user_answer_preference'] = $question->user_answer_preference;
   }
 
-  $url = trim($service->url, '/') . '/question/' . $type;
   $options = array(
     'method' => 'POST',
     'headers' => array(
       'Content-Type' => 'application/json',
     ),
-    'data' => json_encode($question),
+    'data' => json_encode($data),
   );
 
   $res = drupal_http_request($url, $options);
