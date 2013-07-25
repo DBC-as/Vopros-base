@@ -194,5 +194,33 @@ function vopros_service_schema() {
     ),
   );
 
+  // Not versioned, doesn't really make sense.
+  $schema['vopros_service_question'] = array(
+    'description' => 'Table for tracking questions forwarded or accepted from others.',
+    'fields' => array(
+      'machine_name' => array(
+        'description' => 'The machine name of the service used.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The type service "incoming", "help", "turn_over, etc".',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+
+      'uuid' => uuid_schema_field_definition(),
+    ),
+    'primary key' => array('uuid', 'type', 'machine_name'),
+    'indexes' => array(
+      'machine_name' => array('machine_name'),
+    ),
+
+  );
+
+  $schema['vopros_service_question']['fields']['uuid']['description'] = 'The UUID of the original question.';
+
   return $schema;
 }
