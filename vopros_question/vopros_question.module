@@ -933,12 +933,18 @@ function _vopros_question_usage() {
 }
 
 function _vopros_question_user_answer_preference() {
+  return module_invoke_all('vopros_question_user_answer_preference');
+}
+
+/**
+ * Implements hook_vopros_question_user_answer_preference().
+ */
+function vopros_question_vopros_question_user_answer_preference() {
   return array(
-    'mail' => t('Email'),
-    'sms' => t('SMS'),
     'telephone' => t('Telephone'),
   );
 }
+
 
 /**
  * Utility function to get the question usage options

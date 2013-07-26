@@ -259,6 +259,16 @@ function vopros_email_permission() {
 }
 
 /**
+ * Implements hook_vopros_question_user_answer_preference().
+ */
+function vopros_email_vopros_question_user_answer_preference() {
+  return array(
+    'mail' => t('Email'),
+  );
+}
+
+
+/**
  * Checks email access for various operations.
  *
  * @param $op

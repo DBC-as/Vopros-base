@@ -248,6 +248,15 @@ function vopros_sms_permission() {
 }
 
 /**
+ * Implements hook_vopros_question_user_answer_preference().
+ */
+function vopros_sms_vopros_question_user_answer_preference() {
+  return array(
+    'sms' => t('SMS'),
+  );
+}
+
+/**
  * Checks sms access for various operations.
  *
  * @param $op
