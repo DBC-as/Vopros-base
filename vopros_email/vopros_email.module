@@ -427,7 +427,7 @@ function vopros_email_mail($key, &$message, $params) {
       $body .= $email->email_content . "\n"; // Message goes here
       $body .= "\n\n";
       $body .= "\n\n";
-      
+
       $email_wrapper = entity_metadata_wrapper('vopros_email', $email);
 
       foreach ($email_wrapper->vopros_email_attachment as $file) {
