@@ -23,7 +23,7 @@ function vopros_service_entity_info() {
         'label' => 'label',
       ),
       'bundles' => array(
-        'vopros_email' => array(
+        'vopros_service' => array(
           'label' => t('Vopros Service'),
           'admin' => array(
             'path' => 'admin/vopros/config/service',
@@ -47,6 +47,43 @@ function vopros_service_entity_info() {
         'path' => 'admin/vopros/services',
         'file' => 'vopros_service.admin.inc',
         'controller class' => 'VoprosServiceUIController',
+      ),
+    ),
+    'vopros_service_message' => array(
+      'label' => t('Vopros Service Message'),
+      'controller class' => 'VoprosServiceMessageEntityController',
+      'entity class' => 'VoprosServiceMessage',
+      'base table' => 'vopros_service_message',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'message_id',
+      ),
+      'label callback' => 'entity_class_label',
+      'bundles' => array(
+        'vopros_service_message' => array(
+          'label' => t('Vopros Service Message'),
+          'admin' => array(
+            'path' => 'admin/vopros/config/service-message',
+            'access arguments' => array('administer vopros service messages'),
+          ),
+        ),
+      ),
+      'load hook' => 'vopros_service_message_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'module' => 'vopros_service',
+      'access callback' => 'vopros_service_message_access',
+      // Allow default views controller to create view data integration.
+      'views controller class' => 'EntityDefaultViewsController',
+      // Enable the entity API's admin UI.
+      'admin ui' => array(
+        'path' => 'admin/vopros/service-messages',
+        'file' => 'vopros_service.admin.inc',
+        'controller class' => 'VoprosServiceMessageUIController',
       ),
     ),
   );
@@ -75,6 +112,16 @@ function vopros_service_permission() {
     ),
     'forward vopros questions' => array(
       'title' => t('Forward questions'),
+    ),
+    'administer vopros service messages' => array(
+      'title' => t('Administer vopros service messages'),
+      'restrict access' => TRUE,
+    ),
+    'access vopros service messages' => array(
+      'title' => t('Access lists of vopros services, primarily for viewing and referencing'),
+    ),
+    'create vopros service messages' => array(
+      'title' => t('Create vopros services'),
     ),
   );
 
@@ -321,7 +368,7 @@ function vopros_service_question_view_form_submit($form, &$form_state) {
 }
 
 /**
- * Checks email access for various operations.
+ * Checks vopros servoce access for various operations.
  *
  * @param $op
  *   The operation being performed. One of 'view', 'update', 'create' or
@@ -340,8 +387,6 @@ function vopros_service_access($op, $service = NULL, $account = NULL) {
     return TRUE;
   }
 
-  // Grant view access to users with the administrative access orders permission
-  // or to a user's own orders with the view own orders permission.
   if ($op == 'view') {
     if (user_access('access vopros services', $account)) {
       return TRUE;
@@ -362,10 +407,49 @@ function vopros_service_access($op, $service = NULL, $account = NULL) {
 }
 
 /**
+ * Checks vopros service message access for various operations.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view' or 'create'.
+ * @param $service
+ *   Optionally a vopros service message to check access for.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the current user.
+ */
+function vopros_service_message_access($op, $message = NULL, $account = NULL) {
+  global $user;
+  $account = isset($account) ? $account : clone($user);
+
+  // Grant access to any operation for any vopros service for administrators.
+  if (user_access('administer vopros service messages', $account)) {
+    return TRUE;
+  }
+
+  if ($op == 'view') {
+    if (user_access('access vopros service meesages', $account)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create' && user_access('create vopros service messages', $account)) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
  * Create a new vopros service object.
  */
 function vopros_service_new($values = array()) {
-  return entity_create('vopros_email', $values);
+  return entity_create('vopros_service', $values);
+}
+
+/**
+ * Create a new vopros service message object.
+ */
+function vopros_service_message_new($values = array()) {
+  return entity_create('vopros_service_message', $values);
 }
 
 /**
@@ -374,6 +458,14 @@ function vopros_service_new($values = array()) {
 function vopros_service_load($service_id, $reset = FALSE) {
   $services = vopros_service_load_multiple(array($service_id), array(), $reset);
   return $services ? reset($services) : FALSE;
+}
+
+/**
+ * Loads a vopros service message by ID.
+ */
+function vopros_service_message_load($message_id, $reset = FALSE) {
+  $messages = vopros_service_load_multiple(array($message_id), array(), $reset);
+  return $messages ? reset($messages) : FALSE;
 }
 
 /**
@@ -403,6 +495,27 @@ function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
  */
 function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_service', $service_ids, $conditions, $reset);
+}
+
+/**
+ * Loads multiple vopros service messages by ID or based on a set of matching
+ * conditions.
+ *
+ * @see entity_load()
+ *
+ * @param $service_ids
+ *   An array of service IDs.
+ * @param $conditions
+ *   An array of conditions on the {vopros_service_message} table in the form
+ *     'field' => $value.
+ * @param $reset
+ *   Whether to reset the internal email loading cache.
+ *
+ * @return
+ *   An array of email objects indexed by email_id.
+ */
+function vopros_service_message_load_multiple($message_ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load('vopros_service_message', $message_ids, $conditions, $reset);
 }
 
 /**
