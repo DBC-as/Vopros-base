@@ -182,33 +182,3 @@ function vopros_service_form_submit($form, &$form_state) {
 function vopros_service_form_submit_delete(&$form, &$form_state) {
   $form_state['redirect'] = 'admin/vopros/services/' . $form_state['vopros_service']->service_id . '/delete';
 }
-
-
-/**
- * Ajax callback for vopros_service_question_service_form().
- */
-function vopros_service_question_service_form_ajax($form, &$form_state) {
-  $type = $form_state['triggering_element']['#value'];
-  $service_options = array();
-
-  foreach ($form_state['services'] as $service_id => $service) {
-    if ($service->{$type}) {
-      $service_options[$service_id] = $service->label();
-    }
-  }
-  $form['form']['service']['#options'] = $service_options;
-  return $form['form']['service'];
-}
-
-/**
- * Submit handler for vopros_service_question_service_form().
- */
-function vopros_service_question_service_form_send_submit($form, &$form_state) {
-  $question = $form_state['question'];
-  if ($form_state['values']['send_type'] == 'allow_outgoing_turn_over') {
-    $question->question_status = 'closed';
-    $question->question_status_reason = 'handed over to external service';
-    drupal_set_message('The question @title has been handed over to an external service', array('@title' => $question->question_title), 'notice');
-    $form_state['redirect'] = 'admin/vopros/questions';
-  }
-}

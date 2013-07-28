@@ -90,7 +90,6 @@ function vopros_service_menu() {
     'title' => 'Forward question',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('vopros_service_forward_form', 3),
-    'page arguments' => array('vopros_service_question_service_form', 3),
     'access callback' => 'vopros_service_question_access',
     'file' => 'vopros_service.pages.inc',
   );
@@ -101,7 +100,7 @@ function vopros_service_menu() {
 /**
  * Access callback.
  */
-function vopros_service_question_access($op, $question = NULL, $account = NULL) {
+function vopros_service_question_access($question = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : clone($user);
 
