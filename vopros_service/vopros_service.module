@@ -564,6 +564,16 @@ function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
 }
 
 /**
+ * Implements hook_vopros_question_qanda_serice_options().
+ */
+function vopros_service_vopros_question_qanda_serice_options_alter(&$options) {
+  $services = vopros_service_load_multiple(FALSE, array('allow_ingoing' => 1));
+  foreach ($services as $service_id => $service) {
+    $options['vopros_service_' . $service_id] = $service->label();
+  }
+}
+
+/**
  * Forward a question to another Vopros installation.
  *
  * @param VoprosService $service

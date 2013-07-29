@@ -1027,6 +1027,7 @@ function _vopros_question_qanda_serice_options() {
       $options[$option[0]] = $option[1];
     }
   }
+  drupal_alter('vopros_question_qanda_serice_options', $options);
   return $options;
 }
 

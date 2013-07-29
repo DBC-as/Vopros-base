@@ -72,7 +72,6 @@ function vopros_statistics_week_view($start = NULL, $end = NULL) {
             WHERE created < :end
             AND created > :start
             GROUP BY day_name", array(':end' => $end, ':start' => $start))->fetchAllKeyed(0, 1);
-            dpm($result);
 
 
   $header = array(t('Week day'), t('Total questions created'));
@@ -105,7 +104,6 @@ function vopros_statistics_week_view($start = NULL, $end = NULL) {
                                               AND q.created > :start
                                               AND f.vopros_editorial_tid = :tid
                                               GROUP BY day_name", array(':tid' => $tid, ':end' => $end, ':start' => $start))->fetchAllKeyed(0, 1);
-                                              dpm($result);
       foreach ($weeks as $week_day => $label) {
         $rows[$week_day][] = isset($result[$week_day]) ? $result[$week_day] : 0;
       }

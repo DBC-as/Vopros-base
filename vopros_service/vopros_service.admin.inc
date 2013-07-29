@@ -132,22 +132,21 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#default_value' => $service->allow_ingoing,
   );
 
-  $current_type = '';
+  $allow_outgoing_types = array();
   if ($service->allow_outgoing_help) {
-    $current_type = 'help';
+    $allow_outgoing_types['help'] = 'help';
   }
-  elseif ($service->allow_outgoing_turn_over) {
-    $current_type = 'turn_over';
+  if ($service->allow_outgoing_turn_over) {
+    $allow_outgoing_types['turn_over'] = 'turn_over';
   }
   $form['allow_outgoing_type'] = array(
-    '#type' => 'radios',
+    '#type' => 'checkboxes',
     '#title' => t('Outgoing service type'),
     '#options' => array(
-      '' => t('None'),
       'help' => t('Ask for help'),
       'turn_over' => t('Turn over questions'),
     ),
-    '#default_value' => $current_type,
+    '#default_value' => $allow_outgoing_types,
   );
 
   $form['actions'] = array('#type' => 'actions');
@@ -160,7 +159,7 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
   if ($op != 'add' && $op != 'clone') {
     $form['actions']['delete'] = array(
       '#type' => 'submit',
-      '#value' => t('Delete profile type'),
+      '#value' => t('Delete service'),
       '#weight' => 45,
       '#limit_validation_errors' => array(),
       '#submit' => array('vopros_service_form_submit_delete'),
@@ -202,8 +201,8 @@ function vopros_service_form_submit($form, &$form_state) {
   $service->auth_key = $form_state['values']['auth_key'];
   $service->auth_type = $form_state['values']['auth_type'];
   $service->allow_ingoing = $form_state['values']['allow_ingoing'];
-  $service->allow_outgoing_help = ($form_state['values']['allow_outgoing_type'] == 'help');
-  $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_type'] == 'turn_over');
+  $service->allow_outgoing_help = in_array('help', $form_state['values']['allow_outgoing_type']);
+  $service->allow_outgoing_turn_over = in_array('turn_over', $form_state['values']['allow_outgoing_type']);
   $service->save();
 
   $form_state['redirect'] = 'admin/vopros/services';
