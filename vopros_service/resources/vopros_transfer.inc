@@ -120,3 +120,10 @@ function _vopros_service_resource_send_answer($uuid, $message, $answer = NULL) {
 function _vopros_service_resource_send_message($uuid, $message) {
   services_error('Not implemented.', 501);
 }
+
+/**
+ * Retrive a message.
+ */
+function _vopros_service_message_resource_retrieve($uuid, $message, $answer = NULL) {
+  services_error('Not implemented.', 501);
+}

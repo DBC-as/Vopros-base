@@ -199,6 +199,43 @@ function vopros_service_services_resources() {
           ),
         ),
       ),
+    ),
+    'message' => array(
+      'operations' => array(
+        'create' => array(
+          'help' => 'Create a new message.',
+          'file' => array(
+            'type' => 'inc',
+            'module' => 'vopros_service',
+            'name' => 'resources/vopros_transfer',
+          ),
+          'callback' => '_vopros_service_message_resource_retrieve',
+          'access callback' => 'vopros_service_resource_access',
+          'args' => array(
+            array(
+              'name' => 'uuid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'string',
+              'description' => 'The UUID of the original question',
+            ),
+            array(
+              'name' => 'message',
+              'optional' => FALSE,
+              'source' => 'data',
+              'type' => 'array',
+              'description' => 'The message to create.',
+            ),
+            array(
+              'name' => 'answer',
+              'optional' => TRUE,
+              'source' => 'data',
+              'type' => 'array',
+              'description' => 'The answer that is sent along with the message.',
+            ),
+          ),
+        ),
+      ),
       'targeted_actions' => array(
         'send_answer' => array(
           'help' => 'Send an answer or message to the questioner.',
@@ -307,6 +344,7 @@ function _vopros_service_authenticate_call($settings, $controller, $args) {
 
   switch ($controller['callback']) {
     case '_vopros_service_resource_retrieve':
+    case '_vopros_service_message_resource_retrieve':
       // Incoming.
       if (!$service->allow_ingoing) {
         return "Incoming not allowed.";
