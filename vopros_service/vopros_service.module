@@ -49,6 +49,25 @@ function vopros_service_entity_info() {
         'controller class' => 'VoprosServiceUIController',
       ),
     ),
+    'vopros_service_message' => array(
+      'label' => t('Vopros Service Message'),
+      'controller class' => 'VoprosServiceMessageEntityController',
+      'entity class' => 'VoprosServiceMessage',
+      'base table' => 'vopros_service_message',
+      // Vesioning doesn't make sense.
+      'fieldable' => FALSE,
+      'entity keys' => array(
+        'id' => 'service_message_id',
+      ),
+      'load hook' => 'vopros_service_message_load',
+      'view modes' => array(
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'module' => 'vopros_service',
+    ),
   );
 
   return $return;
@@ -95,6 +114,20 @@ function vopros_service_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vopros_service_theme() {
+  $path = drupal_get_path('module', 'vopros_service') . '/theme';
+  return array(
+    'vopros_service_message' => array(
+      'render element' => 'elements',
+      'template' => 'vopros_service_message',
+      'path' => $path,
+    ),
+  );
 }
 
 /**
@@ -204,6 +237,13 @@ function vopros_service_services_resources() {
               'description' => 'UUID of the original question.',
             ),
             array(
+              'name' => 'from',
+              'optional' => FALSE,
+              'source' => array('data' => 'from'),
+              'type' => 'string',
+              'description' => 'Message from.',
+            ),
+            array(
               'name' => 'message',
               'optional' => FALSE,
               'source' => array('data' => 'message'),
@@ -284,6 +324,56 @@ function vopros_service_current($new = NULL) {
 
   return $current;
 }
+
+/**
+ * Implements hook_vopros_question_view_alter().
+ */
+function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
+  $question = $build['#question'];
+  $forward = db_select('vopros_service_question', 'q')
+    ->fields('q')
+    ->condition('uuid', $question->uuid)
+    ->execute()
+    ->fetch();
+
+  if (empty($forward)) {
+    return;
+  }
+
+  // outgoing help = sidebar
+  // incoming help = main content
+  // * turn_over = don't show anything
+  if ($forward->type == 'help') {
+    $build['#attached']['css'][] = drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css';
+
+    $message_ids = db_select('vopros_service_message', 'q')
+      ->fields('q', array('service_message_id'))
+      ->condition('question_id', $question->question_id)
+      ->orderBy('created')
+      ->execute()
+      ->fetchCol();
+    $messages = entity_load('vopros_service_message', $message_ids);
+    $messages_build = entity_view('vopros_service_message', $messages, $build['#view_mode']);
+    $messages_build += array(
+      '#prefix' => '<div class=question-messages>',
+      '#suffix' => '</div>',
+      '#weight' => 10,
+    );
+    if ($forward->type == 'outgoing_help') {
+      // For outgoing help, they should be shown in right column.
+      $build['right']['question_messages'] = $messages_build;
+      module_load_include('inc', 'vopros_service', 'vopros_service.form');
+      $build['right']['question_messages_form'] = drupal_get_form('vopros_service_message_form', $forward);
+      $build['right']['question_messages_form']['#weight'] = 11;
+    }
+    else {
+      // Otherwise just append.
+      $build['question_messages'] = $messages_build;
+    }
+  }
+  // dpm($build);
+}
+
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -438,7 +528,6 @@ function vopros_service_vopros_question_qanda_serice_options_alter(&$options) {
  *   Whether the question was successfully submitted.
  */
 function _vopros_service_forward_question($service, $type, $question, $message) {
-  $url = trim($service->url, '/') . '/question/' . $type;
   // Prepare data. Basic data.
   $data = array(
     'uuid' => $question->uuid,
@@ -463,8 +552,35 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     $data['user_answer_preference'] = $question->user_answer_preference;
   }
 
+  return _vopros_servic_do_request($service, '/question/' . $type, 'POST', $data);
+}
+
+/**
+ * Send a question message to another Vopros installation.
+ *
+ * @param VoprosService $service
+ *   The service to send to.
+ * @param VoprosQuestion $question
+ *   The question to send a message on.
+ * @param string $message
+ *   The message to send.
+ */
+function _vopros_service_send_message($service, $question, $message) {
+  // Prepare data.
+  $data = array(
+    'message' => $message,
+  );
+
+  return _vopros_service_do_request($service, '/send_message/' . $question->uuid, 'POST', $data);
+}
+
+/**
+ * Internal helper function for doing the service call.
+ */
+function _vopros_service_do_request($service, $path, $method, $data) {
+  $url = trim($service->url, '/') . $path;
   $options = array(
-    'method' => 'POST',
+    'method' => $method,
     'headers' => array(
       'Content-Type' => 'application/json',
       'X-Vopros-Shared-Token'  => $service->auth_key,
@@ -480,19 +596,20 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
   else {
     $error = drupal_json_decode($res->data);
     if (!empty($error[0])) {
-      _vopros_service_forward_question_error($error[0]);
+      _vopros_servic_error($error[0]);
     }
     else {
-      _vopros_service_forward_question_error($res->data);
+      _vopros_service_error($res->data);
     }
     return FALSE;
   }
 }
 
+
 /**
- * Returns the last error from _vopros_service_forward_question.
+ * Returns the last error from service call.
  */
-function _vopros_service_forward_question_error($new = NULL) {
+function _vopros_service_error($new = NULL) {
   $error = &drupal_static(__FILE__, NULL);
   if ($new) {
     $error = $new;

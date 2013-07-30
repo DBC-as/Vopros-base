@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Entity classes defined by vopros_email module.
+ * Entity class for Vopros Service.
  */
 
 
 /**
- * Entity class for public question entities.
+ * Entity class for service entities.
  */
 class VoprosService extends Entity {}

@@ -165,7 +165,8 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
     db_insert('vopros_service_question')
       ->fields(array(
           'machine_name' => $form_state['selected_service']->machine_name,
-          'type' => 'outgoing_' . $form_state['values']['send_type'],
+          'type' => 'outgoing',
+          'type' => $form_state['values']['send_type'],
           'uuid' => $question->uuid,
       ))
     ->execute();
@@ -180,7 +181,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
   }
   else {
     // Assignment on purpose.
-    if ($error = _vopros_service_forward_question_error()) {
+    if ($error = _vopros_service_error()) {
       $message = t('Could not forward question to service, it said: @message', array('@message' => $error));
     }
     else {

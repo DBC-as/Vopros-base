@@ -204,23 +204,85 @@ function vopros_service_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-      'type' => array(
-        'description' => 'The type service "incoming_help", "incoming_turn_over" "outgoing_help", "outgoing_turn_over, etc".',
+      'direction' => array(
+        'description' => 'The direction of the forward, "incoming" or "outgoing"',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
       ),
-
+      'type' => array(
+        'description' => 'The type service "help" or "turn_over".',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
       'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('uuid', 'type', 'machine_name'),
     'indexes' => array(
       'machine_name' => array('machine_name'),
     ),
-
   );
 
+  // Fix name of uuid field.
   $schema['vopros_service_question']['fields']['uuid']['description'] = 'The UUID of the original question.';
+
+  // Not versioned either.
+  $schema['vopros_service_message'] = array(
+    'description' => 'Table for inter-service messages.',
+    'fields' => array(
+      'service_message_id' => array(
+        'description' => 'The primary identifier for a message.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'question_id' => array(
+        'description' => 'The question the message is attached to.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'service_machine_name' => array(
+        'description' => 'The machine name of the service used.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'message_type' => array(
+        'description' => 'Message type, "incoming" or "outgoing".',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'message_content' => array(
+        'description' => 'The message body.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'message_from' => array(
+        'description' => 'Message sender.',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
+      'message_uid' => array(
+        'description' => 'UID of message sender, if outgoing.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the message was created/received.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('service_message_id'),
+    'indexes' => array(
+      'question_id' => array('question_id'),
+      'service_machine_name' => array('service_machine_name'),
+    ),
+  );
 
   return $schema;
 }

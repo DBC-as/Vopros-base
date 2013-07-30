@@ -101,7 +101,8 @@ function _vopros_service_resource_retrieve($type, $data) {
   db_insert('vopros_service_question')
     ->fields(array(
         'machine_name' => $service->machine_name,
-        'type' => 'incoming_' . $type,
+        'direction' => 'incoming',
+        'type' => $type,
         'uuid' => $question->uuid,
       ))
     ->execute();

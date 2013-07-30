@@ -17,3 +17,22 @@
 #vopros-service-forward-form .form {
   width: 65%;
 }
+
+.question-messages {
+  border: 1px solid black;
+}
+
+.question-messages .from {
+  background-color: #ddd;
+  border-bottom: 1px solid black;
+  padding: 0.5em;
+}
+
+.question-messages .content {
+  margin: 0;
+  padding: 0.5em;
+}
+
+.question-messages .from .label {
+  font-weight: bold;
+}
