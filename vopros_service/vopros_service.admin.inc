@@ -19,39 +19,6 @@ class VoprosServiceUIController extends VoprosUIController {
 }
 
 /**
- * UI controller class for the admin interface.
- */
-class VoprosServiceMessageUIController extends VoprosUIController {
-  /**
-   * Overrides hook_menu() defaults.
-   */
-  public function hook_menu() {
-    $items = parent::hook_menu();
-    $items[$this->path]['description'] = 'Display a list of vopros service message.';
-    unset($items[$this->path. '/add']);
-    unset($items[$this->path. '/manage/%entity_object']);
-    unset($items[$this->path. '/manage/%entity_object/edit']);
-    unset($items[$this->path. '/manage/%entity_object/clone']);
-    unset($items[$this->path. '/manage/%entity_object/%']);
-    return $items;
-  }
-
-  /**
-   * Generates the row for the passed entity and may be overridden in order to
-   * customize the rows.
-   *
-   * @param $additional_cols
-   *   Additional columns to be added after the entity label column.
-   */
-  protected function overviewTableRow($conditions, $id, $entity, $additional_cols = array()) {
-    $row = parent::overviewTableRow($conditions, $id, $entity, $additional_cols);
-    array_pop($row);
-    array_pop($row);
-    return $row;
-  }
-}
-
-/**
  * Generates the profile type editing form.
  */
 function vopros_service_form($form, &$form_state, $service, $op = 'edit') {

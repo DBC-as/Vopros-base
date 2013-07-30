@@ -23,22 +23,3 @@ class VoprosServiceEntityController extends VoprosAPIEntityController {
   }
 }
 
-/**
- * Entity controller class for vopros question.
- */
-class VoprosServiceMessageEntityController extends VoprosAPIEntityController {
-  /**
-   * Creates a new instance of a vopros_log entity.
-   */
-  public function create(array $values = array()) {
-    $values = $values + array(
-      'message_id' => 0,
-      'message_content' => '',
-      'answer_id' => 0,
-      'sender_service_id' => 0,
-      'receiver_service_id' => 0,
-    );
-    return parent::create($values);
-  }
-}
-
