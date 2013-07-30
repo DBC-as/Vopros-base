@@ -109,7 +109,8 @@ function vopros_service_menu() {
     'title' => 'Forward question',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('vopros_service_forward_form', 3),
-    'access callback' => 'vopros_service_question_access',
+    'access callback' => 'vopros_service_forward_question_access',
+    'access arguments' => array(3),
     'file' => 'vopros_service.pages.inc',
   );
 
@@ -135,7 +136,7 @@ function vopros_service_theme() {
  */
 function vopros_service_question_access($question = NULL, $account = NULL) {
   global $user;
-  $account = isset($account) ? $account : clone($user);
+  $account = isset($account) ? $account : $user;
 
   // Grant access to any operation for any question for administrators.
   if (user_access('administer questions', $account)) {
