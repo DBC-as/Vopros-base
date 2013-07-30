@@ -593,12 +593,17 @@ function _vopros_service_do_request($service, $path, $method, $data) {
     return TRUE;
   }
   else {
-    $error = drupal_json_decode($res->data);
-    if (!empty($error[0])) {
-      _vopros_service_error($error[0]);
+    if (!empty($res->data)) {
+      $error = drupal_json_decode($res->data);
+      if (!empty($error[0])) {
+        _vopros_service_error($error[0]);
+      }
+      else {
+        _vopros_service_error($res->data);
+      }
     }
-    else {
-      _vopros_service_error($res->data);
+    else  {
+      _vopros_service_error($res->error);
     }
     return FALSE;
   }
