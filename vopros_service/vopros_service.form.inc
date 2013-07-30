@@ -63,20 +63,21 @@ function vopros_service_message_form_submit($form, &$form_state) {
     // Fall back to username.
     $name = $user->name;
   }
-  $message = array(
+  $data = array(
     'from' => $name,
     'message' => $form_state['values']['message'],
   );
 
-  if (_vopros_service_send_message($form_state['service'], $form_state['question'], $message)) {
-
-
-
-
-
-
-
-
+  if (_vopros_service_send_message($form_state['service'], $form_state['question'], $data)) {
+    $question_message = entity_create('vopros_service_message', array(
+        'question_id' => $form_state['question']->question_id,
+        'service_machine_name' => $form_state['service']->machine_name,
+        'message_type' => 'outgoing',
+        'message_content' => check_plain($form_state['values']['message']),
+        'message_from' => $name,
+        'message_uid' => $user->uid,
+      ));
+    entity_save('vopros_service_message', $question_message);
   }
   else {
     // Assignment on purpose.

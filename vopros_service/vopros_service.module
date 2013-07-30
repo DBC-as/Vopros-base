@@ -499,6 +499,8 @@ function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(
  */
 function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
   $reasons['handed over to external service'] = t('Handed over to external service');
+  $reasons['reactivated by external service'] = t('Reactivated by external service');
+
 }
 
 /**
@@ -565,12 +567,7 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
  *   The message to send.
  */
 function _vopros_service_send_message($service, $question, $message) {
-  // Prepare data.
-  $data = array(
-    'message' => $message,
-  );
-
-  return _vopros_service_do_request($service, '/send_message/' . $question->uuid, 'POST', $data);
+  return _vopros_service_do_request($service, '/question/' . $question->uuid . '/send_message', 'POST', $message);
 }
 
 /**

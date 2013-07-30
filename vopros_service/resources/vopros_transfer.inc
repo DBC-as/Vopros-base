@@ -118,6 +118,40 @@ function _vopros_service_resource_send_answer($uuid, $message, $answer = NULL) {
 /**
  * Send a message to the helper.
  */
-function _vopros_service_resource_send_message($uuid, $message) {
-  services_error('Not implemented.', 501);
+function _vopros_service_resource_send_message($uuid, $from, $message) {
+  $service = vopros_service_current();
+  // Ensure that the question is transfered to us.
+  $type = db_select('vopros_service_question', 'v')
+    ->fields('v', array('type'))
+    ->condition('machine_name', $service->machine_name)
+    ->condition('direction', 'incoming')
+    ->condition('uuid', $uuid)
+    ->execute()
+    ->fetchField();
+
+  if (empty($type)) {
+    services_error('Message not forwarded.', 422);
+  }
+  elseif ($type != 'help') {
+    services_error('Wrong type.', 422);
+  }
+
+  $question = vopros_question_load_by_uuid($uuid);
+  if ($question) {
+    $message = entity_create('vopros_service_message', array(
+        'question_id' => $question->question_id,
+        'service_machine_name' => $service->machine_name,
+        'message_type' => 'incoming',
+        'message_content' => check_plain($message),
+        'message_from' => check_plain($from),
+      ));
+    entity_save('vopros_service_message', $message);
+    // Reactivate issue.
+    $question->question_status = 'active';
+    $question->question_status_reason = 'reactivated by external service';
+    entity_save('vopros_question', $question);
+  }
+  else {
+    services_error('Could not load question.', 422);
+  }
 }
