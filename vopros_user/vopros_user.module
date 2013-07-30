@@ -104,3 +104,26 @@ function vopros_user_form_user_profile_form_alter(&$form, &$form_state) {
     $form['profile_vopros_user_librarian']['vopros_user_shortcuts']['#access'] = $access;
   }
 }
+
+/**
+ * Get a full for a user, or fall back to using username.
+ */
+function vopros_user_name($account = NULL)  {
+  global $user;
+  if (!$account) {
+    $account = $user;
+  }
+
+  // Try to get a name from a librarian profile.
+  $profile = profile2_load_by_user($user, 'vopros_user_librarian');
+  if ($profile) {
+    $wrapper = entity_metadata_wrapper('profile2', $profile);
+    $name = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value() . ' (' . $profile_wrapper->user->name->value() . ')';
+  }
+  else {
+    // Else fall back to username.
+    $name = $user->name;
+  }
+
+  return $name;
+}
