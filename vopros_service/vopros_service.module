@@ -602,7 +602,7 @@ function _vopros_service_do_request($service, $path, $method, $data) {
         _vopros_service_error($res->data);
       }
     }
-    else  {
+    else {
       _vopros_service_error($res->error);
     }
     return FALSE;
