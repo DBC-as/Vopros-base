@@ -163,7 +163,7 @@ function vopros_service_services_resources() {
     'question' => array(
       'operations' => array(
         'create' => array(
-          'vopros_access_check' => TRUE,
+          'vopros_direction' => 'incoming',
           'help' => 'Create a new question transfer.',
           'file' => array(
             'type' => 'inc',
@@ -192,7 +192,7 @@ function vopros_service_services_resources() {
       ),
       'targeted_actions' => array(
         'send_answer' => array(
-          'vopros_access_check' => TRUE,
+          'vopros_direction' => 'outgoing',
           'help' => 'Send an answer or message to the questioner.',
           'file' => array(
             'type' => 'inc',
@@ -226,7 +226,7 @@ function vopros_service_services_resources() {
           ),
         ),
         'send_message' => array(
-          'vopros_access_check' => TRUE,
+          'vopros_direction' => 'outgoing',
           'help' => 'Send a message to the helper.',
           'file' => array(
             'type' => 'inc',
@@ -308,8 +308,13 @@ function _vopros_service_authenticate_call($module, $controller, $args) {
   }
   $service = vopros_service_load($service_id);
 
-  if (!$service->allow_ingoing) {
-    return "Incoming not allowed.";
+  if ($controller['vopros_direction'] == 'incoming') {
+    if (!$service->allow_ingoing) {
+      return "Incoming not allowed.";
+    }
+  }
+  else {
+    // Outgoing always allowed.
   }
 
   vopros_service_current($service);
