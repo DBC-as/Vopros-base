@@ -457,7 +457,7 @@ function vopros_service_access($op, $service = NULL, $account = NULL) {
  * Create a new vopros service object.
  */
 function vopros_service_new($values = array()) {
-  return entity_create('vopros_email', $values);
+  return entity_create('vopros_service', $values);
 }
 
 /**
