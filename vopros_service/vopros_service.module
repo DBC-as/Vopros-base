@@ -160,6 +160,7 @@ function vopros_service_services_resources() {
     'question' => array(
       'operations' => array(
         'create' => array(
+          'vopros_access_check' => TRUE,
           'help' => 'Create a new question transfer.',
           'file' => array(
             'type' => 'inc',
@@ -188,6 +189,7 @@ function vopros_service_services_resources() {
       ),
       'targeted_actions' => array(
         'send_answer' => array(
+          'vopros_access_check' => TRUE,
           'help' => 'Send an answer or message to the questioner.',
           'file' => array(
             'type' => 'inc',
@@ -221,6 +223,7 @@ function vopros_service_services_resources() {
           ),
         ),
         'send_message' => array(
+          'vopros_access_check' => TRUE,
           'help' => 'Send a message to the helper.',
           'file' => array(
             'type' => 'inc',
@@ -283,7 +286,10 @@ function vopros_service_services_authentication_info() {
  *
  * Checks the request token and sets the current definition if found.
  */
-function _vopros_service_authenticate_call($settings, $controller, $args) {
+function _vopros_service_authenticate_call($module, $controller, $args) {
+  if ($module != 'vopros_service') {
+    return;
+  }
   $headers = getallheaders();
   if (empty($headers['X-Vopros-Shared-Token'])) {
     return 'Missing auth token.';
@@ -299,16 +305,8 @@ function _vopros_service_authenticate_call($settings, $controller, $args) {
   }
   $service = vopros_service_load($service_id);
 
-  switch ($controller['callback']) {
-    case '_vopros_service_resource_retrieve':
-      // Incoming.
-      if (!$service->allow_ingoing) {
-        return "Incoming not allowed.";
-      }
-      break;
-
-    default:
-      return "Internal error, auth doesn't know resource.";
+  if (!$service->allow_ingoing) {
+    return "Incoming not allowed.";
   }
 
   vopros_service_current($service);
