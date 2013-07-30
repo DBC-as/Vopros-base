@@ -519,7 +519,7 @@ function vopros_question_load($question_id, $revision_id = NULL, $reset = FALSE)
  * Load a question by UUID.
  */
 function vopros_question_load_by_uuid($uuid) {
-  $questions = vopros_question_load_multiple(array(), array('uuid' => $uuid), FALSE);
+  $questions = vopros_question_load_multiple(FALSE, array('uuid' => $uuid), FALSE);
   return $questions ? reset($questions) : FALSE;
 }
 
@@ -527,7 +527,7 @@ function vopros_question_load_by_uuid($uuid) {
  * Loads an revision of a question.
  */
 function vopros_question_revision_load($revision_id) {
-  $questions = vopros_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
+  $questions = vopros_question_load_multiple(FALSE, array('revision_id' => $revision_id), FALSE);
   return $questions ? reset($questions) : FALSE;
 }
 
@@ -569,7 +569,7 @@ function vopros_question_revision_list($question) {
  * @return
  *   An array of question objects indexed by question_id.
  */
-function vopros_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
+function vopros_question_load_multiple($question_ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_question', $question_ids, $conditions, $reset);
 }
 
