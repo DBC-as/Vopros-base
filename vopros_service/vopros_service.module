@@ -360,7 +360,7 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
       '#suffix' => '</div>',
       '#weight' => 10,
     );
-    if ($forward->type == 'outgoing_help') {
+    if ($forward->type == 'help') {
       // For outgoing help, they should be shown in right column.
       $build['right']['question_messages'] = $messages_build;
       module_load_include('inc', 'vopros_service', 'vopros_service.form');
@@ -553,7 +553,7 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     $data['user_answer_preference'] = $question->user_answer_preference;
   }
 
-  return _vopros_servic_do_request($service, '/question/' . $type, 'POST', $data);
+  return _vopros_service_do_request($service, '/question/' . $type, 'POST', $data);
 }
 
 /**
@@ -597,7 +597,7 @@ function _vopros_service_do_request($service, $path, $method, $data) {
   else {
     $error = drupal_json_decode($res->data);
     if (!empty($error[0])) {
-      _vopros_servic_error($error[0]);
+      _vopros_service_error($error[0]);
     }
     else {
       _vopros_service_error($res->data);

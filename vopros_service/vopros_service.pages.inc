@@ -165,7 +165,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
     db_insert('vopros_service_question')
       ->fields(array(
           'machine_name' => $form_state['selected_service']->machine_name,
-          'type' => 'outgoing',
+          'direction' => 'outgoing',
           'type' => $form_state['values']['send_type'],
           'uuid' => $question->uuid,
       ))
