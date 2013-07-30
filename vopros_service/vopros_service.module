@@ -358,7 +358,7 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
       '#suffix' => '</div>',
       '#weight' => 10,
     );
-    if ($forward->type == 'help') {
+    if ($forward->direction == 'outgoing') {
       // For outgoing help, they should be shown in right column.
       $build['right']['question_messages'] = $messages_build;
       module_load_include('inc', 'vopros_service', 'vopros_service.form');
