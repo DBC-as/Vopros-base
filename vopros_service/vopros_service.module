@@ -496,6 +496,9 @@ function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(
 
 /**
  * Implements hook_vopros_question_status_reasons_alter().
+ *
+ * Add status reasons for handing over question (closed) and reactivated by
+ * message (active).
  */
 function vopros_service_vopros_question_status_reasons_alter(&$reasons) {
   $reasons['handed over to external service'] = t('Handed over to external service');
