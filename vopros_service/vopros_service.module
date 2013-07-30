@@ -134,7 +134,7 @@ function vopros_service_theme() {
 /**
  * Access callback.
  */
-function vopros_service_question_access($question = NULL, $account = NULL) {
+function vopros_service_forward_question_access($question = NULL, $account = NULL) {
   global $user;
   $account = isset($account) ? $account : $user;
 
