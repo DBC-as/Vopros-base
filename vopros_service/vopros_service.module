@@ -133,6 +133,9 @@ function vopros_service_theme() {
 
 /**
  * Access callback.
+ *
+ * Checks that the question is in the right state and the user has permission to
+ * forward it.
  */
 function vopros_service_forward_question_access($question = NULL, $account = NULL) {
   global $user;
