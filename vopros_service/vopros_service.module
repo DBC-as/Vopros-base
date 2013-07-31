@@ -395,6 +395,39 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
   }
 }
 
+/**
+ * Implements hook_vopros_question_activity_feed().
+ *
+ * Adds messages to feed, if the question is an incoming help qestion.
+ */
+function vopros_service_vopros_question_activity_feed($question, &$feed) {
+  if ($question->user_answer_preference == 'vopros_service') {
+    $forwards = vopros_service_forward_load_by_uuid($question->uuid, array('direction' => 'incoming', 'type' => 'help'));
+    if ($forwards) {
+      $forward = reset($forwards);
+
+      $message_ids = db_select('vopros_service_message', 'q')
+        ->fields('q', array('service_message_id'))
+        ->condition('question_id', $question->question_id)
+        ->orderBy('created')
+        ->execute()
+        ->fetchCol();
+
+      $messages = entity_load('vopros_service_message', $message_ids);
+
+      $messages_build = array(
+        '#prefix' => '<div class=question-messages>',
+        '#suffix' => '</div>',
+      );
+      if ($messages) {
+        $feed['#attached']['css'][] = drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css';
+        $messages_build['questions'] = entity_view('vopros_service_message', $messages, 'question-list');
+        $feed['question-messages'] = $messages_build;
+      }
+    }
+  }
+}
+
 
 /**
  * Implements hook_form_FORM_ID_alter().
