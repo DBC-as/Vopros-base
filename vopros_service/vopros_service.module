@@ -486,6 +486,17 @@ function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
 }
 
 /**
+ * Loads forwards by UUID.
+ */
+function vopros_service_forward_load_by_uuid($uuid) {
+  return db_select('vopros_service_question', 'v')
+    ->fields('v')
+    ->condition('uuid', $uuid)
+    ->execute()
+    ->fetchAll();
+}
+
+/**
  * Loads multiple vopros services by ID or based on a set of matching
  * conditions.
  *
