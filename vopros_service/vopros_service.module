@@ -574,8 +574,10 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
  *   The service to send to.
  * @param VoprosQuestion $question
  *   The question to send a message on.
- * @param string $message
- *   The message to send.
+ * @param array $message
+ *   The message to send. Must contain:
+ *   - from: The name of the sender.
+ *   - message: The message body.
  */
 function _vopros_service_send_message($service, $question, $message) {
   return _vopros_service_do_request($service, '/question/' . $question->uuid . '/send_message', 'POST', $message);
