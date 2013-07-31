@@ -428,9 +428,11 @@ function vopros_service_vopros_question_activity_feed($question, &$feed) {
   }
 }
 
-
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Add forward button to unforwarded questions, and hook into the "contact user"
+ * button for incoming questions.
  */
 function vopros_service_form_vopros_question_handle_question_form_alter(&$form, $form_state) {
   $question = $form['question']['#value'];
