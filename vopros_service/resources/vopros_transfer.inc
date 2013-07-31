@@ -129,7 +129,7 @@ function _vopros_service_resource_send_message($uuid, $from, $message) {
     ->fetchField();
 
   if (empty($type)) {
-    services_error('Message not forwarded.', 422);
+    services_error('Question not forwarded.', 422);
   }
   elseif ($type != 'help') {
     services_error('Wrong type.', 422);
