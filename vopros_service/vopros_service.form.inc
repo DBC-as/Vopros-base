@@ -13,11 +13,8 @@ function vopros_service_message_form($form, &$form_state, $forward) {
 
   $form_state['forward'] = $forward;
 
-  $form['header'] = array(
-    '#markup' => '<h2>' . t('Send message to external service') . '</h2>',
-  );
-
   $form['message'] = array(
+    '#title' => t('New message'),
     '#type' => 'textarea',
   );
 

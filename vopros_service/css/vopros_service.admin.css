@@ -18,8 +18,9 @@
   width: 65%;
 }
 
-.question-messages {
+.question-messages .entity-vopros-service-message {
   border: 1px solid black;
+  margin-bottom: 1em;
 }
 
 .question-messages .from {

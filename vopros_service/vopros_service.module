@@ -347,10 +347,9 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
     return;
   }
 
-  // outgoing help = sidebar
-  // incoming help = main content
-  // * turn_over = don't show anything
-  if ($forward->type == 'help') {
+  // Show messages for outgoing help forwards. Incoming are handled by
+  // vopros_service_vopros_question_activity_feed().
+  if ($forward->type == 'help' && $forward->direction == 'outgoing') {
     $build['#attached']['css'][] = drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css';
 
     $message_ids = db_select('vopros_service_message', 'q')
@@ -360,25 +359,30 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
       ->execute()
       ->fetchCol();
     $messages = entity_load('vopros_service_message', $message_ids);
-    $messages_build = entity_view('vopros_service_message', $messages, $build['#view_mode']);
-    $messages_build += array(
-      '#prefix' => '<div class=question-messages>',
-      '#suffix' => '</div>',
+
+    $messages_build = array(
+      '#type' => 'fieldset',
+      '#title' => t('Service messages'),
       '#weight' => 10,
+      '#attributes' => array(
+        'class' => array('question-messages'),
+      ),
     );
-    if ($forward->direction == 'outgoing') {
-      // For outgoing help, they should be shown in right column.
-      $build['right']['question_messages'] = $messages_build;
-      module_load_include('inc', 'vopros_service', 'vopros_service.form');
-      $build['right']['question_messages_form'] = drupal_get_form('vopros_service_message_form', $forward);
-      $build['right']['question_messages_form']['#weight'] = 11;
+    if ($messages) {
+      $messages_build['questions'] = entity_view('vopros_service_message', $messages, $build['#view_mode']);
     }
     else {
-      // Otherwise just append.
-      $build['question_messages'] = $messages_build;
+      $messages_build['questions'] = array(
+        '#markup' => t('No messages'),
+      );
     }
+
+    module_load_include('inc', 'vopros_service', 'vopros_service.form');
+    $messages_build['new_message'] = drupal_get_form('vopros_service_message_form', $forward);
+
+    // Add to right column.
+    $build['right']['question_messages'] = $messages_build;
   }
-  // dpm($build);
 }
 
 
