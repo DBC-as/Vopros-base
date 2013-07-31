@@ -16,13 +16,8 @@ function _vopros_service_resource_retrieve($type, $data) {
   if (empty($data['uuid']) || !uuid_is_valid($data['uuid'])) {
     services_error('Invalid UUID.', 422);
   }
-  $exists = db_select('vopros_service_question', 'v')
-    ->fields('v', array('uuid'))
-    ->condition('uuid', $data['uuid'])
-    ->range(0, 1)
-    ->execute()
-    ->fetchField();
-  if ($exists) {
+
+  if (vopros_service_forward_load_by_uuid($data['uuid'])) {
     services_error('UUID already used.', 422);
   }
   $question->uuid = $data['uuid'];
