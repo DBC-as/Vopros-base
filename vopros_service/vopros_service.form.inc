@@ -43,23 +43,15 @@ function vopros_service_message_form_validate($form, &$form_state) {
   }
 }
 
-
 /**
  * Submit handler for sending message form.
  */
 function vopros_service_message_form_submit($form, &$form_state) {
   global $user;
 
-  // Try to get a name from a librarian profile.
-  $profile = profile2_load_by_user($user, 'vopros_user_librarian');
-  if ($profile) {
-    $wrapper = entity_metadata_wrapper('profile2', $profile);
-    $name = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value() . ' (' . $profile_wrapper->user->name->value() . ')';
-  }
-  else {
-    // Fall back to username.
-    $name = $user->name;
-  }
+  global $user;
+  $name = vopros_user_name($user);
+
   $data = array(
     'from' => $name,
     'message' => $form_state['values']['message'],
@@ -75,6 +67,110 @@ function vopros_service_message_form_submit($form, &$form_state) {
         'message_uid' => $user->uid,
       ));
     entity_save('vopros_service_message', $question_message);
+    drupal_set_message(t('Message sent.'), 'status');
+  }
+  else {
+    // Assignment on purpose.
+    if ($error = _vopros_service_error()) {
+      $message = t('Could not send message to service, it said: @message', array('@message' => $error));
+    }
+    else {
+      $message = t('Could not send message to service.');
+    }
+    form_error($form, $message);
+  }
+}
+
+/**
+ * Form builder for sending a message back to the asking service..
+ */
+function vopros_service_message_back_form($form, &$form_state, $question) {
+  form_load_include($form_state, 'vopros_service', 'inc', 'vopros_service.form');
+
+  $form_state['question'] = $question;
+
+  $form['#attached'] = array(
+    'css' => array(drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css'),
+  );
+
+  $form['action'] = array(
+    '#prefix' => '<div class="action">',
+    '#suffix' => '</div>',
+  );
+
+  $form['action']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send message'),
+  );
+
+  $form['form'] = array(
+    '#prefix' => '<div class="form">',
+    '#suffix' => '</div>',
+  );
+
+  $form['form']['message'] = array(
+    '#title' => t('Message'),
+    '#type' => 'textarea',
+    '#required' => TRUE,
+  );
+
+  $form['form']['submit'] = $form['action']['submit'];
+  $form['form']['submit']['#attributes'] = array('class' => array('primary-action'));
+
+  $form['form']['cancel'] = array(
+    '#type' => 'markup',
+    '#markup' => l(t('Cancel'), 'admin/vopros/questions/' . $question->question_id),
+  );
+
+  return $form;
+}
+
+/**
+ * Validation handler for back message form.
+ */
+function vopros_service_message_back_form_validate($form, &$form_state) {
+  $forwards = vopros_service_forward_load_by_uuid($form_state['question']->uuid);
+  if (empty($forwards)) {
+    form_error($form, t('Could not load forward.'));
+  }
+  else {
+    foreach ($forwards as $forward) {
+      if ($forward->direction == 'incoming') {
+        break;
+      }
+      form_error($form, t('Could not find any incoming forwards on question.'));
+    }
+
+    $form_state['service'] = vopros_service_machine_name_load($forward->machine_name);
+    if (!$form_state['service']) {
+      form_error($form, t('Could not load service.'));
+    }
+  }
+}
+
+/**
+ * Submit handler for back message form.
+ */
+function vopros_service_message_back_form_submit($form, &$form_state) {
+  global $user;
+  $name = vopros_user_name($user);
+  $data = array(
+    'from' => $name,
+    'message' => $form_state['values']['message'],
+  );
+
+  if (_vopros_service_send_answer($form_state['service'], $form_state['question'], $data)) {
+    $question_message = entity_create('vopros_service_message', array(
+        'question_id' => $form_state['question']->question_id,
+        'service_machine_name' => $form_state['service']->machine_name,
+        'message_type' => 'outgoing',
+        'message_content' => check_plain($form_state['values']['message']),
+        'message_from' => $name,
+        'message_uid' => $user->uid,
+      ));
+    entity_save('vopros_service_message', $question_message);
+    drupal_set_message(t('Message sent.'), 'status');
+    $form_state['redirect'] = 'admin/vopros/questions';
   }
   else {
     // Assignment on purpose.

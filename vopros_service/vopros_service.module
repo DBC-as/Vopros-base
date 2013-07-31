@@ -114,6 +114,15 @@ function vopros_service_menu() {
     'file' => 'vopros_service.pages.inc',
   );
 
+  $items['admin/vopros/questions/%vopros_question/vopros_service_message'] = array(
+    'title' => 'Contact user',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vopros_service_message_back_form', 3),
+    'access callback' => 'vopros_question_access',
+    'access arguments' => array('contact', 3),
+    'file' => 'vopros_service.form.inc',
+  );
+
   return $items;
 }
 
@@ -208,6 +217,13 @@ function vopros_service_services_resources() {
               'source' => array('path' => 0),
               'type' => 'string',
               'description' => 'UUID of the original question.',
+            ),
+            array(
+              'name' => 'from',
+              'optional' => FALSE,
+              'source' => array('data' => 'from'),
+              'type' => 'string',
+              'description' => 'Message from.',
             ),
             array(
               'name' => 'message',
@@ -391,11 +407,9 @@ function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
  */
 function vopros_service_form_vopros_question_handle_question_form_alter(&$form, $form_state) {
   $question = $form['question']['#value'];
-  $forwards = db_select('vopros_service_question', 'v')
-    ->fields('v')
-    ->condition('uuid', $question->uuid)
-    ->execute()
-    ->fetchAllAssoc('type');
+
+  // Check that question is forwarded.
+  $forwards = vopros_service_forward_load_by_uuid($question->uuid);
 
   // For now we only allow forwarding when the question when the question isn't
   // already forwarded. This might be changed later.
@@ -407,6 +421,19 @@ function vopros_service_form_vopros_question_handle_question_form_alter(&$form, 
       '#submit' => array('vopros_service_question_view_form_submit'),
     );
   }
+  elseif ($question->user_answer_preference == 'vopros_service') {
+    // Hook into the contact user button.
+    $form['actions']['contact']['#submit'][] = 'vopros_service_form_vopros_question_contact_user_submit';
+  }
+}
+
+/**
+ * Submit handler for the "contact user" button.
+ *
+ * Redirects to the back message form.
+ */
+function vopros_service_form_vopros_question_contact_user_submit($form, &$form_state) {
+  $form_state['redirect'] = 'admin/vopros/questions/' . $form_state['values']['question']->question_id . '/vopros_service_message';
 }
 
 /**
@@ -518,6 +545,18 @@ function vopros_service_load_multiple($service_ids = FALSE, $conditions = array(
 }
 
 /**
+ * Implements hook_vopros_question_user_answer_preference().
+ *
+ * We define a answer preference called vopros_service for questions that come
+ * from anothe Vopros.
+ */
+function vopros_service_vopros_question_user_answer_preference() {
+  return array(
+    'vopros_service' => t('Vopros Service'),
+  );
+}
+
+/**
  * Implements hook_vopros_question_status_reasons_alter().
  *
  * Add status reasons for handing over question (closed) and reactivated by
@@ -596,6 +635,23 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
  */
 function _vopros_service_send_message($service, $question, $message) {
   return _vopros_service_do_request($service, '/question/' . $question->uuid . '/send_message', 'POST', $message);
+}
+
+/**
+ * Send a question answer/back message to another Vopros installation.
+ *
+ * @param VoprosService $service
+ *   The service to send to.
+ * @param VoprosQuestion $question
+ *   The question to send a message on.
+ * @param array $answer
+ *   The answer to send. Contain:
+ *   - from: The name of the sender.
+ *   - message: The message body.
+ *   - answer: Answer text (optional).
+ */
+function _vopros_service_send_answer($service, $question, $answer) {
+  return _vopros_service_do_request($service, '/question/' . $question->uuid . '/send_answer', 'POST', $answer);
 }
 
 /**
