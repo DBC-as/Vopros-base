@@ -134,16 +134,21 @@ function vopros_service_message_back_form_validate($form, &$form_state) {
     form_error($form, t('Could not load forward.'));
   }
   else {
-    foreach ($forwards as $forward) {
-      if ($forward->direction == 'incoming') {
+    $forward = NULL;
+    foreach ($forwards as $f) {
+      if ($f->direction == 'incoming') {
+        $forward = $f;
         break;
       }
+    }
+    if (!$forward) {
       form_error($form, t('Could not find any incoming forwards on question.'));
     }
-
-    $form_state['service'] = vopros_service_machine_name_load($forward->machine_name);
-    if (!$form_state['service']) {
-      form_error($form, t('Could not load service.'));
+    else {
+      $form_state['service'] = vopros_service_machine_name_load($forward->machine_name);
+      if (!$form_state['service']) {
+        form_error($form, t('Could not load service.'));
+      }
     }
   }
 }
