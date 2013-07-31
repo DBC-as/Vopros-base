@@ -52,6 +52,8 @@ function _vopros_service_resource_retrieve($type, $data) {
   }
   $question->question_usage = check_plain($data['question_usage']);
 
+  $question->qanda_service_name = 'vopros_service_' . $service->service_id;
+
   // Handle message from upstream.
   if (!empty($data['message'])) {
     $question->question_content .= "\n\n-- " . t('Message from forwarding service') . "--\n\n" . check_plain($data['message']);
@@ -91,6 +93,8 @@ function _vopros_service_resource_retrieve($type, $data) {
   }
   else {
     $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
+    // Set answer preference so messages will be returned to the other Vopros.n
+    $question->user_answer_preference = 'vopros_service';
   }
 
   // First save question.
