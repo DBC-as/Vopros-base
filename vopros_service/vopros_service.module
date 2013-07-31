@@ -353,19 +353,13 @@ function vopros_service_current($new = NULL) {
  */
 function vopros_service_vopros_question_view_alter(&$build, $entity_type) {
   $question = $build['#question'];
-  $forward = db_select('vopros_service_question', 'q')
-    ->fields('q')
-    ->condition('uuid', $question->uuid)
-    ->execute()
-    ->fetch();
-
-  if (empty($forward)) {
-    return;
-  }
 
   // Show messages for outgoing help forwards. Incoming are handled by
   // vopros_service_vopros_question_activity_feed().
-  if ($forward->type == 'help' && $forward->direction == 'outgoing') {
+  $forwards = vopros_service_forward_load_by_uuid($question->uuid, array('direction' => 'outgoing', 'type' => 'help'));
+
+  if ($forwards) {
+    $forward = reset($forwards);
     $build['#attached']['css'][] = drupal_get_path('module', 'vopros_service') . '/css/vopros_service.admin.css';
 
     $message_ids = db_select('vopros_service_message', 'q')
@@ -515,11 +509,16 @@ function vopros_service_machine_name_load($machine_name, $reset = FALSE) {
 /**
  * Loads forwards by UUID.
  */
-function vopros_service_forward_load_by_uuid($uuid) {
-  return db_select('vopros_service_question', 'v')
+function vopros_service_forward_load_by_uuid($uuid, $conditions = array()) {
+  $query = db_select('vopros_service_question', 'v')
     ->fields('v')
-    ->condition('uuid', $uuid)
-    ->execute()
+    ->condition('uuid', $uuid);
+
+  foreach ($conditions as $name => $val) {
+    $query->condition($name, $val);
+  }
+
+  return $query->execute()
     ->fetchAll();
 }
 

@@ -129,26 +129,15 @@ function vopros_service_message_back_form($form, &$form_state, $question) {
  * Validation handler for back message form.
  */
 function vopros_service_message_back_form_validate($form, &$form_state) {
-  $forwards = vopros_service_forward_load_by_uuid($form_state['question']->uuid);
+  $forwards = vopros_service_forward_load_by_uuid($form_state['question']->uuid, array('direction' => 'incoming'));
   if (empty($forwards)) {
-    form_error($form, t('Could not load forward.'));
+    form_error($form, t('Could not find any incoming forwards on question.'));
   }
   else {
-    $forward = NULL;
-    foreach ($forwards as $f) {
-      if ($f->direction == 'incoming') {
-        $forward = $f;
-        break;
-      }
-    }
-    if (!$forward) {
-      form_error($form, t('Could not find any incoming forwards on question.'));
-    }
-    else {
-      $form_state['service'] = vopros_service_machine_name_load($forward->machine_name);
-      if (!$form_state['service']) {
-        form_error($form, t('Could not load service.'));
-      }
+    $forward = reset($forwards);
+    $form_state['service'] = vopros_service_machine_name_load($forward->machine_name);
+    if (!$form_state['service']) {
+      form_error($form, t('Could not load service.'));
     }
   }
 }
