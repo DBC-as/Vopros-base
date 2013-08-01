@@ -106,7 +106,8 @@ function _vopros_service_resource_retrieve($type, $data) {
       }
     }
 
-    // @todo should send mail to user, notifying them about the transfer.
+    // Notify user of transfer.
+    _vopros_service_question_takeover_notification($question);
   }
   else {
     $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
