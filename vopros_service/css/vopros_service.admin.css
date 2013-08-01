@@ -37,6 +37,14 @@
   padding: 0.5em;
 }
 
-.question-messages .from .label {
+.question-messages .label {
   font-weight: bold;
+}
+
+.question-messages .entity-vopros-service-message .form-submit {
+  border-radius: 15em;
+  -moz-border-radius: 15em;
+  -webkit-border-radius: 15em;
+  font-size: 1em;
+  padding: 4px 17px;
 }

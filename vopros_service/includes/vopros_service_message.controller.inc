@@ -13,6 +13,7 @@ class VoprosServiceMessageEntityController extends EntityAPIController {
       'question_id' => 0,
       'message_type' => '',
       'message_content' => '',
+      'message_answer' => '',
       'message_from' => '',
       'message_uid' => 0,
       'created' => REQUEST_TIME,
@@ -36,6 +37,17 @@ class VoprosServiceMessageEntityController extends EntityAPIController {
     $content['message_content'] = array(
       '#markup' => $entity->message_content,
     );
+
+    if ($entity->message_answer) {
+      $content['message_answer'] = array(
+        '#prefix' => '<div><span class=label>' . t('Answer') . ':</span>',
+        '#suffix' => '</div>',
+        '#markup' => $entity->message_answer,
+      );
+
+      module_load_include('inc', 'vopros_service', 'vopros_service.form');
+      $content['use_answer'] = drupal_get_form('vopros_service_message_use_answer', $entity);
+    }
 
     return parent::buildContent($entity, $view_mode, $langcode, $content);
   }

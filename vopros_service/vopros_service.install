@@ -259,6 +259,13 @@ function vopros_service_schema() {
         'not null' => TRUE,
         'size' => 'big',
       ),
+      'message_answer' => array(
+        'description' => 'Answer.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'default' => '',
+        'size' => 'big',
+      ),
       'message_from' => array(
         'description' => 'Message sender.',
         'type' => 'varchar',

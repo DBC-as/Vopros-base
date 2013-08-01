@@ -130,22 +130,13 @@ function _vopros_service_resource_send_answer($uuid, $from, $message, $answer = 
 
   $question = vopros_question_load_by_uuid($uuid);
   if ($question) {
-    if ($answer) {
-      // We got an answer. Create a vopros_answer.
-      $answer = vopros_answer_new(array(
-                  'question_id' => $question->question_id,
-                  'author_name' => $from,
-                  'answer_content' => $answer,
-                  'status' => 'active',
-      ));
-      vopros_answer_save($answer);
-    }
     $message = entity_create('vopros_service_message', array(
         'question_id' => $question->question_id,
         'service_machine_name' => $service->machine_name,
         'message_type' => 'incoming',
         'message_content' => check_plain($message),
         'message_from' => check_plain($from),
+        'message_answer' => trim(check_plain($answer)),
       ));
     entity_save('vopros_service_message', $message);
     // Reactivate issue.
