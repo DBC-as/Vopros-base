@@ -680,6 +680,15 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     $data['user_field_of_study'] = $question->user_field_of_study;
     $data['user_library'] = $question->user_library;
     $data['user_answer_preference'] = $question->user_answer_preference;
+
+    $data['vopros_question_attachment'] = array();
+    $wrapper = entity_metadata_wrapper('vopros_question', $question);
+    foreach ($wrapper->vopros_question_attachment->value() as $file) {
+      $data['vopros_question_attachment'][] = array(
+        'name' => $file['filename'],
+        'data' => base64_encode(file_get_contents($file['uri'])),
+      );
+    }
   }
 
   return _vopros_service_do_request($service, '/question/' . $type, 'POST', $data);

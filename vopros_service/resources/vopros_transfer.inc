@@ -84,6 +84,28 @@ function _vopros_service_resource_retrieve($type, $data) {
       $question->user_answer_preference = $data['user_answer_preference'];
     }
 
+    if (!empty($data['vopros_question_attachment'])) {
+      // Use wrapper, to get it to deal with all the field stuff.
+      $question_wrapper = entity_metadata_wrapper('vopros_question', $question);
+
+      foreach ($data['vopros_question_attachment'] as $raw_file) {
+        // Generate a name if none was supplied.
+        $path = !empty($raw_file['name']) ? file_default_scheme() . '://' . $raw_file['name'] : NULL;
+        $data = base64_decode($raw_file['data']);
+        if ($data !== FALSE) {
+          $file = file_save_data($data, $path);
+          if ($file) {
+            $file_data = array(
+              'fid' => $file->fid,
+              'display' => 1,
+              'description' => '',
+            );
+            $question_wrapper->vopros_question_attachment[] = $file_data;
+          }
+        }
+      }
+    }
+
     // @todo should send mail to user, notifying them about the transfer.
   }
   else {
