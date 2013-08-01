@@ -110,7 +110,7 @@ function _vopros_service_resource_retrieve($type, $data) {
   }
   else {
     $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
-    // Set answer preference so messages will be returned to the other Vopros.n
+    // Set answer preference so messages will be returned to the other Vopros.
     $question->user_answer_preference = 'vopros_service';
   }
 
