@@ -263,7 +263,6 @@ function vopros_service_schema() {
         'description' => 'Answer.',
         'type' => 'text',
         'not null' => TRUE,
-        'default' => '',
         'size' => 'big',
       ),
       'message_from' => array(
