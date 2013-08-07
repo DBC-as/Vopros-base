@@ -121,6 +121,12 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#type' => 'submit',
     '#value' => t('Save service'),
     '#weight' => 40,
+    '#validate' => array(
+      'vopros_service_form_validate_save',
+    ),
+    '#submit' => array(
+      'vopros_service_form_submit_save',
+    ),
   );
 
   if ($op != 'add' && $op != 'clone') {
@@ -151,7 +157,7 @@ function vopros_service_form_ajax($form, &$form_state) {
 /**
  * Validate handler for vopros_service_form().
  */
-function vopros_service_form_validate($form, &$form_state) {
+function vopros_service_form_validate_save($form, &$form_state) {
   if (!valid_url($form_state['values']['url'], TRUE)) {
     form_error($form['url'], t('Invalid service URL.'));
   }
@@ -160,7 +166,7 @@ function vopros_service_form_validate($form, &$form_state) {
 /**
  * Submit handler for vopros_service_form().
  */
-function vopros_service_form_submit($form, &$form_state) {
+function vopros_service_form_submit_save($form, &$form_state) {
   $service = $form_state['vopros_service'];
   $service->label = $form_state['values']['label'];
   $service->machine_name = $form_state['values']['machine_name'];

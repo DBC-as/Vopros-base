@@ -115,6 +115,10 @@ function _vopros_service_resource_retrieve($type, $data) {
     $question->user_answer_preference = 'vopros_service';
   }
 
+  // Set the service on the object so other modules can react to service created
+  // questions.
+  $question->vopros_service = $service;
+
   // First save question.
   if (entity_save('vopros_question', $question) === FALSE) {
     services_error('Error while saving question.', 500);
