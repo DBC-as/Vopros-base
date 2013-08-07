@@ -107,7 +107,7 @@ function _vopros_service_resource_retrieve($type, $data) {
     }
 
     // Notify user of transfer.
-    _vopros_service_question_takeover_notification($question);
+    _vopros_service_question_takeover_notification($service, $question);
   }
   else {
     $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
