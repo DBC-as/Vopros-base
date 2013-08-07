@@ -117,7 +117,7 @@ function vopros_service_forward_form($form, &$form_state, $question) {
 function _vopros_service_forward_form_options($services, $type) {
   $options = array();
   foreach ($services as $service) {
-    if (!empty($service->{$type}) && $service->{$type}){
+    if (!empty($service->{$type}) && $service->{$type}) {
       $options[$service->machine_name] = $service->label;
     }
   }
