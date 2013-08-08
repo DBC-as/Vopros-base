@@ -17,6 +17,8 @@ class VoprosAPIEntityController extends EntityAPIController {
    *   in their transaction object.
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
+    $entity->revision_uid = $GLOBALS['user']->uid;
+    $entity->revision_timestamp = REQUEST_TIME;
     if (empty($entity->created)) {
       $entity->created = REQUEST_TIME;
     }
