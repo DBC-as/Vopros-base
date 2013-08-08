@@ -22,8 +22,6 @@ class vopros_user_filter_user_same_agency extends views_handler_filter_boolean_o
     $field = $this->table_alias . '.' . $this->real_field . ' ';
     $or = db_or();
 
-    dpm($field);
-
     if (empty($this->value)) {
       $or->condition($field, '1', '<>');
     }
