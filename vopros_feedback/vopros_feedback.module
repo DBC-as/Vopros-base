@@ -540,10 +540,11 @@ function vopros_feedback_tokens($type, $tokens, array $data = array(), array $op
   if ($type == 'vopros_email' && !empty($data['vopros_email'])) {
     $email = $data['vopros_email'];
     if (in_array('feedback-url', array_keys($tokens))) {
-      $replacements[$tokens['feedback-url']] = url('vopros/feedback/' . $email->email_id . '/' . md5($email->email_id . variable_get('vopros_feedback_secret', '')), array('absolute' => TRUE));
+      $token = $email->email_id . '/' . md5($email->email_id . variable_get('vopros_feedback_secret', ''));
+      $replacements[$tokens['feedback-url']] = url('vopros/feedback/' . $token, array('absolute' => TRUE));
     }
     if (in_array('feedback-token', array_keys($tokens))) {
-      $replacements[$tokens['feedback-token']] = $email->email_id . '/' . md5($email->email_id . variable_get('vopros_feedback_secret', ''));
+      $replacements[$tokens['feedback-token']] = $token;
     }
   }
   return $replacements;
