@@ -19,6 +19,24 @@ function vopros_user_menu() {
 }
 
 /**
+ * Implements hook_field_views_data_alter().
+ *
+ * Adds in another filter on profile user library to limit the view to users
+ * from the same library.
+ */
+function vopros_user_field_views_data_alter(&$data, $field, $module) {
+  if ($module == 'list' && !empty($data['field_data_vopros_user_library'])) {
+    $data['field_data_vopros_user_library']['vopros_user_same_agency'] = array(
+      'group' => t('Profile'),
+      'title' => t('Same library as current user'),
+      'help' => t('Selects users from the same library.'),
+      'filter' => $data['field_data_vopros_user_library']['vopros_user_library_value']['filter'],
+    );
+    $data['field_data_vopros_user_library']['vopros_user_same_agency']['filter']['handler'] = 'vopros_user_filter_user_same_agency';
+  }
+}
+
+/**
  * Settings form for the vopros_user module.
  */
 function vopros_user_settings_form($form, &$form_state) {
