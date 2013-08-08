@@ -473,6 +473,19 @@ function vopros_service_form_vopros_question_handle_question_form_alter(&$form, 
     // Hook into the contact user button.
     $form['actions']['contact']['#submit'][] = 'vopros_service_form_vopros_question_contact_user_submit';
   }
+  elseif ($forwards[0]->direction == 'outgoing') {
+    // Show a banner for outgoing questions.
+    $service = vopros_service_machine_name_load($forwards[0]->machine_name);
+    switch ($forwards[0]->type) {
+      case 'help':
+        drupal_set_message(t("Asked for help at @service ", array('@service' => $service->label)), 'notice');
+        break;
+
+      case 'turn_over':
+        drupal_set_message(t("Handed over to @service ", array('@service' => $service->label)), 'notice');
+        break;
+    }
+  }
 }
 
 /**
