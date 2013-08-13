@@ -91,16 +91,16 @@ function vopros_email_menu() {
     'admin/vopros/emails/%vopros_email' => array(
       'title callback' => 'vopros_email_title',
       'title arguments' => array(3),
-       'page callback' => 'vopros_email_page_view',
-       'page arguments' => array(3),
-       'access callback' => 'vopros_email_access',
-       'access arguments' => array('view'),
-       'file' => 'includes/vopros_email.admin.inc',
+      'page callback' => 'vopros_email_page_view',
+      'page arguments' => array(3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('view'),
+      'file' => 'includes/vopros_email.admin.inc',
     ),
     'admin/vopros/emails/%vopros_email/view' => array(
       'title' => 'View',
-       'type' => MENU_DEFAULT_LOCAL_TASK,
-       'weight' => -10,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
     ),
     'admin/vopros/emails/%vopros_email/delete' => array(
       'title' => 'Delete',
