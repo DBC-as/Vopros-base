@@ -578,11 +578,9 @@ function vopros_email_build_content($email, $view_mode = 'administrator', $langc
     '#view_mode' => $view_mode,
   );
 
-  if ($view_mode == 'question_list') {
-    $email->content['body']['email_content']['#attached'] = array(
-      'js' => array(drupal_get_path('module', 'vopros_email') . '/js/vopros_email.question_feed.js'),
-    );
-  }
+  $email->content['body']['email_content']['#attached'] = array(
+    'js' => array(drupal_get_path('module', 'vopros_email') . '/js/vopros_email.question_feed.js'),
+  );
 
   // Add fields
   field_attach_prepare_view('vopros_email', array($email->email_id => $email), $view_mode, $langcode);
