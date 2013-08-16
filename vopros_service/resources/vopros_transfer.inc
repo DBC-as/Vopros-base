@@ -25,33 +25,33 @@ function _vopros_service_resource_retrieve($type, $data) {
   if (empty($data['question_title'])) {
     services_error('Invalid question_title.', 422);
   }
-  $question->question_title = check_plain($data['question_title']);
+  $question->question_title = $data['question_title'];
 
   if (empty($data['question_content'])) {
     services_error('Invalid question_content.', 422);
   }
-  $question->question_content = check_plain($data['question_content']);
+  $question->question_content = $data['question_content'];
 
   if (empty($data['question_deadline']) || !preg_match('/^-?[0-9]+$/', $data['question_deadline'])) {
     services_error('Invalid question_deadline.', 422);
   }
-  $question->question_deadline = check_plain($data['question_deadline']);
+  $question->question_deadline = $data['question_deadline'];
 
   if (empty($data['question_deadline_timestamp']) || !preg_match('/^[0-9]+$/', $data['question_deadline_timestamp'])) {
     services_error('Invalid question_deadline_timestamp.', 422);
   }
-  $question->question_deadline_timestamp = check_plain($data['question_deadline_timestamp']);
+  $question->question_deadline_timestamp = $data['question_deadline_timestamp'];
 
   if (empty($data['question_usage'])) {
     services_error('Invalid question_usage.', 422);
   }
-  $question->question_usage = check_plain($data['question_usage']);
+  $question->question_usage = $data['question_usage'];
 
   $question->qanda_service_name = 'vopros_service_' . $service->service_id;
 
   // Handle message from upstream.
   if (!empty($data['message'])) {
-    $question->question_content .= "\n\n-- " . t('Message from forwarding service') . "--\n\n" . check_plain($data['message']);
+    $question->question_content .= "\n\n-- " . t('Message from forwarding service') . "--\n\n" . $data['message'];
   }
 
   if ($type == 'turn_over') {
@@ -161,9 +161,9 @@ function _vopros_service_resource_send_answer($uuid, $from, $message, $answer = 
         'question_id' => $question->question_id,
         'service_machine_name' => $service->machine_name,
         'message_type' => 'incoming',
-        'message_content' => check_plain($message),
-        'message_from' => check_plain($from),
-        'message_answer' => trim(check_plain($answer)),
+        'message_content' => $message,
+        'message_from' => $from,
+        'message_answer' => trim($answer),
       ));
     entity_save('vopros_service_message', $message);
     // Reactivate issue.
@@ -203,8 +203,8 @@ function _vopros_service_resource_send_message($uuid, $from, $message) {
         'question_id' => $question->question_id,
         'service_machine_name' => $service->machine_name,
         'message_type' => 'incoming',
-        'message_content' => check_plain($message),
-        'message_from' => check_plain($from),
+        'message_content' => $message,
+        'message_from' => $from,
       ));
     entity_save('vopros_service_message', $message);
     // Reactivate issue.

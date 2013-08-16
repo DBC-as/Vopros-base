@@ -62,7 +62,7 @@ function vopros_service_message_form_submit($form, &$form_state) {
         'question_id' => $form_state['question']->question_id,
         'service_machine_name' => $form_state['service']->machine_name,
         'message_type' => 'outgoing',
-        'message_content' => check_plain($form_state['values']['message']),
+        'message_content' => $form_state['values']['message'],
         'message_from' => $name,
         'message_uid' => $user->uid,
       ));
@@ -158,7 +158,7 @@ function vopros_service_message_back_form_submit($form, &$form_state) {
         'question_id' => $form_state['question']->question_id,
         'service_machine_name' => $form_state['service']->machine_name,
         'message_type' => 'outgoing',
-        'message_content' => check_plain($form_state['values']['message']),
+        'message_content' => $form_state['values']['message'],
         'message_from' => $name,
         'message_uid' => $user->uid,
       ));
@@ -271,8 +271,8 @@ function vopros_service_message_answer_form_submit($form, &$form_state) {
         'question_id' => $form_state['question']->question_id,
         'service_machine_name' => $form_state['service']->machine_name,
         'message_type' => 'outgoing',
-        'message_content' => check_plain($form_state['values']['message']),
-        'message_answer' => trim(check_plain($form_state['values']['answer'])),
+        'message_content' => $form_state['values']['message'],
+        'message_answer' => trim($form_state['values']['answer']),
         'message_from' => $name,
         'message_uid' => $user->uid,
       ));
