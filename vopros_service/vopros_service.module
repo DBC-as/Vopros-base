@@ -478,11 +478,11 @@ function vopros_service_form_vopros_question_handle_question_form_alter(&$form, 
     $service = vopros_service_machine_name_load($forwards[0]->machine_name);
     switch ($forwards[0]->type) {
       case 'help':
-        drupal_set_message(t("Asked for help at @service ", array('@service' => $service->label)), 'notice');
+        drupal_set_message(t("Asked for help at @service ", array('@service' => $service->label)), 'notice', FALSE);
         break;
 
       case 'turn_over':
-        drupal_set_message(t("Handed over to @service ", array('@service' => $service->label)), 'notice');
+        drupal_set_message(t("Handed over to @service ", array('@service' => $service->label)), 'notice', FALSE);
         break;
     }
   }
