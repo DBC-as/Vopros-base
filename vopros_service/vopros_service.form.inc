@@ -221,7 +221,6 @@ function vopros_service_message_answer_form($form, &$form_state, $answer) {
     '#weight' => 100,
   );
 
-
   $form['buttons']['send'] = $form['action']['send'];
   $form['buttons']['send']['#attributes'] = array('class' => array('primary-action'));
 
@@ -279,6 +278,13 @@ function vopros_service_message_answer_form_submit($form, &$form_state) {
       ));
     entity_save('vopros_service_message', $question_message);
     drupal_set_message(t('Answer sent.'), 'status');
+
+    // Set question to answered.
+    $question = $form_state['question'];
+    $question->question_status = 'answered';
+    $question->question_status_reason = '';
+    $question->save();
+
     $form_state['redirect'] = 'admin/vopros/questions';
   }
   else {
