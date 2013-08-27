@@ -109,6 +109,7 @@ function vopros_email_menu() {
       'access callback' => 'vopros_email_access',
       'access arguments' => array('delete'),
       'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
     ),
     'admin/vopros/emails/%vopros_email/convert' => array(
       'title' => 'Convert',
@@ -117,6 +118,7 @@ function vopros_email_menu() {
       'access callback' => 'vopros_email_access',
       'access arguments' => array('edit'),
       'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
     ),
     'admin/vopros/questions/%vopros_question/email' => array(
       'title' => 'Contact user',
