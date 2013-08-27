@@ -462,12 +462,26 @@ function vopros_service_form_vopros_question_handle_question_form_alter(&$form, 
   // For now we only allow forwarding when the question when the question isn't
   // already forwarded. This might be changed later.
   if (empty($forwards)) {
-    $form['actions']['forward'] = array(
-      '#type' => 'submit',
-      '#value' => t('Forward question'),
-      '#weight' => 1,
-      '#submit' => array('vopros_service_question_view_form_submit'),
-    );
+    $forward = TRUE;
+    // If the question was received on SMS, we'll need to check that there's at
+    // least one help or SMS enabled turnover service.
+    if ($question->user_answer_preference == 'sms') {
+      $query = db_select('vopros_service', 'v')
+        ->fields('v')
+        ->where('v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over_sms = 1')
+        ->countQuery();
+      if ($query->execute()->fetchField() < 1) {
+        $forward = FALSE;
+      }
+    }
+    if ($forward) {
+      $form['actions']['forward'] = array(
+        '#type' => 'submit',
+        '#value' => t('Forward question'),
+        '#weight' => 1,
+        '#submit' => array('vopros_service_question_view_form_submit'),
+      );
+    }
   }
   elseif ($question->user_answer_preference == 'vopros_service') {
     // Hook into the contact user button.
@@ -701,6 +715,34 @@ function vopros_service_form_vopros_email_settings_form_alter(&$form, &$form_sta
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add a template for our turn_over sms notification.
+ */
+function vopros_service_form_vopros_sms_settings_form_alter(&$form, &$form_state) {
+  $form['vopros_service'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Service takeover'),
+    '#description' => t('SMS sendt when a question is forwarded from another Vopros installation.'),
+  );
+
+  $form['vopros_service']['vopros_service_take_over_question_sms'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Take over message'),
+    '#description' => t('Macro used when taking over a question.'),
+    '#default_value' => variable_get('vopros_service_take_over_question_sms', ''),
+  );
+
+  $form['vopros_service']['tokens'] = array(
+    '#markup' => theme('token_tree', array(
+                 'token_types' => array('vopros_question', 'vopros_service'),
+                 'global_types' => FALSE,
+               )),
+    '#weight' => 2,
+  );
+}
+
+/**
  * Forward a question to another Vopros installation.
  *
  * @param VoprosService $service
@@ -727,7 +769,7 @@ function _vopros_service_forward_question($service, $type, $question, $message) 
     'message' => $message,
   );
 
-  if ($type == 'turn_over') {
+  if ($type != 'help') {
     // Add in user data.
     $data['user_name'] = $question->user_name;
     $data['user_email'] = $question->user_email;
@@ -837,31 +879,50 @@ function _vopros_service_error($new = NULL) {
  * Notify user abuot question transfer.
  */
 function _vopros_service_question_takeover_notification($service, $question) {
-  // Only email is currently supported. And don't bother if the email address
-  // doesn't validate.
-  if ($question->user_answer_preference == 'mail' && valid_email_address($question->user_email)) {
-    $token_objects = array(
-      'vopros_question' => $question,
-      'vopros_service' => $service,
-    );
-    $subject = variable_get('vopros_service_take_over_question_subject', '');
-    $subject = token_replace($subject, $token_objects, array('sanitize' => FALSE));
+  $token_objects = array(
+    'vopros_question' => $question,
+    'vopros_service' => $service,
+  );
+  switch ($question->user_answer_preference) {
+    case 'mail':
+      // Don't bother if the email address doesn't validate.
+      if (valid_email_address($question->user_email)) {
+        $subject = variable_get('vopros_service_take_over_question_subject', '');
+        $subject = token_replace($subject, $token_objects, array('sanitize' => FALSE));
 
-    $body = variable_get('vopros_service_take_over_question_body', '');
-    $body = token_replace($body, $token_objects, array('sanitize' => FALSE));
+        $body = variable_get('vopros_service_take_over_question_body', '');
+        $body = token_replace($body, $token_objects, array('sanitize' => FALSE));
 
-    $email = vopros_email_new(array(
-               'question_id' => $question->question_id,
-               'uid' => $GLOBALS['user']->uid,
-               'email_content' => $body,
-               'subject' => $subject,
-               'email' => $question->user_email,
-             ));
-    vopros_email_save($email);
-    if ($email->status != 'sent') {
-      vopros_email_send($email);
-      $email->status = 'sent';
-      vopros_email_save($email);
-    }
+        $email = vopros_email_new(array(
+                   'question_id' => $question->question_id,
+                   'uid' => $GLOBALS['user']->uid,
+                   'email_content' => $body,
+                   'subject' => $subject,
+                   'email' => $question->user_email,
+                 ));
+        vopros_email_save($email);
+        if ($email->status != 'sent') {
+          vopros_email_send($email);
+          $email->status = 'sent';
+          vopros_email_save($email);
+        }
+      }
+      break;
+
+    case 'sms':
+      if (!empty($question->user_mobile_phone)) {
+        $body = variable_get('vopros_service_take_over_question_sms', '');
+        $body = token_replace($body, $token_objects, array('sanitize' => FALSE));
+
+        $sms = vopros_sms_new(array(
+                   'question_id' => $question->question_id,
+                   'uid' => $GLOBALS['user']->uid,
+                   'content' => $body,
+                   'phone_number' => $question->user_mobile_phone,
+                 ));
+        vopros_sms_save($sms);
+        vopros_sms_send($sms);
+      }
+      break;
   }
 }

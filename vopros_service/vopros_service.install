@@ -73,6 +73,13 @@ function vopros_service_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'allow_outgoing_turn_over_sms' => array(
+        'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'created' => array(
         'description' => 'The Unix timestamp when the vopros_service was created.',
         'type' => 'int',
@@ -167,6 +174,13 @@ function vopros_service_schema() {
       ),
       'allow_outgoing_turn_over' => array(
         'description' => 'Boolean indicator, indicating if outgoing requests that turn over the question should be allowed.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'allow_outgoing_turn_over_sms' => array(
+        'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => TRUE,
@@ -291,4 +305,24 @@ function vopros_service_schema() {
   );
 
   return $schema;
+}
+
+/**
+ * Add turn over SMS option.
+ */
+function vopros_service_update_7001() {
+  db_add_field('vopros_service', 'allow_outgoing_turn_over_sms', array(
+      'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
+  db_add_field('vopros_service_revision', 'allow_outgoing_turn_over_sms', array(
+      'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
 }

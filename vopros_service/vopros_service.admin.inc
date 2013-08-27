@@ -106,12 +106,16 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
   if ($service->allow_outgoing_turn_over) {
     $allow_outgoing_types['turn_over'] = 'turn_over';
   }
+  if ($service->allow_outgoing_turn_over_sms) {
+    $allow_outgoing_types['turn_over_sms'] = 'turn_over_sms';
+  }
   $form['allow_outgoing_type'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Outgoing service type'),
     '#options' => array(
       'help' => t('Ask for help'),
       'turn_over' => t('Turn over questions'),
+      'turn_over_sms' => t('Turn over SMS questions'),
     ),
     '#default_value' => $allow_outgoing_types,
   );
@@ -174,8 +178,9 @@ function vopros_service_form_submit_save($form, &$form_state) {
   $service->auth_key = $form_state['values']['auth_key'];
   $service->auth_type = $form_state['values']['auth_type'];
   $service->allow_ingoing = $form_state['values']['allow_ingoing'];
-  $service->allow_outgoing_help = in_array('help', $form_state['values']['allow_outgoing_type']);
-  $service->allow_outgoing_turn_over = in_array('turn_over', $form_state['values']['allow_outgoing_type']);
+  $service->allow_outgoing_help = !empty($form_state['values']['allow_outgoing_type']['help']);
+  $service->allow_outgoing_turn_over = !empty($form_state['values']['allow_outgoing_type']['turn_over']);
+  $service->allow_outgoing_turn_over_sms = !empty($form_state['values']['allow_outgoing_type']['turn_over_sms']);
   $service->save();
 
   $form_state['redirect'] = 'admin/vopros/services';

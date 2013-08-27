@@ -54,7 +54,12 @@ function _vopros_service_resource_retrieve($type, $data) {
     $question->question_content .= "\n\n-- " . t('Message from forwarding service') . "--\n\n" . $data['message'];
   }
 
-  if ($type == 'turn_over') {
+  if ($type == 'help') {
+    $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
+    // Set answer preference so messages will be returned to the other Vopros.
+    $question->user_answer_preference = 'vopros_service';
+  }
+  else {
     // I believe most of these are optional.
     if (!empty($data['user_name'])) {
       $question->user_name = $data['user_name'];
@@ -105,14 +110,6 @@ function _vopros_service_resource_retrieve($type, $data) {
         }
       }
     }
-
-    // Notify user of transfer.
-    _vopros_service_question_takeover_notification($service, $question);
-  }
-  else {
-    $question->user_name = t('Request for assistance from @service', array('@service' => $service->label));
-    // Set answer preference so messages will be returned to the other Vopros.
-    $question->user_answer_preference = 'vopros_service';
   }
 
   // Set the service on the object so other modules can react to service created
@@ -132,6 +129,11 @@ function _vopros_service_resource_retrieve($type, $data) {
         'uuid' => $question->uuid,
       ))
     ->execute();
+
+  // Finally notify user of transfer.
+  if ($type != 'help') {
+    _vopros_service_question_takeover_notification($service, $question);
+  }
 }
 
 /**

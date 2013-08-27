@@ -42,14 +42,20 @@ function vopros_service_forward_form($form, &$form_state, $question) {
     '#view_mode' => 'full',
   );
 
+  $options = array(
+    'help' => t('Ask for help'),
+  );
+  if ($question->user_answer_preference == 'sms') {
+    $options['turn_over_sms'] = t('Turn over the question');
+  }
+  else {
+    $options['turn_over'] = t('Turn over the question');
+  }
   // @todo Really, we should filter out types without any services.
   $form['form']['send_type'] = array(
     '#type' => 'radios',
     '#title' => t('Way of sending'),
-    '#options' => array(
-      'help' => t('Ask for help'),
-      'turn_over' => t('Turn over the question'),
-    ),
+    '#options' => $options,
     '#required' => TRUE,
     '#ajax' => array(
       'callback' => 'vopros_service_forward_form_ajax',
@@ -60,9 +66,15 @@ function vopros_service_forward_form($form, &$form_state, $question) {
   );
 
   // Find service definitions.
+  if ($question->user_answer_preference == 'sms') {
+    $where = 'v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over_sms = 1';
+  }
+  else {
+    $where = 'v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over = 1';
+  }
   $query = db_select('vopros_service', 'v')
     ->fields('v')
-    ->where('v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over = 1')
+    ->where($where)
     ->orderBy('label');
 
   $form_state['services'] = $query->execute()->fetchAllAssoc('machine_name');
@@ -71,10 +83,17 @@ function vopros_service_forward_form($form, &$form_state, $question) {
    * Show the selector initially with all possible options, so core validation
    * can see them on submit.
    */
+  $options = _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help');
+  if ($question->user_answer_preference == 'sms') {
+    $options += _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over_sms');
+  }
+  else {
+    $options += _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over');
+  }
   $form['form']['service'] = array(
     '#type' => 'select',
     '#title' => t('Service'),
-    '#options' => _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help') + _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over'),
+    '#options' => $options,
     '#required' => TRUE,
     '#prefix' => '<div id="service-options">',
     '#suffix' => '</div>',

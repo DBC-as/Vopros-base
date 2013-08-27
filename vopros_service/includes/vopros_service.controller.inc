@@ -18,8 +18,8 @@ class VoprosServiceEntityController extends VoprosAPIEntityController {
       'allow_ingoing' => FALSE,
       'allow_outgoing_help' => FALSE,
       'allow_outgoing_turn_over' => FALSE,
+      'allow_outgoing_turn_over_sms' => FALSE,
     );
     return parent::create($values);
   }
 }
-
