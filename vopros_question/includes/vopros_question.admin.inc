@@ -962,13 +962,7 @@ function vopros_question_frontend_save_submit(&$form, &$form_state) {
  * Form for notifying a user about a question.
  */
 function vopros_question_notify_user_form($form, &$form_state, $question) {
-  $profiles = profile2_load_multiple(FALSE, array('type' => 'vopros_user_librarian'));
-  $options = array();
-  foreach ($profiles as $profile) {
-    $profile_wrapper = entity_metadata_wrapper('profile2', $profile);
-    $options[$profile->uid] = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value();
-  }
-
+  $options = vopros_user_get_librarians();
   asort($options);
 
   $form['uid'] = array(

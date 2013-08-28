@@ -30,11 +30,7 @@ function vopros_search_views_data_alter(&$data) {
   if (!empty($data['search_api_index_vopros_answer_question']['user']['filter'])) {
     $data['search_api_index_vopros_answer_question']['user']['filter']['handler'] = 'SearchApiViewsHandlerFilterOptions';
     $profiles = profile2_load_multiple(FALSE, array('type' => 'vopros_user_librarian'));
-    $options = array();
-    foreach ($profiles as $profile) {
-      $profile_wrapper = entity_metadata_wrapper('profile2', $profile);
-      $options[$profile->uid] = $profile_wrapper->vopros_user_first_name->value() . ' ' . $profile_wrapper->vopros_user_last_name->value() . ' (' . $profile_wrapper->user->name->value() . ')';
-    }
+    $options = vopros_user_get_librarians();
     // Sort the options.
     asort($options);
     $data['search_api_index_vopros_answer_question']['user']['filter']['options'] = $options;
@@ -165,5 +161,3 @@ function vopros_search_enable() {
     search_api_index_insert($values);
   }
 }
-
-
