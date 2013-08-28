@@ -27,13 +27,13 @@ function vopros_email_settings_form($form, &$form_state) {
       '#title' => $value,
       '#description' => t('Setup macros used for sending email.'),
     );
-    
+
     $form['contact'][$key]['vopros_email_subject_macro_' . $key] = array(
       '#type' => 'textfield',
       '#title' => t('Subject.'),
       '#default_value' => variable_get('vopros_email_subject_macro_' . $key, ''),
     );
-    
+
     $form['contact'][$key]['vopros_email_macro_' . $key] = array(
       '#type' => 'textarea',
       '#title' => t('Mail body.'),
@@ -486,7 +486,7 @@ function vopros_email_transfer_form($form, &$form_state, $email) {
   $form['#validate'] = array('vopros_question_question_form_validate');
   $form['#submit'] = array('vopros_question_question_form_submit', 'vopros_email_transfer_form_submit');
 
-  return $form; 
+  return $form;
 }
 
 /**
