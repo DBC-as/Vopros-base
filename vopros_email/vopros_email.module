@@ -120,6 +120,15 @@ function vopros_email_menu() {
       'file' => 'includes/vopros_email.admin.inc',
       'type' => MENU_LOCAL_ACTION,
     ),
+    'admin/vopros/emails/%vopros_email/forward' => array(
+      'title' => 'Forward',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_forward_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
+    ),
     'admin/vopros/questions/%vopros_question/email' => array(
       'title' => 'Contact user',
       'page callback' => 'drupal_get_form',
@@ -451,6 +460,20 @@ function vopros_email_mail($key, &$message, $params) {
       // Mark the end of the email.
       $body .= "--$trenner--";
       $message['body'][] = $body;
+      break;
+
+    case 'forward_email':
+      $email = $params['email'];
+      $message['subject'] = t('[@site] FWD: @subject', array('@site' => variable_get('site_name', 'Vopros'), '@subject' => $email->subject));
+      if ($params['message']) {
+        $message['body'][] = $params['message'];
+      }
+
+      $message['body'][] = t('------ Forwarded by @user fra @site ------', array('@site' => variable_get('site_name', 'Vopros'), '@user' => (!empty($params['user']) ? $params['user'] : 'unknown')));
+
+      $message['body'][] = '';
+      $message['body'][] = $email->email_content;
+      break;
   }
 }
 

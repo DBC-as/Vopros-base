@@ -456,6 +456,57 @@ function vopros_email_convert_to_question_form_submit(&$form, &$form_state) {
 }
 
 /**
+ * Form for forwarding a mail to another user.
+ */
+function vopros_email_forward_form($form, &$form_state, $email) {
+  $options = vopros_user_get_librarians();
+  asort($options);
+
+  $form_state['email'] = $email;
+
+  $form['uid'] = array(
+    '#type' => 'select',
+    '#title' => t('User'),
+    '#description' => t('Select the user you want to forward the mail to.'),
+    '#required' => TRUE,
+    '#options' => $options,
+  );
+
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#description' => t('An extra message to append to the mail.'),
+  );
+
+  $form['forward'] = array(
+    '#type' => 'submit',
+    '#value' => t('forward'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for forwarding.
+ */
+function vopros_email_forward_form_submit($form, &$form_state) {
+  $email = $form_state['email'];
+  $account = user_load($form_state['values']['uid']);
+
+  $form_state['redirect'] = 'admin/vopros/emails/' . $email->email_id;
+
+  if ($account) {
+    $mail = array(
+      'email' => $email,
+      'message' => $form_state['values']['message'],
+      'user' => vopros_user_name(),
+    );
+    drupal_mail('vopros_email', 'forward_email', $account->mail, NULL, $mail);
+    drupal_set_message(t("Email forwarded."));
+  }
+}
+
+/**
  * Form for transferring an email from one question to another
  */
 function vopros_email_transfer_form($form, &$form_state, $email) {
