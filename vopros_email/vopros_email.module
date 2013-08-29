@@ -464,6 +464,7 @@ function vopros_email_mail($key, &$message, $params) {
 
     case 'forward_email':
       $email = $params['email'];
+      $message['headers']['Reply-To'] = $email->email;
       $message['subject'] = t('[@site] FWD: @subject', array('@site' => variable_get('site_name', 'Vopros'), '@subject' => $email->subject));
       if ($params['message']) {
         $message['body'][] = $params['message'];
