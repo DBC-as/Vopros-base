@@ -59,7 +59,7 @@ function vopros_base_default_environment_indicator_environment() {
   $environment->name = 'Forsk';
   $environment->regexurl = 'forsk.biblioteksvagten.dk';
   $environment->settings = array(
-    'color' => '#9a6b00',
+    'color' => '#004371',
     'weight' => '',
     'position' => 'top',
     'fixed' => 0,
