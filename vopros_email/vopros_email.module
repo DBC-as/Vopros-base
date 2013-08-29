@@ -91,16 +91,16 @@ function vopros_email_menu() {
     'admin/vopros/emails/%vopros_email' => array(
       'title callback' => 'vopros_email_title',
       'title arguments' => array(3),
-       'page callback' => 'vopros_email_page_view',
-       'page arguments' => array(3),
-       'access callback' => 'vopros_email_access',
-       'access arguments' => array('view'),
-       'file' => 'includes/vopros_email.admin.inc',
+      'page callback' => 'vopros_email_page_view',
+      'page arguments' => array(3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('view'),
+      'file' => 'includes/vopros_email.admin.inc',
     ),
     'admin/vopros/emails/%vopros_email/view' => array(
       'title' => 'View',
-       'type' => MENU_DEFAULT_LOCAL_TASK,
-       'weight' => -10,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
     ),
     'admin/vopros/emails/%vopros_email/delete' => array(
       'title' => 'Delete',
@@ -109,6 +109,7 @@ function vopros_email_menu() {
       'access callback' => 'vopros_email_access',
       'access arguments' => array('delete'),
       'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
     ),
     'admin/vopros/emails/%vopros_email/convert' => array(
       'title' => 'Convert',
@@ -117,6 +118,16 @@ function vopros_email_menu() {
       'access callback' => 'vopros_email_access',
       'access arguments' => array('edit'),
       'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
+    ),
+    'admin/vopros/emails/%vopros_email/forward' => array(
+      'title' => 'Forward',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('vopros_email_forward_form', 3),
+      'access callback' => 'vopros_email_access',
+      'access arguments' => array('edit'),
+      'file' => 'includes/vopros_email.admin.inc',
+      'type' => MENU_LOCAL_ACTION,
     ),
     'admin/vopros/questions/%vopros_question/email' => array(
       'title' => 'Contact user',
@@ -257,6 +268,16 @@ function vopros_email_permission() {
 
   return $permissions;
 }
+
+/**
+ * Implements hook_vopros_question_user_answer_preference().
+ */
+function vopros_email_vopros_question_user_answer_preference() {
+  return array(
+    'mail' => t('Email'),
+  );
+}
+
 
 /**
  * Checks email access for various operations.
@@ -417,7 +438,7 @@ function vopros_email_mail($key, &$message, $params) {
       $body .= $email->email_content . "\n"; // Message goes here
       $body .= "\n\n";
       $body .= "\n\n";
-      
+
       $email_wrapper = entity_metadata_wrapper('vopros_email', $email);
 
       foreach ($email_wrapper->vopros_email_attachment as $file) {
@@ -439,6 +460,21 @@ function vopros_email_mail($key, &$message, $params) {
       // Mark the end of the email.
       $body .= "--$trenner--";
       $message['body'][] = $body;
+      break;
+
+    case 'forward_email':
+      $email = $params['email'];
+      $message['headers']['Reply-To'] = $email->email;
+      $message['subject'] = t('[@site] FWD: @subject', array('@site' => variable_get('site_name', 'Vopros'), '@subject' => $email->subject));
+      if ($params['message']) {
+        $message['body'][] = $params['message'];
+      }
+
+      $message['body'][] = t('------ Forwarded by @user fra @site ------', array('@site' => variable_get('site_name', 'Vopros'), '@user' => (!empty($params['user']) ? $params['user'] : 'unknown')));
+
+      $message['body'][] = '';
+      $message['body'][] = $email->email_content;
+      break;
   }
 }
 
@@ -568,11 +604,9 @@ function vopros_email_build_content($email, $view_mode = 'administrator', $langc
     '#view_mode' => $view_mode,
   );
 
-  if ($view_mode == 'question_list') {
-    $email->content['body']['email_content']['#attached'] = array(
-      'js' => array(drupal_get_path('module', 'vopros_email') . '/js/vopros_email.question_feed.js'),
-    );
-  }
+  $email->content['body']['email_content']['#attached'] = array(
+    'js' => array(drupal_get_path('module', 'vopros_email') . '/js/vopros_email.question_feed.js'),
+  );
 
   // Add fields
   field_attach_prepare_view('vopros_email', array($email->email_id => $email), $view_mode, $langcode);

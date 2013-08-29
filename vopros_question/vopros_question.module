@@ -516,10 +516,18 @@ function vopros_question_load($question_id, $revision_id = NULL, $reset = FALSE)
 }
 
 /**
+ * Load a question by UUID.
+ */
+function vopros_question_load_by_uuid($uuid) {
+  $questions = vopros_question_load_multiple(FALSE, array('uuid' => $uuid), FALSE);
+  return $questions ? reset($questions) : FALSE;
+}
+
+/**
  * Loads an revision of a question.
  */
 function vopros_question_revision_load($revision_id) {
-  $questions = vopros_question_load_multiple(array(), array('revision_id' => $revision_id), FALSE);
+  $questions = vopros_question_load_multiple(FALSE, array('revision_id' => $revision_id), FALSE);
   return $questions ? reset($questions) : FALSE;
 }
 
@@ -561,7 +569,7 @@ function vopros_question_revision_list($question) {
  * @return
  *   An array of question objects indexed by question_id.
  */
-function vopros_question_load_multiple($question_ids = array(), $conditions = array(), $reset = FALSE) {
+function vopros_question_load_multiple($question_ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load('vopros_question', $question_ids, $conditions, $reset);
 }
 
@@ -933,12 +941,18 @@ function _vopros_question_usage() {
 }
 
 function _vopros_question_user_answer_preference() {
+  return module_invoke_all('vopros_question_user_answer_preference');
+}
+
+/**
+ * Implements hook_vopros_question_user_answer_preference().
+ */
+function vopros_question_vopros_question_user_answer_preference() {
   return array(
-    'mail' => t('Email'),
-    'sms' => t('SMS'),
     'telephone' => t('Telephone'),
   );
 }
+
 
 /**
  * Utility function to get the question usage options
@@ -1027,6 +1041,7 @@ function _vopros_question_qanda_serice_options() {
       $options[$option[0]] = $option[1];
     }
   }
+  drupal_alter('vopros_question_qanda_serice_options', $options);
   return $options;
 }
 

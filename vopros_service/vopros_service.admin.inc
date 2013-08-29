@@ -19,39 +19,6 @@ class VoprosServiceUIController extends VoprosUIController {
 }
 
 /**
- * UI controller class for the admin interface.
- */
-class VoprosServiceMessageUIController extends VoprosUIController {
-  /**
-   * Overrides hook_menu() defaults.
-   */
-  public function hook_menu() {
-    $items = parent::hook_menu();
-    $items[$this->path]['description'] = 'Display a list of vopros service message.';
-    unset($items[$this->path. '/add']);
-    unset($items[$this->path. '/manage/%entity_object']);
-    unset($items[$this->path. '/manage/%entity_object/edit']);
-    unset($items[$this->path. '/manage/%entity_object/clone']);
-    unset($items[$this->path. '/manage/%entity_object/%']);
-    return $items;
-  }
-
-  /**
-   * Generates the row for the passed entity and may be overridden in order to
-   * customize the rows.
-   *
-   * @param $additional_cols
-   *   Additional columns to be added after the entity label column.
-   */
-  protected function overviewTableRow($conditions, $id, $entity, $additional_cols = array()) {
-    $row = parent::overviewTableRow($conditions, $id, $entity, $additional_cols);
-    array_pop($row);
-    array_pop($row);
-    return $row;
-  }
-}
-
-/**
  * Generates the profile type editing form.
  */
 function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
@@ -132,22 +99,25 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#default_value' => $service->allow_ingoing,
   );
 
-  $current_type = '';
+  $allow_outgoing_types = array();
   if ($service->allow_outgoing_help) {
-    $current_type = 'help';
+    $allow_outgoing_types['help'] = 'help';
   }
-  elseif ($service->allow_outgoing_turn_over) {
-    $current_type = 'turn_over';
+  if ($service->allow_outgoing_turn_over) {
+    $allow_outgoing_types['turn_over'] = 'turn_over';
+  }
+  if ($service->allow_outgoing_turn_over_sms) {
+    $allow_outgoing_types['turn_over_sms'] = 'turn_over_sms';
   }
   $form['allow_outgoing_type'] = array(
-    '#type' => 'radios',
+    '#type' => 'checkboxes',
     '#title' => t('Outgoing service type'),
     '#options' => array(
-      '' => t('None'),
       'help' => t('Ask for help'),
       'turn_over' => t('Turn over questions'),
+      'turn_over_sms' => t('Turn over SMS questions'),
     ),
-    '#default_value' => $current_type,
+    '#default_value' => $allow_outgoing_types,
   );
 
   $form['actions'] = array('#type' => 'actions');
@@ -155,12 +125,18 @@ function vopros_service_form($form, &$form_state, $service, $op = 'edit') {
     '#type' => 'submit',
     '#value' => t('Save service'),
     '#weight' => 40,
+    '#validate' => array(
+      'vopros_service_form_validate_save',
+    ),
+    '#submit' => array(
+      'vopros_service_form_submit_save',
+    ),
   );
 
   if ($op != 'add' && $op != 'clone') {
     $form['actions']['delete'] = array(
       '#type' => 'submit',
-      '#value' => t('Delete profile type'),
+      '#value' => t('Delete service'),
       '#weight' => 45,
       '#limit_validation_errors' => array(),
       '#submit' => array('vopros_service_form_submit_delete'),
@@ -185,7 +161,7 @@ function vopros_service_form_ajax($form, &$form_state) {
 /**
  * Validate handler for vopros_service_form().
  */
-function vopros_service_form_validate($form, &$form_state) {
+function vopros_service_form_validate_save($form, &$form_state) {
   if (!valid_url($form_state['values']['url'], TRUE)) {
     form_error($form['url'], t('Invalid service URL.'));
   }
@@ -194,7 +170,7 @@ function vopros_service_form_validate($form, &$form_state) {
 /**
  * Submit handler for vopros_service_form().
  */
-function vopros_service_form_submit($form, &$form_state) {
+function vopros_service_form_submit_save($form, &$form_state) {
   $service = $form_state['vopros_service'];
   $service->label = $form_state['values']['label'];
   $service->machine_name = $form_state['values']['machine_name'];
@@ -202,8 +178,9 @@ function vopros_service_form_submit($form, &$form_state) {
   $service->auth_key = $form_state['values']['auth_key'];
   $service->auth_type = $form_state['values']['auth_type'];
   $service->allow_ingoing = $form_state['values']['allow_ingoing'];
-  $service->allow_outgoing_help = ($form_state['values']['allow_outgoing_type'] == 'help');
-  $service->allow_outgoing_turn_over = ($form_state['values']['allow_outgoing_type'] == 'turn_over');
+  $service->allow_outgoing_help = !empty($form_state['values']['allow_outgoing_type']['help']);
+  $service->allow_outgoing_turn_over = !empty($form_state['values']['allow_outgoing_type']['turn_over']);
+  $service->allow_outgoing_turn_over_sms = !empty($form_state['values']['allow_outgoing_type']['turn_over_sms']);
   $service->save();
 
   $form_state['redirect'] = 'admin/vopros/services';

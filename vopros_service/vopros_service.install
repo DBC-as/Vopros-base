@@ -73,6 +73,13 @@ function vopros_service_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'allow_outgoing_turn_over_sms' => array(
+        'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'created' => array(
         'description' => 'The Unix timestamp when the vopros_service was created.',
         'type' => 'int',
@@ -172,6 +179,13 @@ function vopros_service_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'allow_outgoing_turn_over_sms' => array(
+        'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'log' => array(
         'description' => 'The log entry explaining the changes in this version.',
         'type' => 'text',
@@ -204,74 +218,111 @@ function vopros_service_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-      'type' => array(
-        'description' => 'The type service "incoming_help", "incoming_turn_over" "outgoing_help", "outgoing_turn_over, etc".',
+      'direction' => array(
+        'description' => 'The direction of the forward, "incoming" or "outgoing"',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
       ),
-
+      'type' => array(
+        'description' => 'The type service "help" or "turn_over".',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
       'uuid' => uuid_schema_field_definition(),
     ),
     'primary key' => array('uuid', 'type', 'machine_name'),
     'indexes' => array(
       'machine_name' => array('machine_name'),
     ),
-
   );
 
+  // Fix name of uuid field.
   $schema['vopros_service_question']['fields']['uuid']['description'] = 'The UUID of the original question.';
 
-  // Service messages is special in the way that they can only be created, but
-  // not edited. The reason is that message is sent to an external service.
+  // Not versioned either.
   $schema['vopros_service_message'] = array(
-    'description' => 'Table for storing vopros service messages, which are a way of communicating between vopros services.',
+    'description' => 'Table for inter-service messages.',
     'fields' => array(
-      'message_id' => array(
-        'description' => 'The primary identifier for a vopros service.',
+      'service_message_id' => array(
+        'description' => 'The primary identifier for a message.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
+      'question_id' => array(
+        'description' => 'The question the message is attached to.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'service_machine_name' => array(
+        'description' => 'The machine name of the service used.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'message_type' => array(
+        'description' => 'Message type, "incoming" or "outgoing".',
+        'type' => 'varchar',
+        'length' => '255',
+      ),
       'message_content' => array(
-        'description' => 'The actual content of the message.',
+        'description' => 'The message body.',
         'type' => 'text',
         'not null' => TRUE,
         'size' => 'big',
       ),
-      'answer_id' => array(
-        'description' => 'Reference to the {vopros_answer}.answer_id of the answer that is sent along.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'default' => 0,
+      'message_answer' => array(
+        'description' => 'Answer.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
       ),
-      'sender_service_id' => array(
-        'description' => 'Reference to the {vopros_service}.service_id of the service that sent the message.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'default' => 0,
+      'message_from' => array(
+        'description' => 'Message sender.',
+        'type' => 'varchar',
+        'length' => '255',
       ),
-      'receiver_service_id' => array(
-        'description' => 'Reference to the {vopros_service}.service_id of the service that received the message.',
+      'message_uid' => array(
+        'description' => 'UID of message sender, if outgoing.',
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
       ),
       'created' => array(
-        'description' => 'The Unix timestamp when the vopros_service was created.',
+        'description' => 'The Unix timestamp when the message was created/received.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
     ),
-    'primary key' => array('message_id'),
+    'primary key' => array('service_message_id'),
     'indexes' => array(
-      'answer_id' => array('answer_id'),
-      'sender_service_id' => array('sender_service_id'),
-      'receiver_service_id' => array('receiver_service_id'),
+      'question_id' => array('question_id'),
+      'service_machine_name' => array('service_machine_name'),
     ),
   );
 
   return $schema;
 }
 
+/**
+ * Add turn over SMS option.
+ */
+function vopros_service_update_7001() {
+  db_add_field('vopros_service', 'allow_outgoing_turn_over_sms', array(
+      'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
+  db_add_field('vopros_service_revision', 'allow_outgoing_turn_over_sms', array(
+      'description' => 'Boolean indicator, indicating if outgoing requests that turn over SMS questions should be allowed.',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
+}

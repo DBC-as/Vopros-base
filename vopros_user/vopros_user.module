@@ -19,6 +19,24 @@ function vopros_user_menu() {
 }
 
 /**
+ * Implements hook_field_views_data_alter().
+ *
+ * Adds in another filter on profile user library to limit the view to users
+ * from the same library.
+ */
+function vopros_user_field_views_data_alter(&$data, $field, $module) {
+  if ($module == 'list' && !empty($data['field_data_vopros_user_library'])) {
+    $data['field_data_vopros_user_library']['vopros_user_same_agency'] = array(
+      'group' => t('Profile'),
+      'title' => t('Same library as current user'),
+      'help' => t('Selects users from the same library.'),
+      'filter' => $data['field_data_vopros_user_library']['vopros_user_library_value']['filter'],
+    );
+    $data['field_data_vopros_user_library']['vopros_user_same_agency']['filter']['handler'] = 'vopros_user_filter_user_same_agency';
+  }
+}
+
+/**
  * Settings form for the vopros_user module.
  */
 function vopros_user_settings_form($form, &$form_state) {
@@ -103,4 +121,49 @@ function vopros_user_form_user_profile_form_alter(&$form, &$form_state) {
     $access = user_access('edit any shortcut links') || (user_access('edit own shortcut links') && $user->uid == $form['#user']->uid);
     $form['profile_vopros_user_librarian']['vopros_user_shortcuts']['#access'] = $access;
   }
+}
+
+/**
+ * Get a full for a user, or fall back to using username.
+ */
+function vopros_user_name($account = NULL) {
+  global $user;
+  if (!$account) {
+    $account = $user;
+  }
+
+  // Try to get a name from a librarian profile.
+  $profile = profile2_load_by_user($user, 'vopros_user_librarian');
+  if ($profile) {
+    $name = vopros_user_profile_user_name($profile);
+  }
+  else {
+    // Else fall back to username.
+    $name = $user->name;
+  }
+
+  return $name;
+}
+
+/**
+ * Get a full user name from a profile.
+ */
+function vopros_user_profile_user_name($profile) {
+  $wrapper = entity_metadata_wrapper('profile2', $profile);
+  return $wrapper->vopros_user_first_name->value() . ' ' . $wrapper->vopros_user_last_name->value() . ' (' . $wrapper->user->name->value() . ')';
+}
+
+/**
+ * Loads all librarians.
+ *
+ * @return array
+ *   A uid => full name array.
+ */
+function vopros_user_get_librarians() {
+  $profiles = profile2_load_multiple(FALSE, array('type' => 'vopros_user_librarian'));
+  $options = array();
+  foreach ($profiles as $profile) {
+    $options[$profile->uid] = vopros_user_profile_user_name($profile);
+  }
+  return $options;
 }

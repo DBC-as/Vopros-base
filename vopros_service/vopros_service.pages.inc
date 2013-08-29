@@ -42,14 +42,20 @@ function vopros_service_forward_form($form, &$form_state, $question) {
     '#view_mode' => 'full',
   );
 
+  $options = array(
+    'help' => t('Ask for help'),
+  );
+  if ($question->user_answer_preference == 'sms') {
+    $options['turn_over_sms'] = t('Turn over the question');
+  }
+  else {
+    $options['turn_over'] = t('Turn over the question');
+  }
   // @todo Really, we should filter out types without any services.
   $form['form']['send_type'] = array(
     '#type' => 'radios',
     '#title' => t('Way of sending'),
-    '#options' => array(
-      'help' => t('Ask for help'),
-      'turn_over' => t('Turn over the question'),
-    ),
+    '#options' => $options,
     '#required' => TRUE,
     '#ajax' => array(
       'callback' => 'vopros_service_forward_form_ajax',
@@ -60,9 +66,15 @@ function vopros_service_forward_form($form, &$form_state, $question) {
   );
 
   // Find service definitions.
+  if ($question->user_answer_preference == 'sms') {
+    $where = 'v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over_sms = 1';
+  }
+  else {
+    $where = 'v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over = 1';
+  }
   $query = db_select('vopros_service', 'v')
     ->fields('v')
-    ->where('v.allow_outgoing_help = 1 OR v.allow_outgoing_turn_over = 1')
+    ->where($where)
     ->orderBy('label');
 
   $form_state['services'] = $query->execute()->fetchAllAssoc('machine_name');
@@ -71,10 +83,17 @@ function vopros_service_forward_form($form, &$form_state, $question) {
    * Show the selector initially with all possible options, so core validation
    * can see them on submit.
    */
+  $options = _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help');
+  if ($question->user_answer_preference == 'sms') {
+    $options += _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over_sms');
+  }
+  else {
+    $options += _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over');
+  }
   $form['form']['service'] = array(
     '#type' => 'select',
     '#title' => t('Service'),
-    '#options' => _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_help') + _vopros_service_forward_form_options($form_state['services'], 'allow_outgoing_turn_over'),
+    '#options' => $options,
     '#required' => TRUE,
     '#prefix' => '<div id="service-options">',
     '#suffix' => '</div>',
@@ -117,7 +136,7 @@ function vopros_service_forward_form($form, &$form_state, $question) {
 function _vopros_service_forward_form_options($services, $type) {
   $options = array();
   foreach ($services as $service) {
-    if (!empty($service->{$type}) && $service->{$type}){
+    if (!empty($service->{$type}) && $service->{$type}) {
       $options[$service->machine_name] = $service->label;
     }
   }
@@ -165,7 +184,8 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
     db_insert('vopros_service_question')
       ->fields(array(
           'machine_name' => $form_state['selected_service']->machine_name,
-          'type' => 'outgoing_' . $form_state['values']['send_type'],
+          'direction' => 'outgoing',
+          'type' => $form_state['values']['send_type'],
           'uuid' => $question->uuid,
       ))
     ->execute();
@@ -180,7 +200,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
   }
   else {
     // Assignment on purpose.
-    if ($error = _vopros_service_forward_question_error()) {
+    if ($error = _vopros_service_error()) {
       $message = t('Could not forward question to service, it said: @message', array('@message' => $error));
     }
     else {
@@ -198,7 +218,7 @@ function vopros_service_forward_form_forward_validate($form, &$form_state) {
  */
 function vopros_service_forward_form_forward_submit($form, &$form_state) {
   $question = $form_state['question'];
-  if ($form_state['values']['send_type']  == 'turn_over') {
+  if ($form_state['values']['send_type'] == 'turn_over') {
     $question->question_status = 'closed';
     $question->question_status_reason = 'handed over to external service';
     drupal_set_message(t('The question "@title" has been handed over to an external service', array('@title' => $form_state['question']->question_title)), 'notice');

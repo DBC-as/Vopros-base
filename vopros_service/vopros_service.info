@@ -5,12 +5,16 @@ core = 7.x
 
 configure = admin/vopros/config/service
 
-dependencies[] = vopros_base
-dependencies[] = services
+dependencies[] = entity
+dependencies[] = profile2
 dependencies[] = rest_server
+dependencies[] = services
 dependencies[] = uuid
+dependencies[] = vopros_base
 
 ; Entity controller include:
 files[] = vopros_service.admin.inc
 files[] = includes/vopros_service.controller.inc
 files[] = includes/vopros_service.entity.inc
+files[] = includes/vopros_service_message.controller.inc
+files[] = includes/vopros_service_message.entity.inc

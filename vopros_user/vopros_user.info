@@ -27,3 +27,4 @@ features[field][] = profile2-vopros_user_librarian-vopros_user_shortcuts
 features[services_endpoint][] = vopros_server
 features[taxonomy][] = vopros_user_expertise
 features[views_view][] = vopros_user_profile_service
+files[] = includes/views/handlers/vopros_user_filter_user_same_agency.inc

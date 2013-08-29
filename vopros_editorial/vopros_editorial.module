@@ -119,7 +119,6 @@ function vopros_editorial_vopros_question_activity_feed($question, &$feed) {
       foreach ($editorial_revisions as $editorial_revision) {
         // Detect any change:
         if ($editorial_revision->tid != $tid) {
-          
           $feed['vopros_editorial_' . $editorial_revision->revision_timestamp] = array(
             '#theme' => 'vopros_editorial_field_feed',
             '#revision' => $editorial_revision,
@@ -146,7 +145,7 @@ function vopros_editorial_form_vopros_sms_settings_form_alter(&$form, &$form_sta
   $form['macros']['#collapsible'] = TRUE;
   $form['macros']['#collapsed'] = TRUE;
   $form['macros']['#weight'] = 1;
-  
+
   $vocabolary = taxonomy_vocabulary_machine_name_load('vopros_editorial');
   $terms = taxonomy_term_load_multiple(NULL, array('vid' => $vocabolary->vid));
 
@@ -228,7 +227,7 @@ function vopros_editorial_form_vopros_email_settings_form_alter(&$form, &$form_s
   $form['macros']['#collapsible'] = TRUE;
   $form['macros']['#collapsed'] = TRUE;
   $form['macros']['#weight'] = 1;
-  
+
   $vocabolary = taxonomy_vocabulary_machine_name_load('vopros_editorial');
   $terms = taxonomy_term_load_multiple(NULL, array('vid' => $vocabolary->vid));
 
@@ -347,4 +346,68 @@ function vopros_editorial_theme() {
       'path' => $path,
     ),
   );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds default editorial selector to the service admin form.
+ */
+function vopros_editorial_form_vopros_service_form_alter(&$form, &$form_state) {
+  $vocab = taxonomy_vocabulary_machine_name_load('vopros_editorial');
+  $terms = taxonomy_term_load_multiple(FALSE, array('vid' => $vocab->vid));
+
+  if ($terms) {
+    $options = array(
+      0 => t('- None -'),
+    );
+    foreach ($terms as $term) {
+      $options[$term->tid] = $term->name;
+    }
+
+    $form['default_editorial'] = array(
+      '#type' => 'select',
+      '#title' => t('Default editorial'),
+      '#description' => t('New incoming questions will get this editorial.'),
+      '#options' => $options,
+      '#default_value' => variable_get('vopros_editorial_service_default_' . $form_state['vopros_service']->machine_name, 0),
+    );
+
+    $form['actions']['submit']['#submit'][] = 'vopros_editorial_form_vopros_service_submit';
+  }
+}
+
+/**
+ * Submit handler for the vopros_service_form to save default editorial.
+ */
+function vopros_editorial_form_vopros_service_submit($form, &$form_state) {
+  if (!empty($form_state['values']['default_editorial'])) {
+    variable_set('vopros_editorial_service_default_' . $form_state['vopros_service']->machine_name, $form_state['values']['default_editorial']);
+  }
+  else {
+    variable_del('vopros_editorial_service_default_' . $form_state['vopros_service']->machine_name);
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Delete the default editorial variable when deleting service entity.
+ */
+function vopros_editorial_entity_delete($entity, $entity_type) {
+  if ($entity_type == 'vopros_service') {
+    variable_del('vopros_editorial_service_default_' . $entity->machine_name);
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ *
+ * Set default editorial value on newly created questions.
+ */
+function vopros_editorial_entity_presave($entity, $entity_type) {
+  if ($entity_type == 'vopros_question' && $entity->is_new && !empty($entity->vopros_service) && ($tid = variable_get('vopros_editorial_service_default_' . $entity->vopros_service->machine_name, 0))) {
+    $wrapper = entity_metadata_wrapper('vopros_question', $entity);
+    $wrapper->vopros_editorial->set($tid);
+  }
 }

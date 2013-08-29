@@ -478,36 +478,33 @@ function vopros_answer_vopros_question_activity_feed($question, &$feed) {
           'js' => array(drupal_get_path('module', 'vopros_answer') . '/js/vopros_answer.question_feed.js'),
         ),
       );
-      $answer_text = explode("\n", check_plain($answer->answer_content));
-      $count = 0;
-      $output_intro = '';
-      $output_all = '';
-      while ($count < 5 && !empty($answer_text)) {
-        $count += 1;
-        $output_intro .= array_shift($answer_text) . '<br />';
-      }
+      $answer_text = explode("\n", trim(check_plain($answer->answer_content)));
 
-      while (!empty($answer_text)) {
-        $output_all .= array_shift($answer_text) . '<br />';
-      }
+      $output_intro = array_slice($answer_text, 0, 5);
+      $output_rest = array_slice($answer_text, 5);
 
       $feed['answer' . $answer_id] = array(
         '#prefix' => '<div class="vopros-answer">',
         '#suffix' => '</div>',
-        'intro' => array(
-          '#markup' => $output_intro,
-        ),
-        'link' => array(
-          '#markup' => '<div class="see-more">' . t('See more') . '</div>',
-        ),
-        'rest' => array(
-          '#prefix' => '<div class="rest">',
-          '#suffix' => '</div>',
-          '#markup' => $output_all,
-        ),
         // Make answers float to the top.
         '#weight' => -pow(10, 14) - $answer->created,
       );
+
+      $feed['answer' . $answer_id]['intro'] = array(
+        '#markup' => implode('<br />', $output_intro),
+      );
+
+      if ($output_rest) {
+        $feed['answer' . $answer_id]['link'] = array(
+          '#markup' => '<div class="see-more">' . t('See more') . '</div>',
+        );
+
+        $feed['answer' . $answer_id]['rest'] = array(
+          '#prefix' => '<div class="rest">',
+          '#suffix' => '</div>',
+          '#markup' => implode('<br />', $output_rest),
+        );
+      }
     }
   }
 }
@@ -619,6 +616,10 @@ function vopros_answer_question_view_form_submit($form, &$form_state) {
   $answer->uid = $GLOBALS['user']->uid;
   $answer->author_name = $GLOBALS['user']->name;
   vopros_answer_save($answer);
+
+  // Save the answer in case there's other submit handlers that want in on the
+  // party.
+  $form_state['answer'] = $answer;
   $form_state['redirect'] = 'admin/vopros/answers/' . $answer->answer_id . '/edit';
 }
 
