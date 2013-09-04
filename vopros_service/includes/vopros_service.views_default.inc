@@ -24,8 +24,11 @@ function vopros_service_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Question list';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'perm';
-  $handler->display->display_options['access']['perm'] = 'access questions';
+  $handler->display->display_options['access']['type'] = 'role';
+  $handler->display->display_options['access']['role'] = array(
+    3 => '3',
+    5 => '5',
+  );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
@@ -197,16 +200,6 @@ function vopros_service_views_default_views() {
   $handler->display->display_options['filters']['question_status']['expose']['operator'] = 'question_status_op';
   $handler->display->display_options['filters']['question_status']['expose']['identifier'] = 'question_status';
   $handler->display->display_options['filters']['question_status']['expose']['remember'] = TRUE;
-  /* Filter criterion: Question: Question_usage */
-  $handler->display->display_options['filters']['question_usage']['id'] = 'question_usage';
-  $handler->display->display_options['filters']['question_usage']['table'] = 'vopros_question';
-  $handler->display->display_options['filters']['question_usage']['field'] = 'question_usage';
-  $handler->display->display_options['filters']['question_usage']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['question_usage']['expose']['operator_id'] = 'question_usage_op';
-  $handler->display->display_options['filters']['question_usage']['expose']['label'] = 'Usage';
-  $handler->display->display_options['filters']['question_usage']['expose']['operator'] = 'question_usage_op';
-  $handler->display->display_options['filters']['question_usage']['expose']['identifier'] = 'question_usage';
-  $handler->display->display_options['filters']['question_usage']['expose']['remember'] = TRUE;
   /* Filter criterion: Question: Redaktion (vopros_editorial) */
   $handler->display->display_options['filters']['vopros_editorial_tid']['id'] = 'vopros_editorial_tid';
   $handler->display->display_options['filters']['vopros_editorial_tid']['table'] = 'field_data_vopros_editorial';
