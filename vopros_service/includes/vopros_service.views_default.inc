@@ -143,14 +143,6 @@ function vopros_service_views_default_views() {
   $handler->display->display_options['fields']['qanda_service_name']['field'] = 'qanda_service_name';
   $handler->display->display_options['fields']['qanda_service_name']['label'] = 'Received from';
   $handler->display->display_options['fields']['qanda_service_name']['element_label_colon'] = FALSE;
-  /* Field: Question: Question_usage */
-  $handler->display->display_options['fields']['question_usage']['id'] = 'question_usage';
-  $handler->display->display_options['fields']['question_usage']['table'] = 'vopros_question';
-  $handler->display->display_options['fields']['question_usage']['field'] = 'question_usage';
-  $handler->display->display_options['fields']['question_usage']['label'] = 'Usage';
-  $handler->display->display_options['fields']['question_usage']['alter']['max_length'] = '35';
-  $handler->display->display_options['fields']['question_usage']['alter']['trim'] = TRUE;
-  $handler->display->display_options['fields']['question_usage']['hide_alter_empty'] = FALSE;
   /* Field: Question: Question_status */
   $handler->display->display_options['fields']['question_status']['id'] = 'question_status';
   $handler->display->display_options['fields']['question_status']['table'] = 'vopros_question';
@@ -292,7 +284,6 @@ function vopros_service_views_default_views() {
     t('Question_status_reason'),
     t('Title'),
     t('Received from'),
-    t('Usage'),
     t('Status'),
     t('Deadline'),
     t('Updated'),
