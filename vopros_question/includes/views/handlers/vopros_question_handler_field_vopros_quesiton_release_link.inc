@@ -12,6 +12,6 @@ class vopros_question_handler_field_vopros_quesiton_release_link extends views_h
       return '';
     }
 
-    return l('Release', 'admin/vopros/questions/' . $question_id . '/release');
+    return l(t('Release'), 'admin/vopros/questions/' . $question_id . '/release');
   }
 }
